@@ -1,5 +1,5 @@
 import express from 'express'
-import { registerController, loginController } from '~/controllers/user.controllers'
+import { registerController, loginController, logoutController } from '~/controllers/user.controllers'
 import {
   registerValidator,
   loginValidator,
@@ -45,6 +45,6 @@ router.post('/login', loginValidator, wrapRequestHandler(loginController))
  *    refresh_token: string
  * }
  */
-router.post('/logout', accessTokenValidator, refreshTokenValidator)
+router.post('/logout', accessTokenValidator, refreshTokenValidator, wrapRequestHandler(logoutController))
 
 export default router
