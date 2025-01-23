@@ -1,7 +1,9 @@
 import { Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
+import { ObjectId } from 'mongodb'
 import { USER_MESSAGE } from '~/constants/message'
 import { RegisterRequestBody } from '~/models/requests/user.requests'
+import User from '~/models/schemas/users.schemas'
 import UserServices from '~/services/user.services'
 
 export const registerController = async (req: Request<ParamsDictionary, any, RegisterRequestBody>, res: Response) => {
@@ -9,6 +11,18 @@ export const registerController = async (req: Request<ParamsDictionary, any, Reg
 
   res.json({
     message: USER_MESSAGE.REGISTER_SUCCESS,
+    result
+  })
+}
+
+export const loginController = async (req: Request, res: Response) => {
+  const user = req.user as User
+  const user_id = user._id as ObjectId
+
+  const result = await UserServices.login(user_id.toString())
+
+  res.json({
+    message: USER_MESSAGE.LOGIN_SUCCESS,
     result
   })
 }

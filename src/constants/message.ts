@@ -5,6 +5,7 @@ export const USER_MESSAGE = {
   DISPLAY_NAME_LENGTH_MUST_BE_FROM_1_TO_50: 'Tên hiển thị phải có độ dài từ 2 đến 50 ký tự',
   EMAIL_IS_REQUIRED: 'Không được để trống địa chỉ email',
   EMAIL_IS_NOT_VALID: 'Địa chỉ email không hợp lệ',
+  EMAIL_IS_MUST_BE_A_STRING: 'Địa chỉ email phải là chuổi ký tự',
   EMAIL_LENGTH_MUST_BE_FROM_5_TO_100: 'Địa chỉ email phải có độ dài từ 5 đến 100 ký tự',
   EMAIL_IS_ALWAYS_EXISTENT: 'Địa chỉ email đã được sử dụng',
   PHONE_IS_REQUIRED: 'Không được để trống số điện thoại',
@@ -22,5 +23,7 @@ export const USER_MESSAGE = {
   COMFORM_PASSWORD_MUST_BE_STRONG:
     'Xác nhận mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt',
   COMFIRM_PASSWORD_MUST_BE_THE_SAME_AS_PASSWORD: 'Xác nhận mật khẩu phải giống với mật khẩu',
-  REGISTER_SUCCESS: 'Đăng ký thành công'
+  REGISTER_SUCCESS: 'Đăng ký thành công! Vui lòng đăng nhập lại',
+  INCORRECT_EMAIL_OR_PASSWORD: 'Email hoặc mật khẩu không chính xác',
+  LOGIN_SUCCESS: 'Đăng nhập thành công!'
 }

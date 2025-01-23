@@ -3,11 +3,10 @@ import dotenv from 'dotenv'
 import databaseService from './services/database.services'
 import { defaultErrorHandler } from './middlewares/error.middlewares'
 
-import userApi from '~/routes/user.routes'
-
 dotenv.config()
-
 const port = process.env.PORT || 3000
+
+import userApi from '~/routes/user.routes'
 
 const app = express()
 

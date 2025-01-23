@@ -4,6 +4,8 @@ import { HashPassword } from '~/utils/encryption'
 import User from '~/models/schemas/users.schemas'
 import { signToken } from '~/utils/jwt'
 import { TokenType } from '~/constants/enum'
+import RefreshToken from '~/models/schemas/refreshtoken.schemas'
+import { ObjectId } from 'mongodb'
 
 class UserService {
   async checkEmailExits(email: string) {
@@ -25,11 +27,25 @@ class UserService {
     const user_id = result.insertedId.toString()
     const [access_token, refresh_token] = await this.signAccessTokenAndRefreshToken(user_id)
 
+    // await this.registerRefreshToken(user_id, refresh_token)
+
     return {
       access_token,
       refresh_token
     }
   }
+
+  async login(user_id: string) {
+    const [access_token, refresh_token] = await this.signAccessTokenAndRefreshToken(user_id)
+
+    await this.registerRefreshToken(user_id, refresh_token)
+
+    return {
+      access_token,
+      refresh_token
+    }
+  }
+
   private signAccessToken(user_id: string) {
     return signToken({
       payload: {
@@ -54,6 +70,10 @@ class UserService {
   }
   private signAccessTokenAndRefreshToken(user_id: string) {
     return Promise.all([this.signAccessToken(user_id), this.signRefreshToken(user_id)])
+  }
+
+  private async registerRefreshToken(user_id: string, token: string) {
+    await databaseService.refreshToken.insertOne(new RefreshToken({ token, user_id: new ObjectId(user_id) }))
   }
 }
 
