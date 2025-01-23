@@ -27,7 +27,7 @@ class UserService {
     const user_id = result.insertedId.toString()
     const [access_token, refresh_token] = await this.signAccessTokenAndRefreshToken(user_id)
 
-    // await this.registerRefreshToken(user_id, refresh_token)
+    await this.registerRefreshToken(user_id, refresh_token)
 
     return {
       access_token,
@@ -74,6 +74,10 @@ class UserService {
 
   private async registerRefreshToken(user_id: string, token: string) {
     await databaseService.refreshToken.insertOne(new RefreshToken({ token, user_id: new ObjectId(user_id) }))
+  }
+
+  async logout(refresh_token: string) {
+    await databaseService.refreshToken.deleteOne({ token: refresh_token })
   }
 }
 
