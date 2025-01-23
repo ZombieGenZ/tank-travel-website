@@ -1,5 +1,9 @@
 import express, { Request, Response } from 'express'
 import dotenv from 'dotenv'
+import databaseService from './services/database.services'
+import { defaultErrorHandler } from './middlewares/error.middlewares'
+
+import userApi from '~/routes/user.routes'
 
 dotenv.config()
 
@@ -7,9 +11,17 @@ const port = process.env.PORT || 3000
 
 const app = express()
 
+app.use(express.json())
+
+databaseService.connect()
+
 app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Hello, World!' })
 })
+
+app.use('/users', userApi)
+
+app.use(defaultErrorHandler)
 
 app.listen(port, () => {
   console.log()

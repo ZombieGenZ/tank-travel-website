@@ -15,7 +15,7 @@ interface UserType {
   forgot_password_token?: string
 }
 
-export class User {
+export default class User {
   _id: ObjectId
   display_name: string
   email: string
@@ -36,7 +36,7 @@ export class User {
     this.password = user.password
     this.user_type = user.user_type || UserStatus.UnVerified
     this.balance = user.balance || 0
-    this.revenue = 0
+    this.revenue = user.revenue || 0
     this.permission = user.permission || UserPermission.CUSTOMER
     this.email_verify_token = user.email_verify_token || ''
     this.forgot_password_token = user.forgot_password_token || ''

@@ -72,3 +72,10 @@ export enum UserPermission {
   BUSINESS,
   ADMINISTRATOR
 }
+
+export enum TokenType {
+  AccessToken,
+  RefreshToken,
+  ForgotPasswordToken,
+  EmailVerifyToken
+}
