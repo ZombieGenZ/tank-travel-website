@@ -36,7 +36,7 @@ class UserService {
         </div>
         <div style="background-color: #f4f4f4; padding: 20px; border-radius: 5px;">
             <h2 style="color: #0066cc;">Xác Minh Địa Chỉ Email</h2>
-            <p>Chào bạn,</p>
+            <p>Chào ${payload.display_name},</p>
             <p>Cảm ơn bạn đã đăng ký tài khoản tại TANK Travel. Vui lòng nhấp vào nút bên dưới để xác minh địa chỉ email của bạn:</p>
             
             <a href="${process.env.APP_URL}/users/email-verify?token=${email_verify_token}" style="display: block; width: 200px; margin: 20px auto; padding: 12px; background-color: #28a745; color: white; text-align: center; text-decoration: none; border-radius: 5px;">
