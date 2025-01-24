@@ -20,7 +20,7 @@ class UserService {
   async register(payload: RegisterRequestBody) {
     const user_id = new ObjectId()
     const email_verify_token = await this.signEmailVerifyToken(user_id.toString())
-    await databaseService.users.insertOne(
+    const result = await databaseService.users.insertOne(
       new User({
         ...payload,
         _id: user_id,
@@ -55,22 +55,14 @@ class UserService {
 
     sendMail(payload.email, `Xác nhận email ${payload.email} đã đăng ký tại TANK-Travel`, verify_email_html)
 
-    // const result = await databaseService.users.insertOne(
-    //   new User({
-    //     ...payload,
-    //     password: HashPassword(payload.password)
-    //   })
-    // )
+    const [access_token, refresh_token] = await this.signAccessTokenAndRefreshToken(user_id.toString())
 
-    // const user_id = result.insertedId.toString()
-    // const [access_token, refresh_token] = await this.signAccessTokenAndRefreshToken(user_id)
+    await this.registerRefreshToken(user_id.toString(), refresh_token)
 
-    // await this.registerRefreshToken(user_id, refresh_token)
-
-    // return {
-    //   access_token,
-    //   refresh_token
-    // }
+    return {
+      access_token,
+      refresh_token
+    }
   }
 
   async login(user_id: string) {
@@ -141,7 +133,10 @@ class UserService {
         {
           _id: new ObjectId(user_id)
         },
-        { $set: { email_verify_token: '', updated_at: new Date(), user_type: UserStatus.Verified } }
+        {
+          $set: { email_verify_token: '', updated_at: new Date(), user_type: UserStatus.Verified },
+          $currentDate: { last_updated: true }
+        }
       )
     ])
 

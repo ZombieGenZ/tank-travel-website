@@ -162,6 +162,7 @@ export const loginValidator = validate(
               email: value,
               password: HashPassword(req.body.password)
             })
+
             if (user === null) {
               throw new Error(USER_MESSAGE.INCORRECT_EMAIL_OR_PASSWORD)
             }

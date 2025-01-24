@@ -9,10 +9,11 @@ import databaseService from '~/services/database.services'
 import UserServices from '~/services/user.services'
 
 export const registerController = async (req: Request<ParamsDictionary, any, RegisterRequestBody>, res: Response) => {
-  await UserServices.register(req.body)
+  const result = await UserServices.register(req.body)
 
   res.json({
-    message: USER_MESSAGE.REGISTER_SUCCESS
+    message: USER_MESSAGE.REGISTER_SUCCESS,
+    result
   })
 }
 
