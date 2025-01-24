@@ -23,7 +23,7 @@ export const USER_MESSAGE = {
   COMFORM_PASSWORD_MUST_BE_STRONG:
     'Xác nhận mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt',
   COMFIRM_PASSWORD_MUST_BE_THE_SAME_AS_PASSWORD: 'Xác nhận mật khẩu phải giống với mật khẩu',
-  REGISTER_SUCCESS: 'Đăng ký thành công!',
+  REGISTER_SUCCESS: 'Đăng ký thành công! Vui lòng kiểm tra hộp thư email của bạn',
   INCORRECT_EMAIL_OR_PASSWORD: 'Email hoặc mật khẩu không chính xác',
   LOGIN_SUCCESS: 'Đăng nhập thành công!',
   AUTHORIZATION_IS_REQUESTED: 'Chức năng này yêu cầu Access token phải được gửi kèm',
@@ -33,5 +33,10 @@ export const USER_MESSAGE = {
   REFUSED_TOKEN_MUST_BE_A_STRING: 'Refresh token phải là một chuỗi ký tự',
   REFRESH_TOKEN_DOES_NOT_EXIST: 'Refresh token không tồn tại',
   REFRESH_TOKEN_INVALID: 'Refresh token không hợp lệ',
-  LOGOUT_SUCCESS: 'Đăng xuất thành công!'
-}
+  LOGOUT_SUCCESS: 'Đăng xuất thành công!',
+  EMAIL_VERIFY_TOKEN_IS_REQUESTED: 'Chức năng này yêu cầu mã xác thực email phải được gửi kèm',
+  EMAIL_VERIFY_TOKEN_MUST_BE_A_STRING: 'Mã xác thực email phải là một chuỗi ký tự',
+  EMAIL_VERIFY_TOKEN_DOES_NOT_EXIST: 'Mã xác thực email không tồn tại',
+  EMAIL_ALREADY_VERIFIED: 'Email đã được xác thực',
+  EMAIL_VERIFY_SUSSCESS: 'Xác thực email thành công!'
+} as const

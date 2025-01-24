@@ -1,10 +1,16 @@
 import express from 'express'
-import { registerController, loginController, logoutController } from '~/controllers/user.controllers'
+import {
+  registerController,
+  loginController,
+  logoutController,
+  emailVerifyController
+} from '~/controllers/user.controllers'
 import {
   registerValidator,
   loginValidator,
   accessTokenValidator,
-  refreshTokenValidator
+  refreshTokenValidator,
+  emailVerifyTokenValidator
 } from '~/middlewares/user.middlewares'
 import { wrapRequestHandler } from '~/utils/handlers'
 const router = express.Router()
@@ -46,5 +52,15 @@ router.post('/login', loginValidator, wrapRequestHandler(loginController))
  * }
  */
 router.post('/logout', accessTokenValidator, refreshTokenValidator, wrapRequestHandler(logoutController))
+
+/*
+ * Description: Xác minh địa chỉ email của một tài khoản hiện có trên CSDL
+ * Path: /users/email-verify
+ * Method: POST
+ * query: {
+ *   ?token: string
+ * }
+ */
+router.get('/email-verify', emailVerifyTokenValidator, wrapRequestHandler(emailVerifyController))
 
 export default router
