@@ -1,7 +1,6 @@
-import { Request } from 'express'
+import { Request, Response, NextFunction } from 'express'
 import { checkSchema } from 'express-validator'
 import { JsonWebTokenError } from 'jsonwebtoken'
-import { UserStatus } from '~/constants/enum'
 import HTTPSTATUS from '~/constants/httpStatus'
 import { USER_MESSAGE } from '~/constants/message'
 import { ErrorWithStatus } from '~/models/errors'
@@ -10,6 +9,86 @@ import UserServices from '~/services/user.services'
 import { HashPassword } from '~/utils/encryption'
 import { verifyToken } from '~/utils/jwt'
 import { validate } from '~/utils/validation'
+
+export const sendEmailVerifyValidator = validate(
+  checkSchema({
+    email: {
+      notEmpty: {
+        errorMessage: USER_MESSAGE.EMAIL_IS_REQUIRED
+      },
+      trim: true,
+      isString: {
+        errorMessage: USER_MESSAGE.EMAIL_IS_MUST_BE_A_STRING
+      },
+      isLength: {
+        options: {
+          min: 5,
+          max: 100
+        },
+        errorMessage: USER_MESSAGE.EMAIL_LENGTH_MUST_BE_FROM_5_TO_100
+      },
+      isEmail: {
+        errorMessage: USER_MESSAGE.EMAIL_IS_NOT_VALID
+      },
+      custom: {
+        options: async (value) => {
+          const user = await databaseService.users.findOne({ email: value })
+          const email_verify_code = await databaseService.emailVerifyCode.findOne({ email: value })
+
+          if (user !== null) {
+            throw new Error(USER_MESSAGE.EMAIL_IS_ALWAYS_EXISTENT)
+          }
+
+          if (email_verify_code !== null) {
+            throw new Error(USER_MESSAGE.EMAIL_ALREADY_SENDING)
+          }
+
+          return true
+        }
+      }
+    }
+  })
+)
+
+export const reSendEmailVerifyValidator = validate(
+  checkSchema({
+    email: {
+      notEmpty: {
+        errorMessage: USER_MESSAGE.EMAIL_IS_REQUIRED
+      },
+      trim: true,
+      isString: {
+        errorMessage: USER_MESSAGE.EMAIL_IS_MUST_BE_A_STRING
+      },
+      isLength: {
+        options: {
+          min: 5,
+          max: 100
+        },
+        errorMessage: USER_MESSAGE.EMAIL_LENGTH_MUST_BE_FROM_5_TO_100
+      },
+      isEmail: {
+        errorMessage: USER_MESSAGE.EMAIL_IS_NOT_VALID
+      },
+      custom: {
+        options: async (value) => {
+          const user = await databaseService.users.findOne({ email: value })
+          const email_verify_code = await databaseService.emailVerifyCode.findOne({ email: value })
+
+          if (user !== null) {
+            throw new Error(USER_MESSAGE.EMAIL_IS_ALWAYS_EXISTENT)
+          }
+
+          if (email_verify_code === null) {
+            throw new Error(USER_MESSAGE.EMAIL_VERIFY_CODE_HAS_NOT_BEEN_SENT)
+          }
+
+          return true
+        }
+      }
+    }
+  })
+)
 
 export const registerValidator = validate(
   checkSchema(
@@ -48,9 +127,11 @@ export const registerValidator = validate(
         custom: {
           options: async (value) => {
             const result = await UserServices.checkEmailExits(value)
+
             if (result) {
               throw new Error(USER_MESSAGE.EMAIL_IS_ALWAYS_EXISTENT)
             }
+
             return true
           }
         }
@@ -126,6 +207,36 @@ export const registerValidator = validate(
             if (value !== req.body.password) {
               throw new Error(USER_MESSAGE.COMFIRM_PASSWORD_MUST_BE_THE_SAME_AS_PASSWORD)
             }
+            return true
+          }
+        }
+      },
+      email_verify_code: {
+        notEmpty: {
+          errorMessage: USER_MESSAGE.EMAIL_VERIFY_CODE_IS_REQUESTED
+        },
+        isString: {
+          errorMessage: USER_MESSAGE.EMAIL_VERIFY_CODE_MUST_BE_A_STRING
+        },
+        trim: true,
+        isLength: {
+          options: {
+            min: 9,
+            max: 9
+          },
+          errorMessage: USER_MESSAGE.EMAIL_VERIFY_CODE_INVALID
+        },
+        custom: {
+          options: async (value, { req }) => {
+            const email_verify_code = await databaseService.emailVerifyCode.findOne({
+              email: req.body.email,
+              code: value
+            })
+
+            if (!email_verify_code) {
+              throw new Error(USER_MESSAGE.EMAIL_VERIFY_CODE_INVALID)
+            }
+
             return true
           }
         }

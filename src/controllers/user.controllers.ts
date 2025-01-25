@@ -3,17 +3,28 @@ import { ParamsDictionary } from 'express-serve-static-core'
 import { ObjectId } from 'mongodb'
 import HTTPSTATUS from '~/constants/httpStatus'
 import { USER_MESSAGE } from '~/constants/message'
-import { LogoutRequestBody, RegisterRequestBody, TokenPayload } from '~/models/requests/user.requests'
+import { LogoutRequestBody, RegisterRequestBody, EmailVerifyBody, TokenPayload } from '~/models/requests/user.requests'
 import User from '~/models/schemas/users.schemas'
 import databaseService from '~/services/database.services'
 import UserServices from '~/services/user.services'
 
+export const sendEmailController = async (req: Request<ParamsDictionary, any, EmailVerifyBody>, res: Response) => {
+  await UserServices.sendEmailVerify(req.body)
+
+  res.json({ message: USER_MESSAGE.EMAIL_SENDIING_SUCCESS })
+}
+
+export const reSendEmailController = async (req: Request<ParamsDictionary, any, EmailVerifyBody>, res: Response) => {
+  await UserServices.reSendEmailVerify(req.body)
+
+  res.json({ message: USER_MESSAGE.EMAIL_VERIFY_CODE_RESEND_SUCCESS })
+}
+
 export const registerController = async (req: Request<ParamsDictionary, any, RegisterRequestBody>, res: Response) => {
-  const result = await UserServices.register(req.body)
+  await UserServices.register(req.body)
 
   res.json({
-    message: USER_MESSAGE.REGISTER_SUCCESS,
-    result
+    message: USER_MESSAGE.REGISTER_SUCCESS
   })
 }
 
@@ -48,10 +59,10 @@ export const emailVerifyController = async (req: Request, res: Response) => {
     return
   }
 
-  if (user.email_verify_token === '') {
-    res.json({ message: USER_MESSAGE.EMAIL_ALREADY_VERIFIED })
-    return
-  }
+  // if (user.email_verify_token === '') {
+  //   res.json({ message: USER_MESSAGE.EMAIL_ALREADY_VERIFIED })
+  //   return
+  // }
 
   const result = await UserServices.verifyEmail(user_id)
 

@@ -23,7 +23,7 @@ export const USER_MESSAGE = {
   COMFORM_PASSWORD_MUST_BE_STRONG:
     'Xác nhận mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt',
   COMFIRM_PASSWORD_MUST_BE_THE_SAME_AS_PASSWORD: 'Xác nhận mật khẩu phải giống với mật khẩu',
-  REGISTER_SUCCESS: 'Đăng ký thành công! Vui lòng kiểm tra hộp thư email của bạn',
+  REGISTER_SUCCESS: 'Đăng ký thành công!',
   INCORRECT_EMAIL_OR_PASSWORD: 'Email hoặc mật khẩu không chính xác',
   LOGIN_SUCCESS: 'Đăng nhập thành công!',
   AUTHORIZATION_IS_REQUESTED: 'Chức năng này yêu cầu Access token phải được gửi kèm',
@@ -38,5 +38,17 @@ export const USER_MESSAGE = {
   EMAIL_VERIFY_TOKEN_MUST_BE_A_STRING: 'Mã xác thực email phải là một chuỗi ký tự',
   EMAIL_VERIFY_TOKEN_DOES_NOT_EXIST: 'Mã xác thực email không tồn tại',
   EMAIL_ALREADY_VERIFIED: 'Email đã được xác thực',
-  EMAIL_VERIFY_SUSSCESS: 'Xác thực email thành công!'
+  EMAIL_VERIFY_SUSSCESS: 'Xác thực email thành công!',
+  EMAIL_ALREADY_SENDING: 'Email đã được gửi, vui lòng kiểm tra email của bạn',
+  EMAIL_SENDIING_SUCCESS: 'Gửi email thành công! Vui lòng kiểm tra hộp thư email của bạn',
+  EMAIL_VERIFY_CODE_IS_REQUESTED: 'Không được bỏ trống mã xác thực email',
+  EMAIL_VERIFY_CODE_MUST_BE_A_STRING: 'Mã xác thực email phải là một chuỗi ký tự',
+  EMAIL_VERIFY_CODE_INVALID: 'Mã xác thực email không hợp lệ',
+  EMAIL_VERIFY_CODE_HAS_NOT_BEEN_SENT: 'Mã xác thực email chưa được gửi',
+  EMAIL_VERIFY_CODE_RESEND_SUCCESS: 'Đã gửi lại mã xác thực email thành công!'
 } as const
+
+export const AUTHENTICATION_MESSAGE = {
+  ACCESS_TOKEN_AND_REFRESH_TOKEN_IS_MISSING: 'Bạn phải đăng nhập mới có thể sử dụng chức năng này',
+  REFRESH_TOKEN_INVALID: 'Refresh token không hợp lệ'
+}

@@ -7,6 +7,7 @@ dotenv.config()
 const port = process.env.APP_PORT || 3000
 
 import userApi from '~/routes/user.routes'
+import authenticationApi from '~/routes/authentication.routes'
 
 const app = express()
 
@@ -18,7 +19,8 @@ app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Hello, World!' })
 })
 
-app.use('/users', userApi)
+app.use('/api/users', userApi)
+app.use('/api/authentication', authenticationApi)
 
 app.use(defaultErrorHandler)
 

@@ -2,6 +2,7 @@ import { Db, MongoClient, Collection } from 'mongodb'
 import User from '~/models/schemas/users.schemas'
 import RefreshToken from '~/models/schemas/refreshtoken.schemas'
 import dotenv from 'dotenv'
+import EmailVerifyCode from '~/models/schemas/emailverifycode.schemas'
 dotenv.config()
 
 const uri = `mongodb+srv://${process.env.DATABASE_USERNAME}:${process.env.DATABASE_PASSWORD}@datvexe.bxmnu.mongodb.net/?retryWrites=true&w=majority&appName=DatVeXe`
@@ -29,6 +30,9 @@ export class DatabaseService {
 
   get refreshToken(): Collection<RefreshToken> {
     return this.db.collection(process.env.DATABASE_REFRESH_TOKEN_COLLECTION as string)
+  }
+  get emailVerifyCode(): Collection<EmailVerifyCode> {
+    return this.db.collection(process.env.EMAIL_VERIFY_CODE_COLLECTION as string)
   }
 }
 

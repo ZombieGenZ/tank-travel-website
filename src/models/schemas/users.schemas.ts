@@ -11,7 +11,6 @@ interface UserType {
   balance?: number
   revenue?: number
   permission?: UserPermission
-  email_verify_token?: string
   forgot_password_token?: string
 }
 
@@ -25,7 +24,6 @@ export default class User {
   balance: number
   revenue: number
   permission: UserPermission
-  email_verify_token: string
   forgot_password_token: string
 
   constructor(user: UserType) {
@@ -38,7 +36,6 @@ export default class User {
     this.balance = user.balance || 0
     this.revenue = user.revenue || 0
     this.permission = user.permission || UserPermission.CUSTOMER
-    this.email_verify_token = user.email_verify_token || ''
     this.forgot_password_token = user.forgot_password_token || ''
   }
 }
