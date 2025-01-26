@@ -53,3 +53,24 @@ export const AUTHENTICATION_MESSAGE = {
   REFRESH_TOKEN_INVALID: 'Refresh token không hợp lệ',
   NOT_PERMISSION_TODO_THIS: 'Bạn không có quyền thực hiện hành động này'
 } as const
+
+export const VEHICLE_MESSGAE = {
+  VEHICLE_TYPE_IS_REQUIRED: 'Không được bỏ trống loại xe',
+  VEHICLE_TYPE_IS_INVALID: 'Loại xe không hợp lệ',
+  VEHICLE_TYPE_MUST_BE_A_NUMBER: 'Loại xe phải là một số',
+  SEAT_TYPE_IS_REQUIRED: 'Không được bỏ trống loại ghế',
+  SEAT_TYPE_IS_INVALID: 'Loại ghế không hợp lệ',
+  SEAT_TYPE_IS_MUST_BE_A_NUMBER: 'Loại ghế phải là một số',
+  SEATS_IS_REQUIRED: 'Không được bỏ trống số ghế',
+  SEATS_IS_MUST_BE_A_NUMBER: 'Số ghế phải là một số',
+  SEATS_IS_MUST_BE_GREATER_THAN_0: 'Số ghế phải lớn hơn 0',
+  RULES_IS_REQUIRED: 'Không được bỏ trống quy định trên xe',
+  RULES_IS_MUST_BE_A_STRING: 'Quy định trên xe phải là một chuỗi ký tự',
+  EMAIL_LENGTH_MUST_BE_FROM_0_TO_2000: 'Quy định trên xe phải có độ dài từ 0 đến 2000 ký tự',
+  AMENITIES_IS_REQUIRED: 'Không được bỏ trống tiện ích trên xe',
+  AMENITIES_IS_MUST_BE_A_STRING: 'Tiện ích trên xe phải là một chuỗi ký tự',
+  AMENITIES_LENGTH_MUST_BE_FROM_0_TO_500: 'Tiện ích trên xe phải có độ dài từ 0 đến 500 ký tự',
+  LICENSE_PLATE_IS_REQUIRED: 'Không được bỏ trống biển số xe',
+  LICENSE_PLATE_IS_MUST_BE_A_STRING: 'Biển số xe phải là một chuỗi ký tự',
+  LICENSE_PLATE_LENGTH_MUST_BE_FROM_7_TO_8: 'Biển số xe phải có độ dài từ 7 đến 8 ký tự'
+} as const

@@ -109,32 +109,40 @@ export const authenticationValidator = async (req: Request, res: Response, next:
   }
 }
 
-export const customerAuthentication = async (req: Request, res: Response, next: NextFunction) => {
+export const customerAuthenticationValidator = async (req: Request, res: Response, next: NextFunction) => {
   const user = req.user as User
 
-  if (user && user.permission === UserPermission.CUSTOMER) {
+  if (
+    user &&
+    (user.permission == UserPermission.CUSTOMER ||
+      user.permission == UserPermission.BUSINESS ||
+      user.permission == UserPermission.ADMINISTRATOR)
+  ) {
     next()
     return
   }
+
   res.status(HTTPSTATUS.UNAUTHORIZED).json({ message: AUTHENTICATION_MESSAGE.NOT_PERMISSION_TODO_THIS })
 }
 
-export const businessAuthentication = async (req: Request, res: Response, next: NextFunction) => {
+export const businessAuthenticationValidator = async (req: Request, res: Response, next: NextFunction) => {
   const user = req.user as User
 
-  if (user && user.permission === UserPermission.BUSINESS) {
+  if (user && (user.permission == UserPermission.BUSINESS || user.permission == UserPermission.ADMINISTRATOR)) {
     next()
     return
   }
+
   res.status(HTTPSTATUS.UNAUTHORIZED).json({ message: AUTHENTICATION_MESSAGE.NOT_PERMISSION_TODO_THIS })
 }
 
-export const administratorAuthentication = async (req: Request, res: Response, next: NextFunction) => {
+export const administratorAuthenticationValidator = async (req: Request, res: Response, next: NextFunction) => {
   const user = req.user as User
 
-  if (user && user.permission === UserPermission.ADMINISTRATOR) {
+  if (user && user.permission == UserPermission.ADMINISTRATOR) {
     next()
     return
   }
+
   res.status(HTTPSTATUS.UNAUTHORIZED).json({ message: AUTHENTICATION_MESSAGE.NOT_PERMISSION_TODO_THIS })
 }

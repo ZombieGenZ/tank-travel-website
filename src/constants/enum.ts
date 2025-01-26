@@ -15,3 +15,21 @@ export enum TokenType {
   ForgotPasswordToken,
   EmailVerifyToken
 }
+
+export enum VehicleTypeEnum {
+  BUS,
+  TRAIN,
+  PLANE
+}
+
+export enum SeatType {
+  SEATING_SEAT,
+  SLEEPER_SEAT,
+  HYBRID_SEAT
+}
+
+export enum VehicleStatus {
+  PENDING_APPROVAL,
+  ACCEPTED,
+  DENIED
+}

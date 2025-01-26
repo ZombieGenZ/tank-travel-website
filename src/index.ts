@@ -7,7 +7,7 @@ dotenv.config()
 const port = process.env.APP_PORT || 3000
 
 import userApi from '~/routes/user.routes'
-import authenticationApi from '~/routes/authentication.routes'
+import vehicleApi from '~/routes/vehicle.routes'
 
 const app = express()
 
@@ -20,7 +20,7 @@ app.get('/', (req: Request, res: Response) => {
 })
 
 app.use('/api/users', userApi)
-app.use('/api/authentication', authenticationApi)
+app.use('/api/vehicle', vehicleApi)
 
 app.use(defaultErrorHandler)
 

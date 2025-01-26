@@ -97,14 +97,44 @@ class UserService {
     sendMail(email, email_verify_subject, email_verify_html)
   }
   async register(payload: RegisterRequestBody) {
+    const email_verify_subject = 'Chào mừng đến TANK-Travel'
+    const email_verify_html = `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f4f4f4;">
+          <div style="background-color: white; border-radius: 8px; padding: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+              <div style="text-align: center; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 15px;">
+                  <h1>Chào mừng đến TANK-Travel</h1>
+              </div>
+              <div style="margin-top: 20px;">
+                  <p>Kính chào Quý Khách,</p>
+                  
+                  <p>Chúc mừng bạn đã trở thành thành viên của TANK-Travel! Chúng tôi rất vui mừng được đồng hành cùng bạn trong những chuyến du lịch sắp tới.</p>
+                  
+                  <p>Với TANK-Travel, bạn sẽ được:</p>
+                  <ul>
+                      <li>Đặt vé máy bay, xe khách, tàu hỏa dễ dàng</li>
+                      <li>Nhận ưu đãi đặc biệt cho thành viên</li>
+                      <li>Hỗ trợ 24/7 khi bạn cần</li>
+                  </ul>
+                  
+                  <a href="${process.env.APP_URL}/" style="display: inline-block; background-color: #3498db; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 20px;">Bắt đầu đặt vé ngay</a>
+              </div>
+              <div style="margin-top: 30px; text-align: center; color: #7f8c8d; font-size: 0.9em;">
+                  <p>© 2024 TANK-Travel. Mọi quyền được bảo lưu.</p>
+              </div>
+          </div>
+      </div>
+    `
+
     await Promise.all([
       await databaseService.users.insertOne(
         new User({
           ...payload,
-          password: HashPassword(payload.password)
+          password: HashPassword(payload.password),
+          user_type: UserStatus.Verified
         })
       ),
-      databaseService.emailVerifyCode.deleteOne({ email: payload.email })
+      databaseService.emailVerifyCode.deleteOne({ email: payload.email }),
+      sendMail(payload.email, email_verify_subject, email_verify_html)
     ])
   }
   async login(user_id: string) {
@@ -186,5 +216,5 @@ class UserService {
   // }
 }
 
-const services = new UserService()
-export default services
+const userService = new UserService()
+export default userService

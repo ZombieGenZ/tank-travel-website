@@ -10,7 +10,6 @@ import {
   registerValidator,
   loginValidator,
   refreshTokenValidator,
-  emailVerifyTokenValidator,
   sendEmailVerifyValidator,
   reSendEmailVerifyValidator
 } from '~/middlewares/user.middlewares'
