@@ -50,5 +50,6 @@ export const USER_MESSAGE = {
 
 export const AUTHENTICATION_MESSAGE = {
   ACCESS_TOKEN_AND_REFRESH_TOKEN_IS_MISSING: 'Bạn phải đăng nhập mới có thể sử dụng chức năng này',
-  REFRESH_TOKEN_INVALID: 'Refresh token không hợp lệ'
-}
+  REFRESH_TOKEN_INVALID: 'Refresh token không hợp lệ',
+  NOT_PERMISSION_TODO_THIS: 'Bạn không có quyền thực hiện hành động này'
+} as const

@@ -107,7 +107,6 @@ class UserService {
       databaseService.emailVerifyCode.deleteOne({ email: payload.email })
     ])
   }
-
   async login(user_id: string) {
     const [access_token, refresh_token] = await this.signAccessTokenAndRefreshToken(user_id)
 
@@ -118,7 +117,6 @@ class UserService {
       refresh_token
     }
   }
-
   signAccessToken(user_id: string) {
     return signToken({
       payload: {
@@ -131,7 +129,7 @@ class UserService {
       }
     })
   }
-  private signRefreshToken(user_id: string) {
+  signRefreshToken(user_id: string) {
     return signToken({
       payload: {
         user_id: user_id,
@@ -143,55 +141,49 @@ class UserService {
       }
     })
   }
-
-  private signEmailVerifyToken(user_id: string) {
-    return signToken({
-      payload: {
-        user_id: user_id,
-        token_type: TokenType.EmailVerifyToken
-      },
-      privateKey: process.env.SECURITY_JWT_EMAIL_VERIFY_TOKEN as string,
-      options: {
-        expiresIn: process.env.SECURITY_EMAIL_VERIFY_TOKEN_EXPIRES_IN
-      }
-    })
-  }
-
   private signAccessTokenAndRefreshToken(user_id: string) {
     return Promise.all([this.signAccessToken(user_id), this.signRefreshToken(user_id)])
   }
-
-  private async registerRefreshToken(user_id: string, token: string) {
+  async registerRefreshToken(user_id: string, token: string) {
     await databaseService.refreshToken.insertOne(new RefreshToken({ token, user_id: new ObjectId(user_id) }))
   }
-
+  async changeRefreshToken(user_id: string, token: string) {
+    await databaseService.refreshToken.updateOne(
+      {
+        _id: new ObjectId(user_id)
+      },
+      {
+        $set: { refresh_token: token }
+      }
+    )
+  }
   async logout(refresh_token: string) {
     await databaseService.refreshToken.deleteOne({ token: refresh_token })
   }
 
-  async verifyEmail(user_id: string) {
-    const [token] = await Promise.all([
-      this.signAccessTokenAndRefreshToken(user_id),
-      databaseService.users.updateOne(
-        {
-          _id: new ObjectId(user_id)
-        },
-        {
-          $set: { email_verify_token: '', updated_at: new Date(), user_type: UserStatus.Verified },
-          $currentDate: { last_updated: true }
-        }
-      )
-    ])
+  // async verifyEmail(user_id: string) {
+  //   const [token] = await Promise.all([
+  //     this.signAccessTokenAndRefreshToken(user_id),
+  //     databaseService.users.updateOne(
+  //       {
+  //         _id: new ObjectId(user_id)
+  //       },
+  //       {
+  //         $set: { email_verify_token: '', updated_at: new Date(), user_type: UserStatus.Verified },
+  //         $currentDate: { last_updated: true }
+  //       }
+  //     )
+  //   ])
 
-    const [access_token, refresh_token] = token
+  //   const [access_token, refresh_token] = token
 
-    await this.registerRefreshToken(user_id, refresh_token)
+  //   await this.registerRefreshToken(user_id, refresh_token)
 
-    return {
-      access_token,
-      refresh_token
-    }
-  }
+  //   return {
+  //     access_token,
+  //     refresh_token
+  //   }
+  // }
 }
 
 const services = new UserService()

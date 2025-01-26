@@ -1,8 +1,10 @@
 import { Request, Response, NextFunction } from 'express'
 import { ObjectId } from 'mongodb'
+import { UserPermission } from '~/constants/enum'
 import HTTPSTATUS from '~/constants/httpStatus'
 import { AUTHENTICATION_MESSAGE } from '~/constants/message'
 import { TokenPayload } from '~/models/requests/user.requests'
+import User from '~/models/schemas/users.schemas'
 import databaseService from '~/services/database.services'
 import UsersServices from '~/services/user.services'
 import { verifyToken } from '~/utils/jwt'
@@ -35,10 +37,13 @@ export const authenticationValidator = async (req: Request, res: Response, next:
         return
       }
 
-      const access_token = await UsersServices.signAccessToken(user_id)
+      const new_access_token = await UsersServices.signAccessToken(user_id)
+      const new_refresh_token = await UsersServices.signRefreshToken(user_id)
+      await UsersServices.changeRefreshToken(user_id, new_access_token)
 
       req.user = user
-      req.access_token = access_token
+      req.access_token = new_access_token
+      req.refresh_token = new_refresh_token
 
       next()
       return
@@ -66,8 +71,11 @@ export const authenticationValidator = async (req: Request, res: Response, next:
     }
 
     req.user = user
+    req.access_token = authorization
+    req.refresh_token = refresh_token
 
     next()
+    return
   } catch {
     try {
       const decoded_refresh_token = (await verifyToken({
@@ -85,10 +93,13 @@ export const authenticationValidator = async (req: Request, res: Response, next:
         return
       }
 
-      const access_token = await UsersServices.signAccessToken(user_id)
+      const new_access_token = await UsersServices.signAccessToken(user_id)
+      const new_refresh_token = await UsersServices.signRefreshToken(user_id)
+      await UsersServices.changeRefreshToken(user_id, new_access_token)
 
       req.user = user
-      req.access_token = access_token
+      req.access_token = authorization
+      req.refresh_token = refresh_token
 
       next()
       return
@@ -96,4 +107,34 @@ export const authenticationValidator = async (req: Request, res: Response, next:
       res.status(HTTPSTATUS.UNAUTHORIZED).json({ message: AUTHENTICATION_MESSAGE.REFRESH_TOKEN_INVALID })
     }
   }
+}
+
+export const customerAuthentication = async (req: Request, res: Response, next: NextFunction) => {
+  const user = req.user as User
+
+  if (user && user.permission === UserPermission.CUSTOMER) {
+    next()
+    return
+  }
+  res.status(HTTPSTATUS.UNAUTHORIZED).json({ message: AUTHENTICATION_MESSAGE.NOT_PERMISSION_TODO_THIS })
+}
+
+export const businessAuthentication = async (req: Request, res: Response, next: NextFunction) => {
+  const user = req.user as User
+
+  if (user && user.permission === UserPermission.BUSINESS) {
+    next()
+    return
+  }
+  res.status(HTTPSTATUS.UNAUTHORIZED).json({ message: AUTHENTICATION_MESSAGE.NOT_PERMISSION_TODO_THIS })
+}
+
+export const administratorAuthentication = async (req: Request, res: Response, next: NextFunction) => {
+  const user = req.user as User
+
+  if (user && user.permission === UserPermission.ADMINISTRATOR) {
+    next()
+    return
+  }
+  res.status(HTTPSTATUS.UNAUTHORIZED).json({ message: AUTHENTICATION_MESSAGE.NOT_PERMISSION_TODO_THIS })
 }

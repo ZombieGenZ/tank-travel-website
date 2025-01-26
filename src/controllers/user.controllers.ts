@@ -1,11 +1,9 @@
 import { Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { ObjectId } from 'mongodb'
-import HTTPSTATUS from '~/constants/httpStatus'
 import { USER_MESSAGE } from '~/constants/message'
 import { LogoutRequestBody, RegisterRequestBody, EmailVerifyBody, TokenPayload } from '~/models/requests/user.requests'
 import User from '~/models/schemas/users.schemas'
-import databaseService from '~/services/database.services'
 import UserServices from '~/services/user.services'
 
 export const sendEmailController = async (req: Request<ParamsDictionary, any, EmailVerifyBody>, res: Response) => {
@@ -50,24 +48,24 @@ export const logoutController = async (req: Request<ParamsDictionary, any, Logou
   })
 }
 
-export const emailVerifyController = async (req: Request, res: Response) => {
-  const { user_id } = req.decoded_email_verify_token as TokenPayload
-  const user = await databaseService.users.findOne({ _id: new ObjectId(user_id) })
+// export const emailVerifyController = async (req: Request, res: Response) => {
+//   const { user_id } = req.decoded_email_verify_token as TokenPayload
+//   const user = await databaseService.users.findOne({ _id: new ObjectId(user_id) })
 
-  if (!user) {
-    res.status(HTTPSTATUS.NOT_FOUND).json({ message: USER_MESSAGE.EMAIL_VERIFY_TOKEN_DOES_NOT_EXIST })
-    return
-  }
+//   if (!user) {
+//     res.status(HTTPSTATUS.NOT_FOUND).json({ message: USER_MESSAGE.EMAIL_VERIFY_TOKEN_DOES_NOT_EXIST })
+//     return
+//   }
 
-  // if (user.email_verify_token === '') {
-  //   res.json({ message: USER_MESSAGE.EMAIL_ALREADY_VERIFIED })
-  //   return
-  // }
+//   // if (user.email_verify_token === '') {
+//   //   res.json({ message: USER_MESSAGE.EMAIL_ALREADY_VERIFIED })
+//   //   return
+//   // }
 
-  const result = await UserServices.verifyEmail(user_id)
+//   const result = await UserServices.verifyEmail(user_id)
 
-  res.json({
-    message: USER_MESSAGE.EMAIL_VERIFY_SUSSCESS,
-    result
-  })
-}
+//   res.json({
+//     message: USER_MESSAGE.EMAIL_VERIFY_SUSSCESS,
+//     result
+//   })
+// }

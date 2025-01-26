@@ -3,14 +3,12 @@ import {
   registerController,
   loginController,
   logoutController,
-  emailVerifyController,
   sendEmailController,
   reSendEmailController
 } from '~/controllers/user.controllers'
 import {
   registerValidator,
   loginValidator,
-  accessTokenValidator,
   refreshTokenValidator,
   emailVerifyTokenValidator,
   sendEmailVerifyValidator,
@@ -69,23 +67,10 @@ router.post('/login', loginValidator, wrapRequestHandler(loginController))
  * Description: Đăng xuất khỏi một tài khoản hiện có trên CSDL
  * Path: /users/logout
  * Method: POST
- * headers: {
- *   Authorization: Bearer <access_token>
- * }
  * Body: {
  *    refresh_token: string
  * }
  */
-router.post('/logout', accessTokenValidator, refreshTokenValidator, wrapRequestHandler(logoutController))
-
-/*
- * Description: Xác minh địa chỉ email của một tài khoản hiện có trên CSDL
- * Path: /users/email-verify
- * Method: POST
- * query: {
- *   ?token: string
- * }
- */
-router.get('/email-verify', emailVerifyTokenValidator, wrapRequestHandler(emailVerifyController))
+router.post('/logout', refreshTokenValidator, wrapRequestHandler(logoutController))
 
 export default router
