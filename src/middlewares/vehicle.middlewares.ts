@@ -13,6 +13,7 @@ import userService from '~/services/user.services'
 import { ObjectId } from 'mongodb'
 import { TokenPayload } from '~/models/requests/user.requests'
 import { validate } from '~/utils/validation'
+import sharp from 'sharp'
 
 export const authenticateCreateValidator = async (req: Request, res: Response, next: NextFunction) => {
   const { authorization } = req.headers
@@ -272,41 +273,86 @@ export const setupCreateImage = async (req: Request, res: Response, next: NextFu
   const directoryPath = path.join(__dirname, `../../public/images/upload/vehicle/${user._id}`)
 
   if (!fs.existsSync(directoryPath)) {
-    fs.mkdirSync(directoryPath)
+    fs.mkdirSync(directoryPath, { recursive: true })
   }
 
-  const promises = [] as Promise<void>[]
-
-  images.forEach((file: any) => {
-    promises.push(
-      new Promise((resolve, reject) => {
+  const movePromises = images.map(
+    (file: Express.Multer.File) =>
+      new Promise<void>((resolve, reject) => {
         try {
           fs.renameSync(file.path, path.join(directoryPath, file.filename))
           resolve()
         } catch (err) {
-          reject()
+          reject(err)
         }
       })
-    )
-  })
+  )
 
-  await Promise.allSettled(promises)
+  await Promise.allSettled(movePromises)
 
-  const preview = [] as VehicleImage[]
+  const watermarkImagePath = path.join(__dirname, '../../public/images/system/watermark.png')
 
-  images.forEach((file: Express.Multer.File) => {
-    const img: VehicleImage = {
-      path: `public/images/upload/vehicle/${user._id}/${file.filename}`,
-      type: file.mimetype,
-      url: `${process.env.APP_URL}/images/upload/vehicle/${user._id}/${file.filename}`,
-      size: file.size
-    }
-    preview.push(img)
-  })
+  const processPromises = images.map(
+    (file: Express.Multer.File) =>
+      new Promise<VehicleImage>((resolve, reject) => {
+        const imgPath = path.join(directoryPath, file.filename)
 
-  req.preview = preview
+        sharp(imgPath)
+          .metadata()
+          .then((metadata) => {
+            return sharp(watermarkImagePath)
+              .metadata()
+              .then((watermarkMetadata) => {
+                if (!metadata.width || !metadata.height || !watermarkMetadata.width || !watermarkMetadata.height) {
+                  throw new Error('Could not get image dimensions')
+                }
 
-  next()
+                const x = metadata.width - watermarkMetadata.width - 30
+                const y = metadata.height - watermarkMetadata.height - 30
+
+                return sharp(imgPath)
+                  .composite([
+                    {
+                      input: watermarkImagePath,
+                      left: x,
+                      top: y
+                    }
+                  ])
+                  .toBuffer()
+              })
+              .then((buffer) => {
+                return sharp(buffer)
+                  .toFile(imgPath + '_temp')
+                  .then(() => {
+                    fs.unlinkSync(imgPath)
+                    fs.renameSync(imgPath + '_temp', imgPath)
+                  })
+              })
+              .then(() => {
+                const img: VehicleImage = {
+                  path: `public/images/upload/vehicle/${user._id}/${file.filename}`,
+                  type: file.mimetype,
+                  url: `${process.env.APP_URL}/images/upload/vehicle/${user._id}/${file.filename}`,
+                  size: file.size
+                }
+                resolve(img)
+              })
+          })
+          .catch((err) => {
+            console.error('Lỗi khi xử lý hình ảnh:', err)
+            reject(err)
+          })
+      })
+  )
+
+  try {
+    const preview = await Promise.all(processPromises)
+    req.preview = preview
+    next()
+  } catch (error) {
+    console.error('Lỗi xử lý hình ảnh:', error)
+    next(error)
+  }
 }
 
 export const deleteTemporaryFile = async (files: any) => {
