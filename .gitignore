@@ -1,4 +1,9 @@
 node_modules/
 dist/
 .env
-public/
+public/**
+!public/images/
+!public/images/system/
+!public/images/upload/
+!public/images/upload/vehicle
+!public/images/upload/vehicle/temporary

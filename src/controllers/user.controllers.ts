@@ -47,25 +47,3 @@ export const logoutController = async (req: Request<ParamsDictionary, any, Logou
     message: USER_MESSAGE.LOGOUT_SUCCESS
   })
 }
-
-// export const emailVerifyController = async (req: Request, res: Response) => {
-//   const { user_id } = req.decoded_email_verify_token as TokenPayload
-//   const user = await databaseService.users.findOne({ _id: new ObjectId(user_id) })
-
-//   if (!user) {
-//     res.status(HTTPSTATUS.NOT_FOUND).json({ message: USER_MESSAGE.EMAIL_VERIFY_TOKEN_DOES_NOT_EXIST })
-//     return
-//   }
-
-//   // if (user.email_verify_token === '') {
-//   //   res.json({ message: USER_MESSAGE.EMAIL_ALREADY_VERIFIED })
-//   //   return
-//   // }
-
-//   const result = await UserServices.verifyEmail(user_id)
-
-//   res.json({
-//     message: USER_MESSAGE.EMAIL_VERIFY_SUSSCESS,
-//     result
-//   })
-// }

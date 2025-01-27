@@ -51,7 +51,7 @@ class UserService {
       </div>
     `
 
-    await databaseService.emailVerifyCode.insertOne(new EmailVerifyCode({ email, code }))
+    await databaseService.emailVerifyCodes.insertOne(new EmailVerifyCode({ email, code }))
 
     sendMail(email, email_verify_subject, email_verify_html)
   }
@@ -85,7 +85,7 @@ class UserService {
       </div>
     `
 
-    await databaseService.emailVerifyCode.updateOne(
+    await databaseService.emailVerifyCodes.updateOne(
       {
         email
       },
@@ -133,7 +133,7 @@ class UserService {
           user_type: UserStatus.Verified
         })
       ),
-      databaseService.emailVerifyCode.deleteOne({ email: payload.email }),
+      databaseService.emailVerifyCodes.deleteOne({ email: payload.email }),
       sendMail(payload.email, email_verify_subject, email_verify_html)
     ])
   }
@@ -190,30 +190,6 @@ class UserService {
   async logout(refresh_token: string) {
     await databaseService.refreshToken.deleteOne({ token: refresh_token })
   }
-
-  // async verifyEmail(user_id: string) {
-  //   const [token] = await Promise.all([
-  //     this.signAccessTokenAndRefreshToken(user_id),
-  //     databaseService.users.updateOne(
-  //       {
-  //         _id: new ObjectId(user_id)
-  //       },
-  //       {
-  //         $set: { email_verify_token: '', updated_at: new Date(), user_type: UserStatus.Verified },
-  //         $currentDate: { last_updated: true }
-  //       }
-  //     )
-  //   ])
-
-  //   const [access_token, refresh_token] = token
-
-  //   await this.registerRefreshToken(user_id, refresh_token)
-
-  //   return {
-  //     access_token,
-  //     refresh_token
-  //   }
-  // }
 }
 
 const userService = new UserService()

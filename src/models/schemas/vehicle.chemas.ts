@@ -8,8 +8,9 @@ interface VehicleType {
   seats: number
   rules: string
   amenities: string // tiện nghi
-  preview: [VehicleImage]
+  preview: VehicleImage[]
   license_plate: string // Biển số xe
+  user: ObjectId
   status?: VehicleStatus
 }
 
@@ -27,8 +28,9 @@ export class Vehicle {
   seats: number
   rules: string
   amenities: string
-  preview: [VehicleImage]
+  preview: VehicleImage[]
   license_plate: string
+  user: ObjectId
   status: VehicleStatus
   constructor(vehicle: VehicleType) {
     this._id = vehicle._id || new ObjectId()
@@ -39,6 +41,7 @@ export class Vehicle {
     this.amenities = vehicle.amenities
     this.preview = vehicle.preview
     this.license_plate = vehicle.license_plate
+    this.user = vehicle.user
     this.status = vehicle.status || VehicleStatus.PENDING_APPROVAL
   }
 }

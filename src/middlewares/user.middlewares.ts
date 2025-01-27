@@ -33,7 +33,7 @@ export const sendEmailVerifyValidator = validate(
       custom: {
         options: async (value) => {
           const user = await databaseService.users.findOne({ email: value })
-          const email_verify_code = await databaseService.emailVerifyCode.findOne({ email: value })
+          const email_verify_code = await databaseService.emailVerifyCodes.findOne({ email: value })
 
           if (user !== null) {
             throw new Error(USER_MESSAGE.EMAIL_IS_ALWAYS_EXISTENT)
@@ -73,7 +73,7 @@ export const reSendEmailVerifyValidator = validate(
       custom: {
         options: async (value) => {
           const user = await databaseService.users.findOne({ email: value })
-          const email_verify_code = await databaseService.emailVerifyCode.findOne({ email: value })
+          const email_verify_code = await databaseService.emailVerifyCodes.findOne({ email: value })
 
           if (user !== null) {
             throw new Error(USER_MESSAGE.EMAIL_IS_ALWAYS_EXISTENT)
@@ -228,7 +228,7 @@ export const registerValidator = validate(
         },
         custom: {
           options: async (value, { req }) => {
-            const email_verify_code = await databaseService.emailVerifyCode.findOne({
+            const email_verify_code = await databaseService.emailVerifyCodes.findOne({
               email: req.body.email,
               code: value
             })

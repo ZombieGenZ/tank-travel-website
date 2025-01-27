@@ -1,13 +1,9 @@
-import { VehicleImage } from '~/models/schemas/vehicle.chemas'
 import { Request, Response, NextFunction } from 'express'
+import { VehicleImage } from '~/models/schemas/vehicle.chemas'
 import { checkSchema, validationResult } from 'express-validator'
 import { SeatType, UserPermission, VehicleTypeEnum } from '~/constants/enum'
 import { VEHICLE_MESSGAE, AUTHENTICATION_MESSAGE } from '~/constants/message'
-import { validate } from '~/utils/validation'
-import busboy from 'busboy'
-import multer, { FileFilterCallback } from 'multer'
 import fs from 'fs'
-import fse from 'fs-extra'
 import User from '~/models/schemas/users.schemas'
 import path from 'path'
 import HTTPSTATUS from '~/constants/httpStatus'
@@ -16,218 +12,7 @@ import databaseService from '~/services/database.services'
 import userService from '~/services/user.services'
 import { ObjectId } from 'mongodb'
 import { TokenPayload } from '~/models/requests/user.requests'
-
-// export const formDataParser = (req: Request, res: Response, next: NextFunction) => {
-//   if (req.headers['content-type']?.includes('multipart/form-data')) {
-//     const bb = busboy({
-//       headers: req.headers,
-//       limits: {
-//         files: 50,
-//         fileSize: 1024 * 1024 * 10,
-//         fieldSize: 1024 * 1024 * 500
-//       }
-//     })
-
-//     const fields: any = {}
-
-//     bb.on('field', (name, val) => {
-//       fields[name] = val
-//     })
-
-//     bb.on('file', (name, file, info) => {
-//       file.resume()
-//     })
-
-//     bb.on('error', (err) => {
-//       console.error('Busboy error:', err)
-//       next(err)
-//     })
-
-//     bb.on('finish', () => {
-//       req.body = fields
-//       next()
-//     })
-
-//     req.pipe(bb)
-//   } else {
-//     next()
-//   }
-// }
-
-// export const handleFileUpload = () => {
-//   const storage = multer.diskStorage({
-//     destination: (req: Request, file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
-//       const user = req.user as User
-//       const destinationPath = `public/images/upload/vehicle/${user._id}`
-
-//       fse
-//         .ensureDir(destinationPath)
-//         .then(() => {
-//           cb(null, destinationPath)
-//         })
-//         .catch((err: Error) => {
-//           cb(err, destinationPath)
-//         })
-//     },
-//     filename: (req: Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) => {
-//       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9)
-//       cb(null, file.originalname + '-' + uniqueSuffix + path.extname(file.originalname))
-//     }
-//   })
-
-//   return multer({
-//     storage: storage,
-//     fileFilter: (req: Request, file: Express.Multer.File, cb: FileFilterCallback) => {
-//       if (file.mimetype.startsWith('image/')) {
-//         cb(null, true)
-//       } else {
-//         cb(new Error(VEHICLE_MESSGAE.ONLY_UPLOAD_IMAGES))
-//       }
-//     },
-//     limits: {
-//       fileSize: 1024 * 1024 * 10, // 10MB
-//       files: 50
-//     }
-//   })
-// }
-
-// export const fileValidator = (req: Request, res: Response, next: NextFunction) => {
-//   const upload = handleFileUpload().array('preview', 30)
-
-//   upload(req, res, (err) => {
-//     if (err instanceof multer.MulterError) {
-//       // Lỗi từ multer
-//       if (err.code === 'LIMIT_FILE_SIZE') {
-//         return res.status(400).json({ message: VEHICLE_MESSGAE.ONLY_UPLOAD_EACH_IMAGE_UP_TO_5MB })
-//       }
-//       if (err.code === 'LIMIT_FILE_COUNT') {
-//         return res.status(400).json({ message: VEHICLE_MESSGAE.ONLY_UPLOAD_UP_TO_30_IMAGES })
-//       }
-//       return res.status(400).json({ message: VEHICLE_MESSGAE.UPLOAD_FAILED })
-//     } else if (err) {
-//       // Lỗi khác
-//       console.error('Upload error:', err.message)
-//       return res.status(400).json({ message: err.message })
-//     }
-//     next()
-//   })
-// }
-
-// // export const uploadMemory = multer({
-// //   limits: {
-// //     fileSize: 1024 * 1024 * 150,
-// //     files: 30
-// //   }
-// // }).array('preview', 30)
-
-// // export const handleFileUpload = async (req: Request, res: Response, next: NextFunction) => {
-// //   const storage = multer.diskStorage({
-// //     destination: (req, file, cb) => {
-// //       const user = req.user as User
-// //       const destinationPath = `../../public/images/upload/vehicle/${user._id}`
-
-// //       fse.access(destinationPath, fse.constants.F_OK, (err) => {
-// //         if (err) {
-// //           fs.promises
-// //             .mkdir(destinationPath, { recursive: true })
-// //             .then(() => cb(null, destinationPath))
-// //             .catch((mkdirErr) => cb(mkdirErr, ''))
-// //         } else {
-// //           cb(null, destinationPath)
-// //         }
-// //       })
-// //     },
-// //     filename: (req, file, cb) => {
-// //       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9)
-// //       cb(null, file.originalname + '-' + uniqueSuffix + path.extname(file.originalname))
-// //     }
-// //   })
-
-// //   const upload = multer({
-// //     storage,
-// //     fileFilter: (req, file, cb) => {
-// //       if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
-// //         cb(null, true)
-// //       } else {
-// //         cb(null, false)
-// //       }
-// //     },
-// //     limits: {
-// //       fileSize: 1024 * 1024 * 150,
-// //       files: 30
-// //     }
-// //   }).array('preview', 30)
-
-// //   upload(req, res, (err) => {
-// //     if (err instanceof multer.MulterError) {
-// //       console.error('MulterError:', err)
-// //       return res.status(400).json({ message: 'Multer error', error: err.message })
-// //     } else if (err) {
-// //       console.error('Unexpected Error:', err)
-// //       if (err.message.includes('Unexpected end of form')) {
-// //         return res.status(400).json({ message: 'Form data incomplete or corrupted', error: err.message })
-// //       }
-// //       return res.status(400).json({ message: 'Unexpected error', error: err.message })
-// //     }
-
-// //     next()
-// //   })
-// // }
-
-// // const storage = multer.diskStorage({
-// //   destination: (req, file, cb) => {
-// //     const user = req.user as User
-// //     const destinationPath = `public/images/upload/vehicle/${user._id}`
-
-// //     fse.access(destinationPath, fse.constants.F_OK, (err) => {
-// //       if (err) {
-// //         fs.promises
-// //           .mkdir(destinationPath, { recursive: true })
-// //           .then(() => cb(null, destinationPath))
-// //           .catch((mkdirErr) => cb(mkdirErr, ''))
-// //       } else {
-// //         cb(null, destinationPath)
-// //       }
-// //     })
-// //   },
-// //   filename: (req, file, cb) => {
-// //     const uniquSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9)
-// //     cb(null, file.originalname + '-' + uniquSuffix + path.extname(file.originalname))
-// //   }
-// // })
-
-// // const upload = multer({
-// //   storage: storage,
-// //   fileFilter: (req, file, cb) => {
-// //     if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
-// //       cb(null, true)
-// //     } else {
-// //       cb(null, false)
-// //     }
-// //   },
-// //   limits: {
-// //     // tối đa mỗi file không quá 5MB
-// //     fileSize: 1024 * 1024 * 5,
-// //     // tối đa mỗi lần upload không quá 30 file
-// //     files: 30
-// //   }
-// // })
-
-// // export const formDataHandler = (req: Request, res: Response, next: NextFunction) => {
-// //   const contentType = req.headers['content-type']
-
-// //   if (contentType?.includes('multipart/form-data')) {
-// //     upload.array('preview', 30)(req, res, (err) => {
-// //       if (err) {
-// //         return res.status(400).json({ message: 'Lỗi tải lên' })
-// //       }
-// //       next()
-// //     })
-// //   } else {
-// //     // Không phải FormData, chuyển tiếp
-// //     next()
-// //   }
-// // }
+import { validate } from '~/utils/validation'
 
 export const authenticateCreateValidator = async (req: Request, res: Response, next: NextFunction) => {
   const { authorization } = req.headers
@@ -267,8 +52,6 @@ export const authenticateCreateValidator = async (req: Request, res: Response, n
       req.access_token = new_access_token
       req.refresh_token = new_refresh_token
 
-      console.log('here 1')
-
       next()
       return
     } catch (err) {
@@ -298,8 +81,6 @@ export const authenticateCreateValidator = async (req: Request, res: Response, n
     req.user = user
     req.access_token = authorization
     req.refresh_token = refresh_token
-
-    console.log('here 2')
 
     next()
     return
@@ -515,7 +296,7 @@ export const setupCreateImage = async (req: Request, res: Response, next: NextFu
 
   images.forEach((file: Express.Multer.File) => {
     const img: VehicleImage = {
-      path: `public\\images\\upload\\vehicle\\${user._id}\\${file.originalname}`,
+      path: `public/images/upload/vehicle/${user._id}/${file.filename}`,
       type: file.mimetype,
       url: `${process.env.APP_URL}/images/upload/vehicle/${user._id}/${file.filename}`,
       size: file.size
@@ -546,3 +327,34 @@ export const deleteTemporaryFile = async (files: any) => {
 
   await Promise.allSettled(promises)
 }
+
+export const deleteValidator = validate(
+  checkSchema(
+    {
+      vehicle_id: {
+        notEmpty: {
+          errorMessage: VEHICLE_MESSGAE.VEHICLE_ID_IS_REQUIRED
+        },
+        isString: {
+          errorMessage: VEHICLE_MESSGAE.VEHICLE_ID_IS_MUST_BE_A_STRING
+        },
+        isMongoId: {
+          errorMessage: VEHICLE_MESSGAE.VEHICLE_ID_IS_MUST_BE_A_ID
+        },
+        custom: {
+          options: async (value, { req }) => {
+            const vehicle = await databaseService.vehicles.findOne({ _id: new ObjectId(value) })
+
+            if (vehicle === null) {
+              throw new Error(VEHICLE_MESSGAE.VEHICLE_ID_IS_NOT_EXIST)
+            }
+
+            ;(req as Request).vehicle = vehicle
+            return true
+          }
+        }
+      }
+    },
+    ['body']
+  )
+)

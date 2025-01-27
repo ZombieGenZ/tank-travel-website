@@ -76,5 +76,11 @@ export const VEHICLE_MESSGAE = {
   ONLY_UPLOAD_IMAGES: 'Bạn chỉ được tải lên hình ảnh',
   ONLY_UPLOAD_EACH_IMAGE_UP_TO_5MB: 'Bạn chỉ được tải lên mỗi hình ảnh tối đa 5MB',
   ONLY_UPLOAD_UP_TO_30_IMAGES: 'Bạn chỉ được tải lên tối đa 30 hình ảnh',
-  UPLOAD_FAILED: 'Tải lên thất bại'
+  UPLOAD_FAILED: 'Tải lên thất bại',
+  CREATE_VEHICLE_SUCCESS: 'Tạo phương tiện thành công!',
+  VEHICLE_ID_IS_REQUIRED: 'Không được bỏ trống id phương tiện',
+  VEHICLE_ID_IS_MUST_BE_A_STRING: 'Id phương tiện phải là một chuỗi ký tự',
+  VEHICLE_ID_IS_MUST_BE_A_ID: 'Id phương tiện không đúng định dạn',
+  VEHICLE_ID_IS_NOT_EXIST: 'Id phương tiện không tồn tại',
+  DELETE_VEHICLE_SUCCESS: 'Xóa phương tiện thành công!'
 } as const

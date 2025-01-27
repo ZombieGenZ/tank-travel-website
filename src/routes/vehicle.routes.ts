@@ -1,18 +1,17 @@
 import express from 'express'
-import { createController } from '~/controllers/vehicle.controllers'
-import { businessAuthenticationValidator, authenticationValidator } from '~/middlewares/authentication.middlewares'
+import { createController, deleteController } from '~/controllers/vehicle.controllers'
 const router = express.Router()
 import multer from 'multer'
 import path from 'path'
-import fs from 'fs'
-import fse from 'fs-extra'
-import User from '~/models/schemas/users.schemas'
 import {
   authenticateCreateValidator,
   permissionValidator,
   createValidator,
-  setupCreateImage
+  setupCreateImage,
+  deleteValidator
 } from '~/middlewares/vehicle.middlewares'
+import { authenticationValidator, businessAuthenticationValidator } from '~/middlewares/authentication.middlewares'
+import { wrapRequestHandler } from '~/utils/handlers'
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -41,13 +40,12 @@ const upload = multer({
   }
 })
 
-// ERROR: Chưa xử lý được trường hợp upload file
 /*
- * Description: Tạo yêu cầu kiểu duyệt phương tiện
+ * Description: Tạo một phương tiện mới
  * Path: /api/vehicle/create
  * Method: POST
  * headers: {
- *    Authorization: Bearer <token>
+ *    authorization: Bearer <token>
  * },
  * Body: {
  *    refresh_token: string,
@@ -69,14 +67,25 @@ router.post(
   setupCreateImage,
   createController
 )
-// router.post(
-//   '/create',
-//   formDataParser,
-//   authenticationValidator,
-//   businessAuthenticationValidator,
-//   createValidator,
-//   fileValidator,
-//   createController
-// )
+
+/*
+ * Description: Xóa một phương tiện đã có trên CSDL
+ * Path: /api/vehicle/delete
+ * Method: DELETE
+ * headers: {
+ *    authorization: Bearer <token>
+ * },
+ * Body: {
+ *    refresh_token: string,
+ *    vehicle_id: string,
+ * }
+ */
+router.delete(
+  '/delete',
+  authenticationValidator,
+  businessAuthenticationValidator,
+  deleteValidator,
+  wrapRequestHandler(deleteController)
+)
 
 export default router
