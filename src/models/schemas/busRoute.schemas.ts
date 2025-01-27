@@ -7,6 +7,7 @@ interface BusRouteType {
   end_point: string
   departure_time: Date // thời gian khởi hành
   arrival_time: Date // thời gian dự kiến đến nơi
+  price: number
 }
 
 class BusRoute {
@@ -16,6 +17,7 @@ class BusRoute {
   end_point: string
   departure_time: Date
   arrival_time: Date
+  price: number
   constructor(busRoute: BusRouteType) {
     this._id = busRoute._id || new ObjectId()
     this.Vehicle = busRoute.Vehicle
@@ -23,5 +25,6 @@ class BusRoute {
     this.end_point = busRoute.end_point
     this.departure_time = busRoute.departure_time
     this.arrival_time = busRoute.arrival_time
+    this.price = busRoute.price
   }
 }

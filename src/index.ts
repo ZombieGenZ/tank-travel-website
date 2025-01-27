@@ -1,5 +1,8 @@
 import express, { Request, Response } from 'express'
 import dotenv from 'dotenv'
+import path from 'path'
+import cors from 'cors'
+import bodyParser from 'body-parser'
 import databaseService from './services/database.services'
 import { defaultErrorHandler } from './middlewares/error.middlewares'
 
@@ -12,11 +15,19 @@ import vehicleApi from '~/routes/vehicle.routes'
 const app = express()
 
 app.use(express.json())
+app.use(express.static(path.join(__dirname, '../public')))
+app.use(cors())
+app.use(bodyParser.urlencoded({ extended: true }))
+app.set('view engine', 'ejs')
 
 databaseService.connect()
 
 app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Hello, World!' })
+})
+
+app.use('/test/vehicle/create', (req: Request, res: Response) => {
+  res.render('test/vehicle.create.ejs')
 })
 
 app.use('/api/users', userApi)

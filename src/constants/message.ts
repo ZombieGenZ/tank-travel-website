@@ -72,5 +72,9 @@ export const VEHICLE_MESSGAE = {
   AMENITIES_LENGTH_MUST_BE_FROM_0_TO_500: 'Tiện ích trên xe phải có độ dài từ 0 đến 500 ký tự',
   LICENSE_PLATE_IS_REQUIRED: 'Không được bỏ trống biển số xe',
   LICENSE_PLATE_IS_MUST_BE_A_STRING: 'Biển số xe phải là một chuỗi ký tự',
-  LICENSE_PLATE_LENGTH_MUST_BE_FROM_7_TO_8: 'Biển số xe phải có độ dài từ 7 đến 8 ký tự'
+  LICENSE_PLATE_LENGTH_MUST_BE_FROM_7_TO_8: 'Biển số xe phải có độ dài từ 7 đến 8 ký tự',
+  ONLY_UPLOAD_IMAGES: 'Bạn chỉ được tải lên hình ảnh',
+  ONLY_UPLOAD_EACH_IMAGE_UP_TO_5MB: 'Bạn chỉ được tải lên mỗi hình ảnh tối đa 5MB',
+  ONLY_UPLOAD_UP_TO_30_IMAGES: 'Bạn chỉ được tải lên tối đa 30 hình ảnh',
+  UPLOAD_FAILED: 'Tải lên thất bại'
 } as const

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h3>Access token</h3>
+    <input type="text" id="access_token"><br>
+    <h3>Refresh token</h3>
+    <input type="text" id="refresh_token"><br>
+    <h3>Vehicle type</h3>
+    <input type="text" id="vehicle_type"><br>
+    <h3>Seat type</h3>
+    <input type="text" id="seat_type"><br>
+    <h3>Seats</h3>
+    <input type="text" id="seats"><br>
+    <h3>Rules</h3>
+    <input type="text" id="rules"><br>
+    <h3>Amenities</h3>
+    <input type="text" id="amenities"><br>
+    <h3>License plate</h3>
+    <input type="text" id="license_plate"><br>
+    <h3>preview</h3>
+    <input type="file" id="preview" multiple><br>
+    <button onclick="submit()">Submit</button>
+    <script>
+        function submit() {
+          const formData = new FormData();
+
+            const access_token = document.getElementById('access_token').value;
+            const refresh_token = document.getElementById('refresh_token').value;
+            const vehicle_type = document.getElementById('vehicle_type').value;
+            const seat_type = document.getElementById('seat_type').value;
+            const seats = document.getElementById('seats').value;
+            const rules = document.getElementById('rules').value;
+            const amenities = document.getElementById('amenities').value;
+            const license_plate = document.getElementById('license_plate').value;
+            const preview = document.getElementById('preview');
+
+            formData.append('refresh_token', refresh_token)
+            formData.append('vehicle_type', vehicle_type)
+            formData.append('seat_type', seat_type)
+            formData.append('seats', seats)
+            formData.append('rules', rules)
+            formData.append('amenities', amenities)
+            formData.append('license_plate', license_plate)
+
+            for (let i = 0; i < preview.files.length; i++) {
+                formData.append('preview', preview.files[i]);
+            }
+
+            fetch('/api/vehicle/create', {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${access_token}`
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+        }
+    </script>
+</body>
+</html>

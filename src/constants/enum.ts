@@ -33,3 +33,25 @@ export enum VehicleStatus {
   ACCEPTED,
   DENIED
 }
+
+export enum TicketStatus {
+  PAID,
+  CANCELLED
+}
+
+export enum PaymentType {
+  CARD,
+  BANK
+}
+
+export enum RevenueStatus {
+  SUCCESS,
+  PENDING,
+  FAILURE
+}
+
+export enum LogTypeEnum {
+  INFO,
+  WARN,
+  ERROR
+}

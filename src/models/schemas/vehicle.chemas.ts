@@ -8,9 +8,16 @@ interface VehicleType {
   seats: number
   rules: string
   amenities: string // tiện nghi
-  preview: [string]
+  preview: [VehicleImage]
   license_plate: string // Biển số xe
   status?: VehicleStatus
+}
+
+export interface VehicleImage {
+  type: string
+  path: string
+  url: string
+  size: number // Kích thước của ảnh (byte)
 }
 
 export class Vehicle {
@@ -20,7 +27,7 @@ export class Vehicle {
   seats: number
   rules: string
   amenities: string
-  preview: [string]
+  preview: [VehicleImage]
   license_plate: string
   status: VehicleStatus
   constructor(vehicle: VehicleType) {

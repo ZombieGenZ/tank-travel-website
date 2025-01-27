@@ -11,7 +11,7 @@ import { verifyToken } from '~/utils/jwt'
 
 export const authenticationValidator = async (req: Request, res: Response, next: NextFunction) => {
   const { authorization } = req.headers
-  const { refresh_token } = req.body
+  const refresh_token = req.body?.refresh_token
 
   if (!authorization || typeof authorization !== 'string' || authorization === '' || !authorization.split(' '[1])) {
     if (!refresh_token || typeof refresh_token !== 'string' || refresh_token === '') {

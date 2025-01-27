@@ -7,28 +7,22 @@ import path from 'path'
 import fs from 'fs'
 import fse from 'fs-extra'
 import User from '~/models/schemas/users.schemas'
-import { createValidator } from '~/middlewares/vehicle.middlewares'
-import { Console } from 'console'
+import {
+  authenticateCreateValidator,
+  permissionValidator,
+  createValidator,
+  setupCreateImage
+} from '~/middlewares/vehicle.middlewares'
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const user = req.user as User
-    const destinationPath = `public/images/upload/vehicle/${user._id}`
-
-    fse.access(destinationPath, fse.constants.F_OK, (err) => {
-      if (err) {
-        fs.promises
-          .mkdir(destinationPath, { recursive: true })
-          .then(() => cb(null, destinationPath))
-          .catch((mkdirErr) => cb(mkdirErr, ''))
-      } else {
-        cb(null, destinationPath)
-      }
-    })
+    cb(null, `public/images/upload/vehicle/temporary`)
   },
   filename: (req, file, cb) => {
-    const uniquSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9)
-    cb(null, file.originalname + '-' + uniquSuffix + path.extname(file.originalname))
+    const fileName = path.basename(file.originalname, path.extname(file.originalname))
+    const fileExt = path.extname(file.originalname)
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9)
+    cb(null, `${fileName}-${uniqueSuffix}${fileExt}`)
   }
 })
 
@@ -42,14 +36,12 @@ const upload = multer({
     }
   },
   limits: {
-    // tối đa mỗi file không quá 5MB
     fileSize: 1024 * 1024 * 5,
-    // tối đa mỗi lần upload không quá 30 file
     files: 30
   }
 })
 
-// ERROR: Chưa tải file lên được
+// ERROR: Chưa xử lý được trường hợp upload file
 /*
  * Description: Tạo yêu cầu kiểu duyệt phương tiện
  * Path: /api/vehicle/create
@@ -64,19 +56,27 @@ const upload = multer({
  *    seats: number,
  *    rules: string,
  *    amenities: string,
- *    license_plate: string
- * },
- * files: {
+ *    license_plate: string,
  *    preview: [Files]
  * }
  */
 router.post(
   '/create',
-  authenticationValidator,
-  businessAuthenticationValidator,
-  createValidator,
   upload.array('preview', 30),
+  authenticateCreateValidator,
+  permissionValidator,
+  createValidator,
+  setupCreateImage,
   createController
 )
+// router.post(
+//   '/create',
+//   formDataParser,
+//   authenticationValidator,
+//   businessAuthenticationValidator,
+//   createValidator,
+//   fileValidator,
+//   createController
+// )
 
 export default router
