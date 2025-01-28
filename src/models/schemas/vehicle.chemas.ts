@@ -11,6 +11,8 @@ interface VehicleType {
   preview: VehicleImage[]
   license_plate: string // Biển số xe
   user: ObjectId
+  created_at?: Date
+  updated_at?: Date
   status?: VehicleStatus
 }
 
@@ -31,8 +33,12 @@ export class Vehicle {
   preview: VehicleImage[]
   license_plate: string
   user: ObjectId
+  created_at: Date
+  updated_at: Date
   status: VehicleStatus
   constructor(vehicle: VehicleType) {
+    const date = new Date()
+
     this._id = vehicle._id || new ObjectId()
     this.vehicle_type = vehicle.vehicle_type
     this.seat_type = vehicle.seat_type
@@ -43,5 +49,7 @@ export class Vehicle {
     this.license_plate = vehicle.license_plate
     this.user = vehicle.user
     this.status = vehicle.status || VehicleStatus.PENDING_APPROVAL
+    this.created_at = vehicle.created_at || date
+    this.updated_at = vehicle.created_at || date
   }
 }

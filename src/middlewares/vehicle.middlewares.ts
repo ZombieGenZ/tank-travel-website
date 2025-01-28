@@ -80,7 +80,7 @@ export const authenticateCreateValidator = async (req: Request, res: Response, n
     }
 
     req.user = user
-    req.access_token = authorization
+    req.access_token = token
     req.refresh_token = refresh_token
 
     next()
@@ -161,7 +161,7 @@ export const createValidator = (req: Request, res: Response, next: NextFunction)
             if (value in VehicleTypeEnum) {
               return true
             }
-            return false
+            throw new Error(VEHICLE_MESSGAE.VEHICLE_TYPE_IS_INVALID)
           }
         }
       },
@@ -177,7 +177,7 @@ export const createValidator = (req: Request, res: Response, next: NextFunction)
             if (value in SeatType) {
               return true
             }
-            return false
+            throw new Error(VEHICLE_MESSGAE.SEAT_TYPE_IS_INVALID)
           }
         }
       },
@@ -210,7 +210,7 @@ export const createValidator = (req: Request, res: Response, next: NextFunction)
             min: 0,
             max: 2000
           },
-          errorMessage: VEHICLE_MESSGAE.EMAIL_LENGTH_MUST_BE_FROM_0_TO_2000
+          errorMessage: VEHICLE_MESSGAE.EMAIL_LENGTH_MUST_BE_FROM_10_TO_2000
         }
       },
       amenities: {
@@ -374,7 +374,7 @@ export const deleteTemporaryFile = async (files: any) => {
   await Promise.allSettled(promises)
 }
 
-export const deleteValidator = validate(
+export const updateValidator = validate(
   checkSchema(
     {
       vehicle_id: {
@@ -398,6 +398,187 @@ export const deleteValidator = validate(
             ;(req as Request).vehicle = vehicle
             return true
           }
+        }
+      },
+      vehicle_type: {
+        notEmpty: {
+          errorMessage: VEHICLE_MESSGAE.VEHICLE_TYPE_IS_REQUIRED
+        },
+        isInt: {
+          errorMessage: VEHICLE_MESSGAE.VEHICLE_TYPE_MUST_BE_A_NUMBER
+        },
+        custom: {
+          options: (value) => {
+            if (value in VehicleTypeEnum) {
+              return true
+            }
+            throw new Error(VEHICLE_MESSGAE.VEHICLE_TYPE_IS_INVALID)
+          }
+        }
+      },
+      seat_type: {
+        notEmpty: {
+          errorMessage: VEHICLE_MESSGAE.SEAT_TYPE_IS_REQUIRED
+        },
+        isInt: {
+          errorMessage: VEHICLE_MESSGAE.SEAT_TYPE_IS_MUST_BE_A_NUMBER
+        },
+        custom: {
+          options: (value) => {
+            if (value in SeatType) {
+              return true
+            }
+            throw new Error(VEHICLE_MESSGAE.SEAT_TYPE_IS_INVALID)
+          }
+        }
+      },
+      seats: {
+        notEmpty: {
+          errorMessage: VEHICLE_MESSGAE.SEATS_IS_REQUIRED
+        },
+        isInt: {
+          errorMessage: VEHICLE_MESSGAE.SEATS_IS_MUST_BE_A_NUMBER
+        },
+        custom: {
+          options: (value) => {
+            if (value <= 0) {
+              throw new Error(VEHICLE_MESSGAE.SEATS_IS_MUST_BE_GREATER_THAN_0)
+            }
+            return true
+          }
+        }
+      },
+      rules: {
+        notEmpty: {
+          errorMessage: VEHICLE_MESSGAE.RULES_IS_REQUIRED
+        },
+        isString: {
+          errorMessage: VEHICLE_MESSGAE.RULES_IS_MUST_BE_A_STRING
+        },
+        trim: true,
+        isLength: {
+          options: {
+            min: 0,
+            max: 2000
+          },
+          errorMessage: VEHICLE_MESSGAE.EMAIL_LENGTH_MUST_BE_FROM_10_TO_2000
+        }
+      },
+      amenities: {
+        notEmpty: {
+          errorMessage: VEHICLE_MESSGAE.AMENITIES_IS_REQUIRED
+        },
+        isString: {
+          errorMessage: VEHICLE_MESSGAE.AMENITIES_IS_MUST_BE_A_STRING
+        },
+        trim: true,
+        isLength: {
+          options: {
+            min: 0,
+            max: 500
+          },
+          errorMessage: VEHICLE_MESSGAE.AMENITIES_LENGTH_MUST_BE_FROM_0_TO_500
+        }
+      },
+      license_plate: {
+        notEmpty: {
+          errorMessage: VEHICLE_MESSGAE.LICENSE_PLATE_IS_REQUIRED
+        },
+        isString: {
+          errorMessage: VEHICLE_MESSGAE.LICENSE_PLATE_IS_MUST_BE_A_STRING
+        },
+        trim: true,
+        isLength: {
+          options: {
+            min: 7,
+            max: 8
+          },
+          errorMessage: VEHICLE_MESSGAE.LICENSE_PLATE_LENGTH_MUST_BE_FROM_7_TO_8
+        }
+      }
+    },
+    ['body']
+  )
+)
+
+export const vehicleIdValidator = validate(
+  checkSchema(
+    {
+      vehicle_id: {
+        notEmpty: {
+          errorMessage: VEHICLE_MESSGAE.VEHICLE_ID_IS_REQUIRED
+        },
+        isString: {
+          errorMessage: VEHICLE_MESSGAE.VEHICLE_ID_IS_MUST_BE_A_STRING
+        },
+        isMongoId: {
+          errorMessage: VEHICLE_MESSGAE.VEHICLE_ID_IS_MUST_BE_A_ID
+        },
+        custom: {
+          options: async (value, { req }) => {
+            const vehicle = await databaseService.vehicles.findOne({ _id: new ObjectId(value) })
+
+            if (vehicle === null) {
+              throw new Error(VEHICLE_MESSGAE.VEHICLE_ID_IS_NOT_EXIST)
+            }
+
+            ;(req as Request).vehicle = vehicle
+            return true
+          }
+        }
+      }
+    },
+    ['body']
+  )
+)
+
+export const getVehicleValidator = validate(
+  checkSchema(
+    {
+      current: {
+        notEmpty: {
+          errorMessage: VEHICLE_MESSGAE.CURRENT_IS_REQUIRED
+        },
+        isInt: {
+          errorMessage: VEHICLE_MESSGAE.CURRENT_IS_MUST_BE_A_NUMBER
+        },
+        custom: {
+          options: (value) => {
+            if (value < 0) {
+              throw new Error(VEHICLE_MESSGAE.CURRENT_IS_MUST_BE_GREATER_THAN_0)
+            }
+            return true
+          }
+        }
+      }
+    },
+    ['body']
+  )
+)
+
+export const findVehicleValidator = validate(
+  checkSchema(
+    {
+      keywords: {
+        notEmpty: {
+          errorMessage: VEHICLE_MESSGAE.KEYWORDS_IS_REQUIRED
+        },
+        trim: true
+      }
+    },
+    ['body']
+  )
+)
+
+export const censorVehicleValidator = validate(
+  checkSchema(
+    {
+      decision: {
+        notEmpty: {
+          errorMessage: VEHICLE_MESSGAE.DECISION_IS_REQUIRED
+        },
+        isBoolean: {
+          errorMessage: VEHICLE_MESSGAE.DECISION_IS_MUST_BE_A_BOOLEAN
         }
       }
     },

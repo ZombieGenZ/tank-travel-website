@@ -1,5 +1,15 @@
 import express from 'express'
-import { createController, deleteController } from '~/controllers/vehicle.controllers'
+import {
+  getVehicleType,
+  getSeatType,
+  createController,
+  updateController,
+  deleteController,
+  getVehicleController,
+  getVehiclePreviewController,
+  findVehicleController,
+  censorVehicleController
+} from '~/controllers/vehicle.controllers'
 const router = express.Router()
 import multer from 'multer'
 import path from 'path'
@@ -8,9 +18,17 @@ import {
   permissionValidator,
   createValidator,
   setupCreateImage,
-  deleteValidator
+  updateValidator,
+  vehicleIdValidator,
+  getVehicleValidator,
+  findVehicleValidator,
+  censorVehicleValidator
 } from '~/middlewares/vehicle.middlewares'
-import { authenticationValidator, businessAuthenticationValidator } from '~/middlewares/authentication.middlewares'
+import {
+  authenticationValidator,
+  businessAuthenticationValidator,
+  administratorAuthenticationValidator
+} from '~/middlewares/authentication.middlewares'
 import { wrapRequestHandler } from '~/utils/handlers'
 
 const storage = multer.diskStorage({
@@ -41,6 +59,37 @@ const upload = multer({
 })
 
 /*
+ * Description: Lấy thông tin các loại phương tiện
+ * Path: /api/vehicle/get-vehicle-type
+ * Method: GET
+ * headers: {
+ *    authorization: Bearer <token>
+ * },
+ * Body: {
+ *    refresh_token: string
+ * }
+ */
+router.get(
+  '/get-vehicle-type',
+  authenticationValidator,
+  businessAuthenticationValidator,
+  wrapRequestHandler(getVehicleType)
+)
+
+/*
+ * Description: Lấy thông tin các loại chổ ngồi
+ * Path: /api/vehicle/get-seat-type
+ * Method: GET
+ * headers: {
+ *    authorization: Bearer <token>
+ * },
+ * Body: {
+ *    refresh_token: string
+ * }
+ */
+router.get('/get-seat-type', authenticationValidator, businessAuthenticationValidator, wrapRequestHandler(getSeatType))
+
+/*
  * Description: Tạo một phương tiện mới
  * Path: /api/vehicle/create
  * Method: POST
@@ -65,7 +114,33 @@ router.post(
   permissionValidator,
   createValidator,
   setupCreateImage,
-  createController
+  wrapRequestHandler(createController)
+)
+
+/*
+ * Description: Cập nhật thông tin cho một phương hiện có trên CSDL
+ * Path: /api/vehicle/update
+ * Method: PUT
+ * headers: {
+ *    authorization: Bearer <token>
+ * },
+ * Body: {
+ *    refresh_token: string,
+ *    vehicle_id: string
+ *    vehicle_type: number,
+ *    seat_type: number,
+ *    seats: number,
+ *    rules: string,
+ *    amenities: string,
+ *    license_plate: string
+ * }
+ */
+router.put(
+  '/update',
+  authenticationValidator,
+  businessAuthenticationValidator,
+  updateValidator,
+  wrapRequestHandler(updateController)
 )
 
 /*
@@ -77,15 +152,99 @@ router.post(
  * },
  * Body: {
  *    refresh_token: string,
- *    vehicle_id: string,
+ *    vehicle_id: string
  * }
  */
 router.delete(
   '/delete',
   authenticationValidator,
   businessAuthenticationValidator,
-  deleteValidator,
+  vehicleIdValidator,
   wrapRequestHandler(deleteController)
+)
+
+/*
+ * Description: Lấy thông tin phương tiện
+ * Path: /api/vehicle/get-vehicle
+ * Method: GET
+ * headers: {
+ *    authorization: Bearer <token>
+ * },
+ * Body: {
+ *    refresh_token: string,
+ *    current: number
+ * }
+ */
+router.get(
+  '/get-vehicle',
+  authenticationValidator,
+  businessAuthenticationValidator,
+  getVehicleValidator,
+  wrapRequestHandler(getVehicleController)
+)
+
+/*
+ * Description: Lấy đường dẩn hình ảnh xem trước của phương tiện
+ * Path: /api/vehicle/get-vehicle-preview
+ * Method: GET
+ * headers: {
+ *    authorization: Bearer <token>
+ * },
+ * Body: {
+ *    refresh_token: string,
+ *    vehicle_id: string
+ * }
+ */
+router.get(
+  '/get-vehicle-preview',
+  authenticationValidator,
+  businessAuthenticationValidator,
+  vehicleIdValidator,
+  wrapRequestHandler(getVehiclePreviewController)
+)
+
+/*
+ * Description: Tìm kiếm thông tin phương tiện
+ * Path: /api/vehicle/find-vehicle
+ * Method: GET
+ * headers: {
+ *    authorization: Bearer <token>
+ * },
+ * Body: {
+ *    refresh_token: string,
+ *    current: number,
+ *    keywords: string
+ * }
+ */
+router.get(
+  '/find-vehicle',
+  authenticationValidator,
+  businessAuthenticationValidator,
+  getVehicleValidator,
+  findVehicleValidator,
+  wrapRequestHandler(findVehicleController)
+)
+
+/*
+ * Description: Ra quyết định cấp phép hoặc từ chối cho một phương tiện đã có trên CSDL
+ * Path: /api/vehicle/censor-vehicle
+ * Method: PUT
+ * headers: {
+ *    authorization: Bearer <token>
+ * },
+ * Body: {
+ *    refresh_token: string,
+ *    vehicle_id: string,
+ *    decision: boolean
+ * }
+ */
+router.put(
+  '/censor-vehicle',
+  authenticationValidator,
+  administratorAuthenticationValidator,
+  vehicleIdValidator,
+  censorVehicleValidator,
+  wrapRequestHandler(censorVehicleController)
 )
 
 export default router

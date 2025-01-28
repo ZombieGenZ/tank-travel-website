@@ -29,12 +29,12 @@ router.post('/send-email-verify', sendEmailVerifyValidator, wrapRequestHandler(s
 /*
  * Description: Gửi lại email xác thực tài khoản
  * Path: /api/users/resend-email-verify
- * Method: POST
+ * Method: PUT
  * Body: {
  *    email: string
  * }
  */
-router.post('/resend-email-verify', reSendEmailVerifyValidator, wrapRequestHandler(reSendEmailController))
+router.put('/resend-email-verify', reSendEmailVerifyValidator, wrapRequestHandler(reSendEmailController))
 
 /*
  * Description: Tạo một tài khoản mới
@@ -65,11 +65,11 @@ router.post('/login', loginValidator, wrapRequestHandler(loginController))
 /*
  * Description: Đăng xuất khỏi một tài khoản hiện có trên CSDL
  * Path: /users/logout
- * Method: POST
+ * Method: DELETE
  * Body: {
  *    refresh_token: string
  * }
  */
-router.post('/logout', refreshTokenValidator, wrapRequestHandler(logoutController))
+router.delete('/logout', refreshTokenValidator, wrapRequestHandler(logoutController))
 
 export default router

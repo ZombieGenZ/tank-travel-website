@@ -66,7 +66,7 @@ export const VEHICLE_MESSGAE = {
   SEATS_IS_MUST_BE_GREATER_THAN_0: 'Số ghế phải lớn hơn 0',
   RULES_IS_REQUIRED: 'Không được bỏ trống quy định trên xe',
   RULES_IS_MUST_BE_A_STRING: 'Quy định trên xe phải là một chuỗi ký tự',
-  EMAIL_LENGTH_MUST_BE_FROM_0_TO_2000: 'Quy định trên xe phải có độ dài từ 0 đến 2000 ký tự',
+  EMAIL_LENGTH_MUST_BE_FROM_10_TO_2000: 'Quy định trên xe phải có độ dài từ 10 đến 2000 ký tự',
   AMENITIES_IS_REQUIRED: 'Không được bỏ trống tiện ích trên xe',
   AMENITIES_IS_MUST_BE_A_STRING: 'Tiện ích trên xe phải là một chuỗi ký tự',
   AMENITIES_LENGTH_MUST_BE_FROM_0_TO_500: 'Tiện ích trên xe phải có độ dài từ 0 đến 500 ký tự',
@@ -82,5 +82,14 @@ export const VEHICLE_MESSGAE = {
   VEHICLE_ID_IS_MUST_BE_A_STRING: 'Id phương tiện phải là một chuỗi ký tự',
   VEHICLE_ID_IS_MUST_BE_A_ID: 'Id phương tiện không đúng định dạn',
   VEHICLE_ID_IS_NOT_EXIST: 'Id phương tiện không tồn tại',
-  DELETE_VEHICLE_SUCCESS: 'Xóa phương tiện thành công!'
+  DELETE_VEHICLE_SUCCESS: 'Xóa phương tiện thành công!',
+  UPDATE_VEHICLE_SUCCESS: 'Cập nhật phương tiện thành công!',
+  CURRENT_IS_REQUIRED: 'Không được bỏ trống số trang hiện tại',
+  CURRENT_IS_MUST_BE_A_NUMBER: 'Số trang hiện tại phải là một số',
+  CURRENT_IS_MUST_BE_GREATER_THAN_0: 'Số trang hiện tại phải lớn hơn 0',
+  KEYWORDS_IS_REQUIRED: 'Không được bỏ trống từ khóa',
+  NO_MATCHING_RESULTS_FOUND: 'Không tìm thấy kết quả phù hợp',
+  DECISION_IS_REQUIRED: 'Không được bỏ trống quyết định',
+  DECISION_IS_MUST_BE_A_BOOLEAN: 'Quyết định phải là một giá trị đúng hoặc sai',
+  USER_NOT_FOUND: 'Không tìm thấy người dùng'
 } as const

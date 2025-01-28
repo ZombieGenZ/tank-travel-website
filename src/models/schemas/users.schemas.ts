@@ -12,6 +12,8 @@ interface UserType {
   revenue?: number
   permission?: UserPermission
   forgot_password_token?: string
+  created_at?: Date
+  updated_at?: Date
 }
 
 export default class User {
@@ -25,8 +27,11 @@ export default class User {
   revenue: number
   permission: UserPermission
   forgot_password_token: string
-
+  created_at: Date
+  updated_at: Date
   constructor(user: UserType) {
+    const date = new Date()
+
     this._id = user._id || new ObjectId()
     this.display_name = user.display_name
     this.email = user.email
@@ -37,5 +42,7 @@ export default class User {
     this.revenue = user.revenue || 0
     this.permission = user.permission || UserPermission.CUSTOMER
     this.forgot_password_token = user.forgot_password_token || ''
+    this.created_at = user.created_at || date
+    this.updated_at = user.updated_at || date
   }
 }

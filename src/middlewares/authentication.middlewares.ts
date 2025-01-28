@@ -11,7 +11,7 @@ import { verifyToken } from '~/utils/jwt'
 
 export const authenticationValidator = async (req: Request, res: Response, next: NextFunction) => {
   const { authorization } = req.headers
-  const refresh_token = req.body?.refresh_token
+  const { refresh_token } = req.body
 
   if (!authorization || typeof authorization !== 'string' || authorization === '' || !authorization.split(' '[1])) {
     if (!refresh_token || typeof refresh_token !== 'string' || refresh_token === '') {
@@ -71,7 +71,7 @@ export const authenticationValidator = async (req: Request, res: Response, next:
     }
 
     req.user = user
-    req.access_token = authorization
+    req.access_token = token
     req.refresh_token = refresh_token
 
     next()
@@ -98,8 +98,8 @@ export const authenticationValidator = async (req: Request, res: Response, next:
       await UsersServices.changeRefreshToken(user_id, new_access_token)
 
       req.user = user
-      req.access_token = authorization
-      req.refresh_token = refresh_token
+      req.access_token = new_access_token
+      req.refresh_token = new_refresh_token
 
       next()
       return
