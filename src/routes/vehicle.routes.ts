@@ -8,7 +8,8 @@ import {
   getVehicleController,
   getVehiclePreviewController,
   findVehicleController,
-  censorVehicleController
+  censorVehicleController,
+  getVehicleListController
 } from '~/controllers/vehicle.controllers'
 const router = express.Router()
 import multer from 'multer'
@@ -164,7 +165,7 @@ router.delete(
 )
 
 /*
- * Description: Lấy thông tin phương tiện
+ * Description: Lấy thông tin phương tiện đã có trên CSDL
  * Path: /api/vehicle/get-vehicle
  * Method: GET
  * headers: {
@@ -184,7 +185,7 @@ router.get(
 )
 
 /*
- * Description: Lấy đường dẩn hình ảnh xem trước của phương tiện
+ * Description: Lấy đường dẩn hình ảnh xem trước của phương tiện đã có trên máy chủ
  * Path: /api/vehicle/get-vehicle-preview
  * Method: GET
  * headers: {
@@ -204,7 +205,7 @@ router.get(
 )
 
 /*
- * Description: Tìm kiếm thông tin phương tiện
+ * Description: Tìm kiếm thông tin phương tiện đã có trên CSDL
  * Path: /api/vehicle/find-vehicle
  * Method: GET
  * headers: {
@@ -245,6 +246,24 @@ router.put(
   vehicleIdValidator,
   censorVehicleValidator,
   wrapRequestHandler(censorVehicleController)
+)
+
+/*
+ * Description: Lấy tấ cả các thông tin số hiệu và id của các phương tiện đã có trên CSDL
+ * Path: /api/vehicle/get-vehicle-list
+ * Method: GET
+ * headers: {
+ *    authorization: Bearer <token>
+ * },
+ * Body: {
+ *    refresh_token: string
+ * }
+ */
+router.get(
+  '/get-vehicle-list',
+  authenticationValidator,
+  businessAuthenticationValidator,
+  wrapRequestHandler(getVehicleListController)
 )
 
 export default router

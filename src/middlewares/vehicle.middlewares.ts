@@ -243,6 +243,17 @@ export const createValidator = (req: Request, res: Response, next: NextFunction)
             max: 8
           },
           errorMessage: VEHICLE_MESSGAE.LICENSE_PLATE_LENGTH_MUST_BE_FROM_7_TO_8
+        },
+        custom: {
+          options: async (value) => {
+            const vehicle = await databaseService.vehicles.findOne({ license_plate: value })
+
+            if (vehicle !== null) {
+              throw new Error(VEHICLE_MESSGAE.LICENSE_PLATE_IS_ALREADY_EXISTS)
+            }
+
+            return true
+          }
         }
       }
     },
@@ -381,6 +392,7 @@ export const updateValidator = validate(
         notEmpty: {
           errorMessage: VEHICLE_MESSGAE.VEHICLE_ID_IS_REQUIRED
         },
+        trim: true,
         isString: {
           errorMessage: VEHICLE_MESSGAE.VEHICLE_ID_IS_MUST_BE_A_STRING
         },
@@ -398,7 +410,6 @@ export const updateValidator = validate(
                 throw new Error(VEHICLE_MESSGAE.VEHICLE_ID_IS_NOT_EXIST)
               }
 
-              ;(req as Request).vehicle = vehicle
               return true
             } else {
               const vehicle = await databaseService.vehicles.findOne({ _id: new ObjectId(value), user: user._id })
@@ -407,7 +418,6 @@ export const updateValidator = validate(
                 throw new Error(VEHICLE_MESSGAE.VEHICLE_ID_IS_NOT_EXIST)
               }
 
-              ;(req as Request).vehicle = vehicle
               return true
             }
           }
@@ -507,6 +517,20 @@ export const updateValidator = validate(
             max: 8
           },
           errorMessage: VEHICLE_MESSGAE.LICENSE_PLATE_LENGTH_MUST_BE_FROM_7_TO_8
+        },
+        custom: {
+          options: async (value, { req }) => {
+            const vehicle = await databaseService.vehicles.findOne({
+              license_plate: value,
+              _id: { $ne: new ObjectId(req.body.vehicle_id) }
+            })
+
+            if (vehicle !== null) {
+              throw new Error(VEHICLE_MESSGAE.LICENSE_PLATE_IS_ALREADY_EXISTS)
+            }
+
+            return true
+          }
         }
       }
     },
@@ -521,6 +545,7 @@ export const vehicleIdValidator = validate(
         notEmpty: {
           errorMessage: VEHICLE_MESSGAE.VEHICLE_ID_IS_REQUIRED
         },
+        trim: true,
         isString: {
           errorMessage: VEHICLE_MESSGAE.VEHICLE_ID_IS_MUST_BE_A_STRING
         },

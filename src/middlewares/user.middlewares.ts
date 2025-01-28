@@ -1,6 +1,7 @@
 import { Request } from 'express'
 import { checkSchema } from 'express-validator'
 import { JsonWebTokenError } from 'jsonwebtoken'
+import { UserStatus } from '~/constants/enum'
 import HTTPSTATUS from '~/constants/httpStatus'
 import { USER_MESSAGE } from '~/constants/message'
 import { ErrorWithStatus } from '~/models/errors'
@@ -276,6 +277,10 @@ export const loginValidator = validate(
 
             if (user === null) {
               throw new Error(USER_MESSAGE.INCORRECT_EMAIL_OR_PASSWORD)
+            }
+
+            if (user.user_type !== UserStatus.Verified) {
+              throw new Error(USER_MESSAGE.USER_IS_NOT_VERIFIED)
             }
 
             ;(req as Request).user = user

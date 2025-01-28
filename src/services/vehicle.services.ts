@@ -2,6 +2,7 @@ import {
   CensorVehicleRequestBody,
   CreateVehicleRequestBody,
   FindVehicleRequestBody,
+  GetVehicleListRequestBody,
   GetVehicleRequestBody,
   UpdateVehicleRequestBody
 } from '~/models/requests/vehicle.requests'
@@ -37,7 +38,8 @@ class VehicleService {
           seats: payload.seats,
           rules: payload.rules,
           amenities: payload.amenities,
-          license_plate: payload.license_plate
+          license_plate: payload.license_plate,
+          status: VehicleStatus.PENDING_APPROVAL
         },
         $currentDate: { updated_at: true }
       }
@@ -356,6 +358,44 @@ class VehicleService {
     const year = formatDate.getFullYear()
 
     return `${day}/${month}/${year}`
+  }
+
+  async getVehicleList(user: User) {
+    if (user.permission == UserPermission.ADMINISTRATOR) {
+      const vehicle = await databaseService.vehicles
+        .find({})
+        .project({ license_plate: 1, _id: 1 })
+        .sort({ created_at: 1 })
+        .toArray()
+
+      if (vehicle.length === 0) {
+        return {
+          message: VEHICLE_MESSGAE.NO_MATCHING_RESULTS_FOUND,
+          vehicle: []
+        }
+      } else {
+        return {
+          vehicle
+        }
+      }
+    } else {
+      const vehicle = await databaseService.vehicles
+        .find({ user: user._id })
+        .project({ license_plate: 1, _id: 1 })
+        .sort({ created_at: 1 })
+        .toArray()
+
+      if (vehicle.length === 0) {
+        return {
+          message: VEHICLE_MESSGAE.NO_MATCHING_RESULTS_FOUND,
+          vehicle: []
+        }
+      } else {
+        return {
+          vehicle
+        }
+      }
+    }
   }
 }
 const vehicleService = new VehicleService()

@@ -45,7 +45,8 @@ export const USER_MESSAGE = {
   EMAIL_VERIFY_CODE_MUST_BE_A_STRING: 'Mã xác thực email phải là một chuỗi ký tự',
   EMAIL_VERIFY_CODE_INVALID: 'Mã xác thực email không hợp lệ',
   EMAIL_VERIFY_CODE_HAS_NOT_BEEN_SENT: 'Mã xác thực email chưa được gửi',
-  EMAIL_VERIFY_CODE_RESEND_SUCCESS: 'Đã gửi lại mã xác thực email thành công!'
+  EMAIL_VERIFY_CODE_RESEND_SUCCESS: 'Đã gửi lại mã xác thực email thành công!',
+  USER_IS_NOT_VERIFIED: 'Bạn phải xác thực email mới có thể sử dụng chức năng này'
 } as const
 
 export const AUTHENTICATION_MESSAGE = {
@@ -70,9 +71,10 @@ export const VEHICLE_MESSGAE = {
   AMENITIES_IS_REQUIRED: 'Không được bỏ trống tiện ích trên xe',
   AMENITIES_IS_MUST_BE_A_STRING: 'Tiện ích trên xe phải là một chuỗi ký tự',
   AMENITIES_LENGTH_MUST_BE_FROM_0_TO_500: 'Tiện ích trên xe phải có độ dài từ 0 đến 500 ký tự',
-  LICENSE_PLATE_IS_REQUIRED: 'Không được bỏ trống biển số xe',
-  LICENSE_PLATE_IS_MUST_BE_A_STRING: 'Biển số xe phải là một chuỗi ký tự',
-  LICENSE_PLATE_LENGTH_MUST_BE_FROM_7_TO_8: 'Biển số xe phải có độ dài từ 7 đến 8 ký tự',
+  LICENSE_PLATE_IS_REQUIRED: 'Không được bỏ trống số hiệu',
+  LICENSE_PLATE_IS_MUST_BE_A_STRING: 'Số hiệu phải là một chuỗi ký tự',
+  LICENSE_PLATE_LENGTH_MUST_BE_FROM_7_TO_8: 'Số hiệu phải có độ dài từ 7 đến 8 ký tự',
+  LICENSE_PLATE_IS_ALREADY_EXISTS: 'Số hiệu đã tồn tại',
   ONLY_UPLOAD_IMAGES: 'Bạn chỉ được tải lên hình ảnh',
   ONLY_UPLOAD_EACH_IMAGE_UP_TO_5MB: 'Bạn chỉ được tải lên mỗi hình ảnh tối đa 5MB',
   ONLY_UPLOAD_UP_TO_30_IMAGES: 'Bạn chỉ được tải lên tối đa 30 hình ảnh',
@@ -92,4 +94,36 @@ export const VEHICLE_MESSGAE = {
   DECISION_IS_REQUIRED: 'Không được bỏ trống quyết định',
   DECISION_IS_MUST_BE_A_BOOLEAN: 'Quyết định phải là một giá trị đúng hoặc sai',
   USER_NOT_FOUND: 'Không tìm thấy người dùng'
+} as const
+
+export const BUSROUTE_MESSAGE = {
+  START_POINT_IS_REQUIRED: 'Không được bỏ trống điểm khởi hành',
+  START_POINT_LENGTH_MUST_BE_FROM_5_TO_500: 'Điểm khởi hành phải có độ dài từ 5 đến 500 ký tự',
+  END_POINT_IS_REQUIRED: 'Không được bỏ trống điểm đến',
+  END_POINT_LENGTH_MUST_BE_FROM_5_TO_500: 'Điểm đến phải có độ dài từ 5 đến 500 ký tự',
+  START_POINT_AND_END_POINT_MUST_BE_DIFFERENT: 'Địa điểm đến và địa điếm đi không được trùng nhau',
+  DEPARTURE_TIME_IS_REQUIRED: 'Không được bỏ trống thời gian khởi hành',
+  DEPARTURE_TIME_MUST_BE_ISO8601: 'Thời gian khởi hành phải đúng định dạng',
+  ARRIVAL_TIME_IS_REQUIRED: 'Không được bỏ trống thời gian đến dự kiến',
+  ARRIVAL_TIME_MUST_BE_ISO8601: 'Thời gian khởi hành phải đúng định dạng',
+  ARRIVAL_TIME_MUST_BE_GREATER_THAN_DEPARTURE_TIME: 'Thời gian đến dự kiến phải lớn hơn thời gian khởi hành',
+  PRICE_IS_REQUIRED: 'Không được bỏ trống giá vé',
+  PRICE_MUST_BE_A_NUMBER: 'Giá vé phải là một số',
+  PRICE_MUST_BE_GREATER_THAN_0: 'Giá vé phải lớn hơn 0',
+  QUANTITY_IS_REQUIRED: 'Không được bỏ trống số lượng vé',
+  QUANTITY_MUST_BE_A_NUMBER: 'Số lượng vé phải là một số',
+  QUANTITY_MUST_BE_GREATER_THAN_0: 'Số lượng vé phải lớn hơn 0',
+  QUANTITY_MUST_BE_LESS_THAN_OR_EQUAL_TO_VEHICLE_SEATS: 'Số lượng vé phải nhỏ hơn hoặc bằng số ghế của phương tiện',
+  CREATE_BUS_ROUTE_SUCCESS: 'Thêm tuyến thành công!',
+  BUS_ROUTE_ID_IS_REQUIRED: 'Không được bỏ trống id tuyến xe',
+  BUS_ROUTE_ID_IS_MUST_BE_A_STRING: 'Id tuyến xe phải là một chuỗi ký tự',
+  BUS_ROUTE_ID_IS_MUST_BE_A_ID: 'Id tuyến xe không đúng định dạng',
+  BUS_ROUTE_ID_IS_NOT_EXIST: 'Id tuyến xe không tồn tại hoặc bạn không có quyền làm điều này',
+  UPDATE_BUS_ROUTE_SUCCESS: 'Cập nhật tuyến xe thành công!',
+  DELETE_BUS_ROUTE_SUCCESS: 'Xóa tuyến xe thành công!',
+  CURRENT_IS_REQUIRED: 'Không được bỏ trống số trang hiện tại',
+  CURRENT_IS_MUST_BE_A_NUMBER: 'Số trang hiện tại phải là một số',
+  CURRENT_IS_MUST_BE_GREATER_THAN_0: 'Số trang hiện tại phải lớn hơn 0',
+  NO_MATCHING_RESULTS_FOUND: 'Không tìm thấy kết quả phù hợp',
+  KEYWORDS_IS_REQUIRED: 'Không được bỏ trống từ khóa'
 } as const

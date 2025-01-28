@@ -2,6 +2,7 @@ import { Request } from 'express'
 import User from './models/schemas/Users.schema'
 import { TokenPayload } from '~/models/requests/user.requests'
 import { Vehicle, VehicleImage } from '~/models/schemas/vehicle.chemas'
+import { BusRoute } from './models/schemas/busRoute.schemas'
 
 declare module 'express' {
   interface Request {
@@ -13,5 +14,6 @@ declare module 'express' {
     decoded_email_verify_token?: TokenPayload
     preview?: VehicleImage[]
     vehicle?: Vehicle
+    bus_route?: BusRoute
   }
 }

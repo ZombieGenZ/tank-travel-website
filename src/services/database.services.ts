@@ -4,6 +4,7 @@ import RefreshToken from '~/models/schemas/refreshtoken.schemas'
 import dotenv from 'dotenv'
 import EmailVerifyCode from '~/models/schemas/emailverifycode.schemas'
 import { Vehicle } from '~/models/schemas/vehicle.chemas'
+import { BusRoute } from '~/models/schemas/busRoute.schemas'
 dotenv.config()
 
 const uri = `mongodb+srv://${process.env.DATABASE_USERNAME}:${process.env.DATABASE_PASSWORD}@datvexe.bxmnu.mongodb.net/?retryWrites=true&w=majority&appName=DatVeXe`
@@ -37,6 +38,9 @@ export class DatabaseService {
   }
   get vehicles(): Collection<Vehicle> {
     return this.db.collection(process.env.VEHICLE_COLLECTION as string)
+  }
+  get busRoute(): Collection<BusRoute> {
+    return this.db.collection(process.env.BUS_ROUTE_COLLECTION as string)
   }
 }
 

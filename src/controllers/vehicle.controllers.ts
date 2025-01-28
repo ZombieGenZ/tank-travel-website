@@ -8,11 +8,11 @@ import {
   VehicleIdRequestBody,
   GetVehicleRequestBody,
   FindVehicleRequestBody,
-  CensorVehicleRequestBody
+  CensorVehicleRequestBody,
+  GetVehicleListRequestBody
 } from '~/models/requests/vehicle.requests'
 import User from '~/models/schemas/users.schemas'
 import { Vehicle, VehicleImage } from '~/models/schemas/vehicle.chemas'
-import vehicleService from '~/services/vehicle.services'
 import VehicleService from '~/services/vehicle.services'
 
 export const getVehicleType = async (req: Request<ParamsDictionary, any, GetVehicleInfoRequestBody>, res: Response) => {
@@ -82,7 +82,7 @@ export const updateController = async (
     refresh_token
   }
 
-  vehicleService.updateVehicle(req.body)
+  VehicleService.updateVehicle(req.body)
 
   res.json({
     message: VEHICLE_MESSGAE.UPDATE_VEHICLE_SUCCESS,
@@ -117,7 +117,7 @@ export const getVehicleController = async (
     refresh_token
   }
 
-  const result = await vehicleService.getVehicle(req.body, user)
+  const result = await VehicleService.getVehicle(req.body, user)
 
   res.json({
     result,
@@ -136,7 +136,7 @@ export const findVehicleController = async (
     refresh_token
   }
 
-  const result = await vehicleService.findVehicle(req.body, user)
+  const result = await VehicleService.findVehicle(req.body, user)
 
   res.json({
     result,
@@ -174,9 +174,28 @@ export const censorVehicleController = async (
     refresh_token
   }
 
-  await vehicleService.censorVehicle(req.body, vehicle)
+  await VehicleService.censorVehicle(req.body, vehicle)
 
   res.json({
+    authenticate
+  })
+}
+
+export const getVehicleListController = async (
+  req: Request<ParamsDictionary, any, GetVehicleListRequestBody>,
+  res: Response
+) => {
+  const user = req.user as User
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  const result = await VehicleService.getVehicleList(user)
+
+  res.json({
+    result,
     authenticate
   })
 }

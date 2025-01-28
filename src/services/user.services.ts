@@ -14,13 +14,16 @@ class UserService {
     const user = await databaseService.users.findOne({ email })
     return Boolean(user)
   }
+
   async checkPhoneNumberExits(phone: string) {
     const user = await databaseService.users.findOne({ phone })
     return Boolean(user)
   }
+
   private randomCode() {
     return Math.floor(100000000 + Math.random() * 999999999).toString()
   }
+
   async sendEmailVerify(payload: EmailVerifyBody) {
     const email = payload.email
     const code = this.randomCode()
@@ -55,6 +58,7 @@ class UserService {
 
     sendMail(email, email_verify_subject, email_verify_html)
   }
+
   async reSendEmailVerify(payload: EmailVerifyBody) {
     const email = payload.email
     const code = this.randomCode()
@@ -96,6 +100,7 @@ class UserService {
 
     sendMail(email, email_verify_subject, email_verify_html)
   }
+
   async register(payload: RegisterRequestBody) {
     const email_verify_subject = 'Chào mừng đến TANK-Travel'
     const email_verify_html = `
@@ -137,6 +142,7 @@ class UserService {
       sendMail(payload.email, email_verify_subject, email_verify_html)
     ])
   }
+
   async login(user_id: string) {
     const [access_token, refresh_token] = await this.signAccessTokenAndRefreshToken(user_id)
 
@@ -147,6 +153,7 @@ class UserService {
       refresh_token
     }
   }
+
   signAccessToken(user_id: string) {
     return signToken({
       payload: {
@@ -159,6 +166,7 @@ class UserService {
       }
     })
   }
+
   signRefreshToken(user_id: string) {
     return signToken({
       payload: {
@@ -171,12 +179,15 @@ class UserService {
       }
     })
   }
+
   private signAccessTokenAndRefreshToken(user_id: string) {
     return Promise.all([this.signAccessToken(user_id), this.signRefreshToken(user_id)])
   }
+
   async registerRefreshToken(user_id: string, token: string) {
     await databaseService.refreshToken.insertOne(new RefreshToken({ token, user_id: new ObjectId(user_id) }))
   }
+
   async changeRefreshToken(user_id: string, token: string) {
     await databaseService.refreshToken.updateOne(
       {
@@ -187,6 +198,7 @@ class UserService {
       }
     )
   }
+
   async logout(refresh_token: string) {
     await databaseService.refreshToken.deleteOne({ token: refresh_token })
   }

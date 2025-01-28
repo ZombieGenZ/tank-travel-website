@@ -48,3 +48,7 @@ export interface CensorVehicleRequestBody {
   vehicle_id: string
   decision: boolean
 }
+
+export interface GetVehicleListRequestBody {
+  refresh_token: string
+}
