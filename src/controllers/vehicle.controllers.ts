@@ -110,13 +110,14 @@ export const getVehicleController = async (
   req: Request<ParamsDictionary, any, GetVehicleRequestBody>,
   res: Response
 ) => {
+  const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
     access_token,
     refresh_token
   }
 
-  const result = await vehicleService.getVehicle(req.body)
+  const result = await vehicleService.getVehicle(req.body, user)
 
   res.json({
     result,
@@ -128,13 +129,14 @@ export const findVehicleController = async (
   req: Request<ParamsDictionary, any, FindVehicleRequestBody>,
   res: Response
 ) => {
+  const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
     access_token,
     refresh_token
   }
 
-  const result = await vehicleService.findVehicle(req.body)
+  const result = await vehicleService.findVehicle(req.body, user)
 
   res.json({
     result,

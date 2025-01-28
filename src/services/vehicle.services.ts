@@ -10,10 +10,11 @@ import { Vehicle, VehicleImage } from '~/models/schemas/vehicle.chemas'
 import { ObjectId } from 'mongodb'
 import fs from 'fs'
 import { VEHICLE_MESSGAE } from '~/constants/message'
-import { SeatType, VehicleStatus, VehicleTypeEnum } from '~/constants/enum'
+import { SeatType, UserPermission, VehicleStatus, VehicleTypeEnum } from '~/constants/enum'
 import { sendMail } from '~/utils/mail'
 import { ErrorWithStatus } from '~/models/errors'
 import HTTPSTATUS from '~/constants/httpStatus'
+import User from '~/models/schemas/users.schemas'
 
 class VehicleService {
   async createVehicle(payload: CreateVehicleRequestBody, user_id: ObjectId, preview: VehicleImage[]) {
@@ -64,36 +65,67 @@ class VehicleService {
     await Promise.allSettled(promises)
   }
 
-  async getVehicle(payload: GetVehicleRequestBody) {
+  async getVehicle(payload: GetVehicleRequestBody, user: User) {
     const limit = Number(process.env.LOAD_QUANTITY_LIMIT as string)
     const next = limit + 1
 
-    const result = await databaseService.vehicles
-      .find({})
-      .project({ preview: 0 })
-      .sort({ created_at: 1 })
-      .skip(payload.current)
-      .limit(next)
-      .toArray()
+    if (user.permission == UserPermission.ADMINISTRATOR) {
+      const result = await databaseService.vehicles
+        .find({})
+        .project({ preview: 0 })
+        .sort({ created_at: 1 })
+        .skip(payload.current)
+        .limit(next)
+        .toArray()
 
-    const continued = result.length > limit
+      const continued = result.length > limit
 
-    const vehicle = result.slice(0, limit)
+      const vehicle = result.slice(0, limit)
 
-    const current = payload.current + vehicle.length
+      const current = payload.current + vehicle.length
 
-    if (vehicle.length === 0) {
-      return {
-        message: VEHICLE_MESSGAE.NO_MATCHING_RESULTS_FOUND,
-        current: payload.current,
-        continued: false,
-        vehicle: []
+      if (vehicle.length === 0) {
+        return {
+          message: VEHICLE_MESSGAE.NO_MATCHING_RESULTS_FOUND,
+          current: payload.current,
+          continued: false,
+          vehicle: []
+        }
+      } else {
+        return {
+          current,
+          continued,
+          vehicle
+        }
       }
     } else {
-      return {
-        current,
-        continued,
-        vehicle
+      const result = await databaseService.vehicles
+        .find({ user: user._id })
+        .project({ preview: 0 })
+        .sort({ created_at: 1 })
+        .skip(payload.current)
+        .limit(next)
+        .toArray()
+
+      const continued = result.length > limit
+
+      const vehicle = result.slice(0, limit)
+
+      const current = payload.current + vehicle.length
+
+      if (vehicle.length === 0) {
+        return {
+          message: VEHICLE_MESSGAE.NO_MATCHING_RESULTS_FOUND,
+          current: payload.current,
+          continued: false,
+          vehicle: []
+        }
+      } else {
+        return {
+          current,
+          continued,
+          vehicle
+        }
       }
     }
   }
@@ -107,52 +139,103 @@ class VehicleService {
     return result?.preview?.map((item) => item.url) || []
   }
 
-  async findVehicle(payload: FindVehicleRequestBody) {
+  async findVehicle(payload: FindVehicleRequestBody, user: User) {
     const limit = Number(process.env.LOAD_QUANTITY_LIMIT as string)
-    const keywords = payload.keywords.split(' ')
-
-    const searchQuery = {
-      $or: keywords.map((key) => ({
-        $or: [
-          { rules: { $regex: key, $options: 'i' } },
-          { amenities: { $regex: key, $options: 'i' } },
-          { license_plate: { $regex: key, $options: 'i' } },
-
-          ...(isNaN(Number(key))
-            ? []
-            : [{ vehicle_type: Number(key) }, { seat_type: Number(key) }, { seats: Number(key) }])
-        ]
-      }))
-    }
-
     const next = limit + 1
 
-    const result = await databaseService.vehicles
-      .find(searchQuery)
-      .project({ preview: 0 })
-      .sort({ created_at: 1 })
-      .skip(payload.current)
-      .limit(next)
-      .toArray()
+    if (user.permission == UserPermission.ADMINISTRATOR) {
+      const keywords = payload.keywords.split(' ')
 
-    const continued = result.length > limit
+      const searchQuery = {
+        $or: keywords.map((key) => ({
+          $or: [
+            { rules: { $regex: key, $options: 'i' } },
+            { amenities: { $regex: key, $options: 'i' } },
+            { license_plate: { $regex: key, $options: 'i' } },
 
-    const vehicle = result.slice(0, limit)
+            ...(isNaN(Number(key))
+              ? []
+              : [{ vehicle_type: Number(key) }, { seat_type: Number(key) }, { seats: Number(key) }])
+          ]
+        }))
+      }
 
-    const current = payload.current + vehicle.length
+      const result = await databaseService.vehicles
+        .find(searchQuery)
+        .project({ preview: 0 })
+        .sort({ created_at: 1 })
+        .skip(payload.current)
+        .limit(next)
+        .toArray()
 
-    if (vehicle.length === 0) {
-      return {
-        message: VEHICLE_MESSGAE.NO_MATCHING_RESULTS_FOUND,
-        current: payload.current,
-        continued: false,
-        vehicle: []
+      const continued = result.length > limit
+
+      const vehicle = result.slice(0, limit)
+
+      const current = payload.current + vehicle.length
+
+      if (vehicle.length === 0) {
+        return {
+          message: VEHICLE_MESSGAE.NO_MATCHING_RESULTS_FOUND,
+          current: payload.current,
+          continued: false,
+          vehicle: []
+        }
+      } else {
+        return {
+          current,
+          continued,
+          vehicle
+        }
       }
     } else {
-      return {
-        current,
-        continued,
-        vehicle
+      const keywords = payload.keywords.split(' ')
+
+      const searchQuery = {
+        user: user._id,
+        $and: [
+          {
+            $or: keywords.map((key) => ({
+              $or: [
+                { rules: { $regex: key, $options: 'i' } },
+                { amenities: { $regex: key, $options: 'i' } },
+                { license_plate: { $regex: key, $options: 'i' } },
+                ...(isNaN(Number(key))
+                  ? []
+                  : [{ vehicle_type: Number(key) }, { seat_type: Number(key) }, { seats: Number(key) }])
+              ]
+            }))
+          }
+        ]
+      }
+
+      const result = await databaseService.vehicles
+        .find(searchQuery)
+        .project({ preview: 0 })
+        .sort({ created_at: 1 })
+        .skip(payload.current)
+        .limit(next)
+        .toArray()
+
+      const continued = result.length > limit
+
+      const vehicle = result.slice(0, limit)
+
+      const current = payload.current + vehicle.length
+
+      if (vehicle.length === 0) {
+        return {
+          message: VEHICLE_MESSGAE.NO_MATCHING_RESULTS_FOUND,
+          current: payload.current,
+          continued: false,
+          vehicle: []
+        }
+      } else {
+        return {
+          current,
+          continued,
+          vehicle
+        }
       }
     }
   }

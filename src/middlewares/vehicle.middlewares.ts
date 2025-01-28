@@ -389,14 +389,27 @@ export const updateValidator = validate(
         },
         custom: {
           options: async (value, { req }) => {
-            const vehicle = await databaseService.vehicles.findOne({ _id: new ObjectId(value) })
+            const user = (req as Request).user as User
 
-            if (vehicle === null) {
-              throw new Error(VEHICLE_MESSGAE.VEHICLE_ID_IS_NOT_EXIST)
+            if (user.permission === UserPermission.ADMINISTRATOR) {
+              const vehicle = await databaseService.vehicles.findOne({ _id: new ObjectId(value) })
+
+              if (vehicle === null) {
+                throw new Error(VEHICLE_MESSGAE.VEHICLE_ID_IS_NOT_EXIST)
+              }
+
+              ;(req as Request).vehicle = vehicle
+              return true
+            } else {
+              const vehicle = await databaseService.vehicles.findOne({ _id: new ObjectId(value), user: user._id })
+
+              if (vehicle === null) {
+                throw new Error(VEHICLE_MESSGAE.VEHICLE_ID_IS_NOT_EXIST)
+              }
+
+              ;(req as Request).vehicle = vehicle
+              return true
             }
-
-            ;(req as Request).vehicle = vehicle
-            return true
           }
         }
       },
@@ -516,14 +529,26 @@ export const vehicleIdValidator = validate(
         },
         custom: {
           options: async (value, { req }) => {
-            const vehicle = await databaseService.vehicles.findOne({ _id: new ObjectId(value) })
+            const user = (req as Request).user as User
+            if (user.permission == UserPermission.ADMINISTRATOR) {
+              const vehicle = await databaseService.vehicles.findOne({ _id: new ObjectId(value) })
 
-            if (vehicle === null) {
-              throw new Error(VEHICLE_MESSGAE.VEHICLE_ID_IS_NOT_EXIST)
+              if (vehicle === null) {
+                throw new Error(VEHICLE_MESSGAE.VEHICLE_ID_IS_NOT_EXIST)
+              }
+
+              ;(req as Request).vehicle = vehicle
+              return true
+            } else {
+              const vehicle = await databaseService.vehicles.findOne({ _id: new ObjectId(value), user: user._id })
+
+              if (vehicle === null) {
+                throw new Error(VEHICLE_MESSGAE.VEHICLE_ID_IS_NOT_EXIST)
+              }
+
+              ;(req as Request).vehicle = vehicle
+              return true
             }
-
-            ;(req as Request).vehicle = vehicle
-            return true
           }
         }
       }

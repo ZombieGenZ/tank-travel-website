@@ -81,7 +81,7 @@ export const VEHICLE_MESSGAE = {
   VEHICLE_ID_IS_REQUIRED: 'Không được bỏ trống id phương tiện',
   VEHICLE_ID_IS_MUST_BE_A_STRING: 'Id phương tiện phải là một chuỗi ký tự',
   VEHICLE_ID_IS_MUST_BE_A_ID: 'Id phương tiện không đúng định dạn',
-  VEHICLE_ID_IS_NOT_EXIST: 'Id phương tiện không tồn tại',
+  VEHICLE_ID_IS_NOT_EXIST: 'Id phương tiện không tồn tại hoặc bạn không có quyền làm điều này',
   DELETE_VEHICLE_SUCCESS: 'Xóa phương tiện thành công!',
   UPDATE_VEHICLE_SUCCESS: 'Cập nhật phương tiện thành công!',
   CURRENT_IS_REQUIRED: 'Không được bỏ trống số trang hiện tại',
