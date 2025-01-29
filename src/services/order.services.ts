@@ -7,6 +7,9 @@ import { sendMail } from '~/utils/mail'
 import User from '~/models/schemas/users.schemas'
 import { SeatType, VehicleTypeEnum } from '~/constants/enum'
 import { Vehicle } from '~/models/schemas/vehicle.chemas'
+import path from 'path'
+import fs from 'fs'
+import { defaultGeneralStatistics } from '~/constants/generalstatistics'
 
 class OrderService {
   async order(payload: OrderRequestBody, user: User, busRoute: BusRoute) {
@@ -14,7 +17,10 @@ class OrderService {
     const vehicle = (await databaseService.vehicles.findOne({ _id: busRoute.vehicle })) as Vehicle
     const authorVehicle = (await databaseService.users.findOne({ _id: vehicle.user })) as User
     const totalPrice = payload.quantity * busRoute.price
-    const totalRevenue = ((busRoute.price * payload.quantity) / 100) * Number(process.env.REVENUE_TAX as string)
+    const totalRevenue =
+      payload.quantity * busRoute.price -
+      ((busRoute.price * payload.quantity) / 100) * Number(process.env.REVENUE_TAX as string)
+    const revenue = ((busRoute.price * payload.quantity) / 100) * Number(process.env.REVENUE_TAX as string)
     const orders: Bill[] = []
 
     for (let i = 0; i < payload.quantity; i++) {
@@ -148,6 +154,21 @@ class OrderService {
       sendMail(user.email, email_subject, email_html),
       sendMail(user.email, bill_email_subject, bill_email_html)
     ])
+
+    const statisticsPath = path.join(__dirname, '../../data/generalstatistics.json')
+
+    if (!fs.existsSync(statisticsPath)) {
+      fs.writeFileSync(statisticsPath, JSON.stringify(defaultGeneralStatistics, null, 2), 'utf8')
+    }
+
+    const data = fs.readFileSync(statisticsPath, 'utf8')
+
+    const statistics = JSON.parse(data)
+
+    statistics.revenue += revenue
+    statistics.lastUpdate = new Date().toISOString()
+
+    fs.writeFileSync(statisticsPath, JSON.stringify(statistics, null, 2), 'utf8')
   }
 
   private getFormatDate(date: Date): string {
