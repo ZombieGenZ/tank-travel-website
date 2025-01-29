@@ -28,16 +28,16 @@ class UserService {
     const email = payload.email
     const code = this.randomCode()
 
-    const email_verify_subject = 'Xác nhận đăng ký tài khoản TANK-Travel'
+    const email_verify_subject = `Xác nhận đăng ký tài khoản - ${process.env.TRADEMARK_NAME}`
     const email_verify_html = `
       <div style="margin: 0; padding: 0;">
         <div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); overflow: hidden;">
             <div style="background-color: #336699; color: white; text-align: center; padding: 20px;">
-                <h1 style="margin: 0; font-size: 24px;">TANK-Travel</h1>
+                <h1 style="margin: 0; font-size: 24px;">${process.env.TRADEMARK_NAME}</h1>
             </div>
             <div style="padding: 30px; text-align: center;">
                 <p>Xin chào,</p>
-                <p>Cảm ơn bạn đã đăng ký tài khoản TANK-Travel.</p>
+                <p>Cảm ơn bạn đã đăng ký tài khoản ${process.env.TRADEMARK_NAME}.</p>
                 <p>Để xác thực tài khoản, vui lòng nhập mã sau:</p>
                 
                 <div style="background-color: #f0f0f0; border-radius: 10px; padding: 15px; margin: 20px 0; font-size: 36px; font-weight: bold; color: #336699; letter-spacing: 5px;">
@@ -48,7 +48,7 @@ class UserService {
             </div>
             <div style="background-color: #f4f4f4; text-align: center; padding: 15px; font-size: 12px; color: #666;">
                 Trân trọng,<br>
-                Đội ngũ TANK-Travel
+                Đội ngũ ${process.env.TRADEMARK_NAME}
             </div>
         </div>
       </div>
@@ -63,16 +63,16 @@ class UserService {
     const email = payload.email
     const code = this.randomCode()
 
-    const email_verify_subject = 'Xác nhận đăng ký tài khoản TANK-Travel'
+    const email_verify_subject = `Xác nhận đăng ký tài khoản - ${process.env.TRADEMARK_NAME}`
     const email_verify_html = `
       <div style="margin: 0; padding: 0;">
         <div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); overflow: hidden;">
             <div style="background-color: #336699; color: white; text-align: center; padding: 20px;">
-                <h1 style="margin: 0; font-size: 24px;">TANK-Travel</h1>
+                <h1 style="margin: 0; font-size: 24px;">${process.env.TRADEMARK_NAME}</h1>
             </div>
             <div style="padding: 30px; text-align: center;">
                 <p>Xin chào,</p>
-                <p>Cảm ơn bạn đã đăng ký tài khoản TANK-Travel.</p>
+                <p>Cảm ơn bạn đã đăng ký tài khoản ${process.env.TRADEMARK_NAME}.</p>
                 <p>Để xác thực tài khoản, vui lòng nhập mã sau:</p>
                 
                 <div style="background-color: #f0f0f0; border-radius: 10px; padding: 15px; margin: 20px 0; font-size: 36px; font-weight: bold; color: #336699; letter-spacing: 5px;">
@@ -83,7 +83,7 @@ class UserService {
             </div>
             <div style="background-color: #f4f4f4; text-align: center; padding: 15px; font-size: 12px; color: #666;">
                 Trân trọng,<br>
-                Đội ngũ TANK-Travel
+                Đội ngũ ${process.env.TRADEMARK_NAME}
             </div>
         </div>
       </div>
@@ -102,19 +102,19 @@ class UserService {
   }
 
   async register(payload: RegisterRequestBody) {
-    const email_verify_subject = 'Chào mừng đến TANK-Travel'
+    const email_verify_subject = `Chào mừng đến ${process.env.TRADEMARK_NAME}`
     const email_verify_html = `
       <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f4f4f4;">
           <div style="background-color: white; border-radius: 8px; padding: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
               <div style="text-align: center; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 15px;">
-                  <h1>Chào mừng đến TANK-Travel</h1>
+                  <h1>Chào mừng đến ${process.env.TRADEMARK_NAME}</h1>
               </div>
               <div style="margin-top: 20px;">
                   <p>Kính chào Quý Khách,</p>
                   
-                  <p>Chúc mừng bạn đã trở thành thành viên của TANK-Travel! Chúng tôi rất vui mừng được đồng hành cùng bạn trong những chuyến du lịch sắp tới.</p>
+                  <p>Chúc mừng bạn đã trở thành thành viên của ${process.env.TRADEMARK_NAME}! Chúng tôi rất vui mừng được đồng hành cùng bạn trong những chuyến du lịch sắp tới.</p>
                   
-                  <p>Với TANK-Travel, bạn sẽ được:</p>
+                  <p>Với ${process.env.TRADEMARK_NAME}, bạn sẽ được:</p>
                   <ul>
                       <li>Đặt vé máy bay, xe khách, tàu hỏa dễ dàng</li>
                       <li>Nhận ưu đãi đặc biệt cho thành viên</li>
@@ -124,7 +124,7 @@ class UserService {
                   <a href="${process.env.APP_URL}/" style="display: inline-block; background-color: #3498db; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 20px;">Bắt đầu đặt vé ngay</a>
               </div>
               <div style="margin-top: 30px; text-align: center; color: #7f8c8d; font-size: 0.9em;">
-                  <p>© 2024 TANK-Travel. Mọi quyền được bảo lưu.</p>
+                  <p>© ${new Date().getFullYear()} ${process.env.TRADEMARK_NAME}. Mọi quyền được bảo lưu.</p>
               </div>
           </div>
       </div>

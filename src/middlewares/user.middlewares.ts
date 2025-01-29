@@ -234,7 +234,8 @@ export const registerValidator = validate(
               code: value
             })
 
-            if (!email_verify_code) {
+            if (email_verify_code === null) {
+              console.log('here')
               throw new Error(USER_MESSAGE.EMAIL_VERIFY_CODE_INVALID)
             }
 

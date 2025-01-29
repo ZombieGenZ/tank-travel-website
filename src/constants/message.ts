@@ -127,3 +127,23 @@ export const BUSROUTE_MESSAGE = {
   NO_MATCHING_RESULTS_FOUND: 'Không tìm thấy kết quả phù hợp',
   KEYWORDS_IS_REQUIRED: 'Không được bỏ trống từ khóa'
 } as const
+
+export const ORDER_MESSAGE = {
+  BUS_ROUTE_ID_IS_REQUIRED: 'Không được bỏ trống id tuyến xe',
+  BUS_ROUTE_ID_MUST_BE_STRING: 'Id tuyến xe phải là một chuỗi ký tự',
+  BUS_ROUTE_ID_MUST_BE_MONGO_ID: 'Id tuyến xe không đúng định dạng',
+  BUS_ROUTE_ID_NOT_EXIST: 'Id tuyến xe không tồn tại',
+  NAME_IS_REQUIRED: 'Không được bỏ trống tên đại diện',
+  NAME_MUST_BE_STRING: 'Tên đại diện phải là một chuỗi ký tự',
+  NAME_LENGTH_MUST_BE_FROM_1_TO_150: 'Tên đại diện phải có độ dài từ 1 đến 150 ký tự',
+  PHONE_IS_REQUIRED: 'Không được bỏ trống số điện thoại',
+  PHONE_MUST_BE_STRING: 'Số điện thoại phải là một chuỗi ký tự',
+  PHONE_LENGTH_MUST_BE_FROM_10_TO_11: 'Số điện thoại phải có độ dài từ 10 đến 11 ký tự',
+  PHONE_MUST_BE_MOBILE_PHONE: 'Số điện thoại không đúng định dạng',
+  QUANTITY_IS_REQUIRED: 'Không được bỏ trống số lượng vé',
+  QUANTITY_MUST_BE_INT: 'Số lượng vé phải là một số nguyên',
+  QUANTITY_MUST_BE_GREATER_THAN_0: 'Số lượng vé phải lớn hơn 0',
+  QUANTITY_MUST_BE_LESS_THAN_REMAINING_QUANTITY: 'Số lượng vé của tuyến không đủ',
+  BALANCE_NOT_ENOUGH: 'Số dư của bạn không đủ để thực hiện giao dịch này',
+  ORDER_SUCCESS: 'Đặt vé thành công!'
+} as const

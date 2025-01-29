@@ -249,19 +249,19 @@ class VehicleService {
     let email_html: string
     if (decision) {
       status = VehicleStatus.ACCEPTED
-      email_subject = 'Thông báo phê duyệt phương tiện'
+      email_subject = `Thông báo phê duyệt phương tiện - ${process.env.TRADEMARK_NAME}`
       email_html = `
         <div style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f9f9f9; color: #333;">
           <div style="max-width: 600px; margin: 20px auto; background-color: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
               <div style="background-color: #0044cc; color: #fff; text-align: center; padding: 20px;">
-                  <h1 style="margin: 0; font-size: 24px;">TANK-Travel</h1>
+                  <h1 style="margin: 0; font-size: 24px;">${process.env.TRADEMARK_NAME}</h1>
               </div>
               <div style="padding: 20px;">
                   <p style="font-size: 16px; line-height: 1.5;">
                       Kính gửi Quý doanh nghiệp,
                   </p>
                   <p style="font-size: 16px; line-height: 1.5;">
-                      Chúng tôi rất vui mừng thông báo rằng phương tiện quý doanh nghiệp đã đăng ký với TANK-Travel đã được <strong>chấp thuận</strong> thành công.
+                      Chúng tôi rất vui mừng thông báo rằng phương tiện quý doanh nghiệp đã đăng ký với ${process.env.TRADEMARK_NAME} đã được <strong>chấp thuận</strong> thành công.
                   </p>
                   <h2 style="font-size: 18px; margin-top: 20px;">Thông tin phương tiện:</h2>
                   <ul style="font-size: 16px; line-height: 1.6; padding-left: 20px;">
@@ -277,29 +277,29 @@ class VehicleService {
                   <p style="font-size: 16px; line-height: 1.5;">
                       Trân trọng,
                   </p>
-                  <p style="font-size: 16px; line-height: 1.5;"><strong>Đội ngũ TANK-Travel</strong></p>
+                  <p style="font-size: 16px; line-height: 1.5;"><strong>Đội ngũ ${process.env.TRADEMARK_NAME}</strong></p>
               </div>
               <div style="background-color: #f1f1f1; text-align: center; padding: 10px; font-size: 14px; color: #666;">
-                  © 2025 TANK-Travel. Mọi quyền được bảo lưu.
+                  © ${new Date().getFullYear()} ${process.env.TRADEMARK_NAME}. Mọi quyền được bảo lưu.
               </div>
           </div>
       </div>
       `
     } else {
       status = VehicleStatus.DENIED
-      email_subject = 'Thông báo từ chối phương tiện'
+      email_subject = `Thông báo từ chối phương tiện - ${process.env.TRADEMARK_NAME}`
       email_html = `
         <div style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f9f9f9; color: #333;">
             <div style="max-width: 600px; margin: 20px auto; background-color: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
                 <div style="background-color: #cc0000; color: #fff; text-align: center; padding: 20px;">
-                    <h1 style="margin: 0; font-size: 24px;">TANK-Travel</h1>
+                    <h1 style="margin: 0; font-size: 24px;">${process.env.TRADEMARK_NAME}</h1>
                 </div>
                 <div style="padding: 20px;">
                     <p style="font-size: 16px; line-height: 1.5;">
                         Kính gửi Quý doanh nghiệp,
                     </p>
                     <p style="font-size: 16px; line-height: 1.5;">
-                        Chúng tôi rất tiếc phải thông báo rằng phương tiện quý doanh nghiệp đã đăng ký với TANK-Travel <strong>không được chấp thuận</strong> tại thời điểm này.
+                        Chúng tôi rất tiếc phải thông báo rằng phương tiện quý doanh nghiệp đã đăng ký với ${process.env.TRADEMARK_NAME} <strong>không được chấp thuận</strong> tại thời điểm này.
                     </p>
                     <h2 style="font-size: 18px; margin-top: 20px;">Thông tin phương tiện:</h2>
                     <ul style="font-size: 16px; line-height: 1.6; padding-left: 20px;">
@@ -318,10 +318,10 @@ class VehicleService {
                     <p style="font-size: 16px; line-height: 1.5;">
                         Trân trọng,
                     </p>
-                    <p style="font-size: 16px; line-height: 1.5;"><strong>Đội ngũ TANK-Travel</strong></p>
+                    <p style="font-size: 16px; line-height: 1.5;"><strong>Đội ngũ ${process.env.TRADEMARK_NAME}</strong></p>
                 </div>
                 <div style="background-color: #f1f1f1; text-align: center; padding: 10px; font-size: 14px; color: #666;">
-                    © 2025 TANK-Travel. Mọi quyền được bảo lưu.
+                    © ${new Date().getFullYear()} ${process.env.TRADEMARK_NAME}. Mọi quyền được bảo lưu.
                 </div>
             </div>
         </div>
