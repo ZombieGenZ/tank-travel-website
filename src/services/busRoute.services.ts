@@ -55,7 +55,7 @@ class BusRouteService {
     if (user.permission == UserPermission.ADMINISTRATOR) {
       const result = await databaseService.busRoute
         .find({})
-        .sort({ created_at: 1 })
+        .sort({ created_at: -1 })
         .skip(payload.current)
         .limit(next)
         .toArray()
@@ -106,7 +106,7 @@ class BusRouteService {
             }
           },
           {
-            $sort: { created_at: 1 }
+            $sort: { created_at: -1 }
           },
           {
             $skip: payload.current
@@ -160,7 +160,7 @@ class BusRouteService {
 
       const result = await databaseService.busRoute
         .find(searchQuery)
-        .sort({ created_at: 1 })
+        .sort({ created_at: -1 })
         .skip(payload.current)
         .limit(next)
         .toArray()
@@ -221,7 +221,7 @@ class BusRouteService {
           }
         },
         {
-          $sort: { created_at: 1 }
+          $sort: { created_at: -1 }
         },
         {
           $skip: payload.current

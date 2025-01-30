@@ -4,7 +4,7 @@ import { checkSchema, validationResult } from 'express-validator'
 import { ObjectId } from 'mongodb'
 import HTTPSTATUS from '~/constants/httpStatus'
 import { ORDER_MESSAGE } from '~/constants/message'
-import { OrderRequestBody } from '~/models/requests/order.requests'
+import { OrderRequestBody, GetOrderRequestBody, GetOrderDetailRequestBody } from '~/models/requests/order.requests'
 import { BusRoute } from '~/models/schemas/busRoute.schemas'
 import User from '~/models/schemas/users.schemas'
 import databaseService from '~/services/database.services'
@@ -124,6 +124,10 @@ export const orderValidator = (req: Request, res: Response, next: NextFunction) 
               throw new Error(ORDER_MESSAGE.QUANTITY_MUST_BE_GREATER_THAN_0)
             }
 
+            if (value > 999) {
+              throw new Error(ORDER_MESSAGE.QUANTITY_MUST_BE_LESS_THAN_1000)
+            }
+
             return true
           }
         }
@@ -206,4 +210,126 @@ export const priceValidator = (
   }
 
   next()
+}
+
+export const getOrderValidator = (
+  req: Request<ParamsDictionary, any, GetOrderRequestBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  checkSchema(
+    {
+      current: {
+        notEmpty: {
+          errorMessage: ORDER_MESSAGE.CURRENT_IS_REQUIRED
+        },
+        isInt: {
+          errorMessage: ORDER_MESSAGE.CURRENT_IS_MUST_BE_A_NUMBER
+        },
+        custom: {
+          options: (value) => {
+            if (value < 0) {
+              throw new Error(ORDER_MESSAGE.CURRENT_IS_MUST_BE_GREATER_THAN_0)
+            }
+            return true
+          }
+        }
+      }
+    },
+    ['body']
+  )
+    .run(req)
+    .then(() => {
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        return
+      }
+      next()
+      return
+    })
+    .catch((err) => {
+      res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ message: err, authenticate })
+      return
+    })
+}
+
+export const getOrderDetailValidator = (
+  req: Request<ParamsDictionary, any, GetOrderDetailRequestBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  checkSchema(
+    {
+      order_id: {
+        notEmpty: {
+          errorMessage: ORDER_MESSAGE.ORDER_ID_IS_REQUIRED
+        },
+        isString: {
+          errorMessage: ORDER_MESSAGE.ORDER_ID_IS_MUST_BE_A_STRING
+        },
+        isMongoId: {
+          errorMessage: ORDER_MESSAGE.ORDER_ID_IS_MUST_BE_A_MONGO_ID
+        },
+        custom: {
+          options: async (value) => {
+            const user = req.user as User
+            const bill = await databaseService.bill.findOne({
+              _id: new ObjectId(value),
+              user: user._id
+            })
+
+            if (bill === null) {
+              throw new Error(ORDER_MESSAGE.ORDER_ID_IS_NOT_EXIST)
+            }
+
+            return true
+          }
+        }
+      },
+      current: {
+        notEmpty: {
+          errorMessage: ORDER_MESSAGE.CURRENT_IS_REQUIRED
+        },
+        isInt: {
+          errorMessage: ORDER_MESSAGE.CURRENT_IS_MUST_BE_A_NUMBER
+        },
+        custom: {
+          options: (value) => {
+            if (value < 0) {
+              throw new Error(ORDER_MESSAGE.CURRENT_IS_MUST_BE_GREATER_THAN_0)
+            }
+            return true
+          }
+        }
+      }
+    },
+    ['body']
+  )
+    .run(req)
+    .then(() => {
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        return
+      }
+      next()
+      return
+    })
+    .catch((err) => {
+      res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ message: err, authenticate })
+      return
+    })
 }

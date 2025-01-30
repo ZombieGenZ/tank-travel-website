@@ -18,14 +18,25 @@ import HTTPSTATUS from '~/constants/httpStatus'
 import User from '~/models/schemas/users.schemas'
 
 class VehicleService {
-  async createVehicle(payload: CreateVehicleRequestBody, user_id: ObjectId, preview: ImageType[]) {
-    await databaseService.vehicles.insertOne(
-      new Vehicle({
-        ...payload,
-        user: user_id,
-        preview: preview
-      })
-    )
+  async createVehicle(payload: CreateVehicleRequestBody, user: User, preview: ImageType[]) {
+    if (user.permission === UserPermission.ADMINISTRATOR) {
+      await databaseService.vehicles.insertOne(
+        new Vehicle({
+          ...payload,
+          user: user._id,
+          preview: preview,
+          status: VehicleStatus.ACCEPTED
+        })
+      )
+    } else {
+      await databaseService.vehicles.insertOne(
+        new Vehicle({
+          ...payload,
+          user: user._id,
+          preview: preview
+        })
+      )
+    }
   }
 
   async updateVehicle(payload: UpdateVehicleRequestBody) {
@@ -75,7 +86,7 @@ class VehicleService {
       const result = await databaseService.vehicles
         .find({})
         .project({ preview: 0 })
-        .sort({ created_at: 1 })
+        .sort({ created_at: -1 })
         .skip(payload.current)
         .limit(next)
         .toArray()
@@ -104,7 +115,7 @@ class VehicleService {
       const result = await databaseService.vehicles
         .find({ user: user._id })
         .project({ preview: 0 })
-        .sort({ created_at: 1 })
+        .sort({ created_at: -1 })
         .skip(payload.current)
         .limit(next)
         .toArray()
@@ -165,7 +176,7 @@ class VehicleService {
       const result = await databaseService.vehicles
         .find(searchQuery)
         .project({ preview: 0 })
-        .sort({ created_at: 1 })
+        .sort({ created_at: -1 })
         .skip(payload.current)
         .limit(next)
         .toArray()
@@ -214,7 +225,7 @@ class VehicleService {
       const result = await databaseService.vehicles
         .find(searchQuery)
         .project({ preview: 0 })
-        .sort({ created_at: 1 })
+        .sort({ created_at: -1 })
         .skip(payload.current)
         .limit(next)
         .toArray()
@@ -365,7 +376,7 @@ class VehicleService {
       const vehicle = await databaseService.vehicles
         .find({})
         .project({ license_plate: 1, _id: 1 })
-        .sort({ created_at: 1 })
+        .sort({ created_at: -1 })
         .toArray()
 
       if (vehicle.length === 0) {
@@ -382,7 +393,7 @@ class VehicleService {
       const vehicle = await databaseService.vehicles
         .find({ user: user._id })
         .project({ license_plate: 1, _id: 1 })
-        .sort({ created_at: 1 })
+        .sort({ created_at: -1 })
         .toArray()
 
       if (vehicle.length === 0) {

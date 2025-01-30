@@ -5,3 +5,14 @@ export interface OrderRequestBody {
   phone: string
   quantity: number
 }
+
+export interface GetOrderRequestBody {
+  refresh_token: string
+  current: number
+}
+
+export interface GetOrderDetailRequestBody {
+  refresh_token: string
+  order_id: string
+  current: number
+}

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import { checkSchema, validationResult } from 'express-validator'
 import { ObjectId } from 'mongodb'
-import { UserPermission } from '~/constants/enum'
+import { UserPermission, VehicleStatus } from '~/constants/enum'
 import HTTPSTATUS from '~/constants/httpStatus'
 import { BUSROUTE_MESSAGE, VEHICLE_MESSGAE } from '~/constants/message'
 import User from '~/models/schemas/users.schemas'
@@ -33,7 +33,10 @@ export const createValidator = (req: Request, res: Response, next: NextFunction)
             const user = (req as Request).user as User
 
             if (user.permission == UserPermission.ADMINISTRATOR) {
-              const vehicle = await databaseService.vehicles.findOne({ _id: new ObjectId(value) })
+              const vehicle = await databaseService.vehicles.findOne({
+                _id: new ObjectId(value),
+                status: { $ne: VehicleStatus.PENDING_APPROVAL }
+              })
 
               if (vehicle === null) {
                 throw new Error(VEHICLE_MESSGAE.VEHICLE_ID_IS_NOT_EXIST)
@@ -42,7 +45,11 @@ export const createValidator = (req: Request, res: Response, next: NextFunction)
               ;(req as Request).vehicle = vehicle
               return true
             } else {
-              const vehicle = await databaseService.vehicles.findOne({ _id: new ObjectId(value), user: user._id })
+              const vehicle = await databaseService.vehicles.findOne({
+                _id: new ObjectId(value),
+                user: user._id,
+                status: { $ne: VehicleStatus.PENDING_APPROVAL }
+              })
 
               if (vehicle === null) {
                 throw new Error(VEHICLE_MESSGAE.VEHICLE_ID_IS_NOT_EXIST)
@@ -98,6 +105,17 @@ export const createValidator = (req: Request, res: Response, next: NextFunction)
             strictSeparator: true
           },
           errorMessage: BUSROUTE_MESSAGE.DEPARTURE_TIME_MUST_BE_ISO8601
+        },
+        custom: {
+          options: (value, { req }) => {
+            const date = new Date(value)
+
+            if (date <= new Date()) {
+              throw new Error(BUSROUTE_MESSAGE.DEPARTURE_TIME_MUST_BE_GREATER_THAN_NOW)
+            }
+
+            return true
+          }
         }
       },
       arrival_time: {
@@ -113,9 +131,16 @@ export const createValidator = (req: Request, res: Response, next: NextFunction)
         },
         custom: {
           options: (value, { req }) => {
+            const date = new Date(value)
+
+            if (date <= new Date()) {
+              throw new Error(BUSROUTE_MESSAGE.ARRIVAL_TIME_MUST_BE_GREATER_THAN_NOW)
+            }
+
             if (new Date(value) <= new Date(req.body.departure_time)) {
               throw new Error(BUSROUTE_MESSAGE.ARRIVAL_TIME_MUST_BE_GREATER_THAN_DEPARTURE_TIME)
             }
+
             return true
           }
         }
@@ -132,6 +157,11 @@ export const createValidator = (req: Request, res: Response, next: NextFunction)
             if (value < 0) {
               throw new Error(BUSROUTE_MESSAGE.PRICE_MUST_BE_GREATER_THAN_0)
             }
+
+            if (value > 100000000) {
+              throw new Error(BUSROUTE_MESSAGE.PRICE_MUST_BE_LESS_THAN_100000000)
+            }
+
             return true
           }
         }
@@ -269,7 +299,10 @@ export const updateValidator = (req: Request, res: Response, next: NextFunction)
             const user = (req as Request).user as User
 
             if (user.permission == UserPermission.ADMINISTRATOR) {
-              const vehicle = await databaseService.vehicles.findOne({ _id: new ObjectId(value) })
+              const vehicle = await databaseService.vehicles.findOne({
+                _id: new ObjectId(value),
+                status: { $ne: VehicleStatus.PENDING_APPROVAL }
+              })
 
               if (vehicle === null) {
                 throw new Error(VEHICLE_MESSGAE.VEHICLE_ID_IS_NOT_EXIST)
@@ -278,7 +311,11 @@ export const updateValidator = (req: Request, res: Response, next: NextFunction)
               ;(req as Request).vehicle = vehicle
               return true
             } else {
-              const vehicle = await databaseService.vehicles.findOne({ _id: new ObjectId(value), user: user._id })
+              const vehicle = await databaseService.vehicles.findOne({
+                _id: new ObjectId(value),
+                user: user._id,
+                status: { $ne: VehicleStatus.PENDING_APPROVAL }
+              })
 
               if (vehicle === null) {
                 throw new Error(VEHICLE_MESSGAE.VEHICLE_ID_IS_NOT_EXIST)
@@ -368,6 +405,11 @@ export const updateValidator = (req: Request, res: Response, next: NextFunction)
             if (value < 0) {
               throw new Error(BUSROUTE_MESSAGE.PRICE_MUST_BE_GREATER_THAN_0)
             }
+
+            if (value > 100000000) {
+              throw new Error(BUSROUTE_MESSAGE.PRICE_MUST_BE_LESS_THAN_100000000)
+            }
+
             return true
           }
         }

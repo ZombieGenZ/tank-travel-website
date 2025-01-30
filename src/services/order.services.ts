@@ -1,14 +1,15 @@
 import { ObjectId } from 'mongodb'
-import { OrderRequestBody } from '~/models/requests/order.requests'
+import { OrderRequestBody, GetOrderRequestBody, GetOrderDetailRequestBody } from '~/models/requests/order.requests'
 import { BillDetail } from '~/models/schemas/billDetail.schemas'
 import databaseService from './database.services'
 import { BusRoute } from '~/models/schemas/busRoute.schemas'
 import { sendMail } from '~/utils/mail'
 import User from '~/models/schemas/users.schemas'
-import { SeatType, VehicleTypeEnum } from '~/constants/enum'
+import { SeatType, UserPermission, VehicleTypeEnum } from '~/constants/enum'
 import { Vehicle } from '~/models/schemas/vehicle.chemas'
 import { Bill } from '~/models/schemas/bill.schemas'
 import { Profit } from '~/models/schemas/profit.schemas'
+import { ORDER_MESSAGE } from '~/constants/message'
 
 class OrderService {
   async order(payload: OrderRequestBody, user: User, busRoute: BusRoute) {
@@ -181,6 +182,260 @@ class OrderService {
         }
       )
     ])
+  }
+
+  async getOrderList(payload: GetOrderRequestBody, user: User) {
+    const limit = Number(process.env.LOAD_QUANTITY_LIMIT as string)
+    const next = limit + 1
+
+    const result = await databaseService.bill
+      .aggregate([
+        {
+          $match: {
+            user: user._id
+          }
+        },
+        {
+          $lookup: {
+            from: 'bus_routes',
+            localField: 'bus_route',
+            foreignField: '_id',
+            as: 'bus_route'
+          }
+        },
+        {
+          $unwind: '$bus_route'
+        },
+        {
+          $sort: {
+            booking_time: -1
+          }
+        },
+        {
+          $skip: payload.current
+        },
+        {
+          $limit: next
+        }
+      ])
+      .toArray()
+
+    const continued = result.length > limit
+
+    const bill = result.slice(0, limit)
+
+    const current = payload.current + bill.length
+
+    if (bill.length === 0) {
+      return {
+        message: ORDER_MESSAGE.NO_MATCHING_RESULTS_FOUND,
+        current: payload.current,
+        continued: false,
+        vehicle: []
+      }
+    } else {
+      return {
+        current,
+        continued,
+        bill
+      }
+    }
+  }
+
+  async getOrderDetailList(payload: GetOrderDetailRequestBody, user: User) {
+    const limit = Number(process.env.LOAD_QUANTITY_LIMIT as string)
+    const next = limit + 1
+
+    const result = await databaseService.billDetail
+      .aggregate([
+        {
+          $lookup: {
+            from: 'bill',
+            localField: 'bill',
+            foreignField: '_id',
+            as: 'bill_info'
+          }
+        },
+        {
+          $unwind: '$bill_info'
+        },
+        {
+          $lookup: {
+            from: 'bus_routes',
+            localField: 'bill_info.bus_route',
+            foreignField: '_id',
+            as: 'bus_route'
+          }
+        },
+        {
+          $unwind: '$bus_route'
+        },
+        {
+          $match: { 'bill_info.user': user._id }
+        },
+        {
+          $project: {
+            bill_info: 0
+          }
+        },
+        {
+          $sort: { created_at: -1 }
+        },
+        {
+          $skip: payload.current
+        },
+        {
+          $limit: next
+        }
+      ])
+      .toArray()
+
+    const continued = result.length > limit
+
+    const bill = result.slice(0, limit)
+
+    const current = payload.current + bill.length
+
+    if (bill.length === 0) {
+      return {
+        message: ORDER_MESSAGE.NO_MATCHING_RESULTS_FOUND,
+        current: payload.current,
+        continued: false,
+        vehicle: []
+      }
+    } else {
+      return {
+        current,
+        continued,
+        bill
+      }
+    }
+  }
+
+  async getOrder(payload: GetOrderRequestBody, user: User) {
+    const limit = Number(process.env.LOAD_QUANTITY_LIMIT as string)
+    const next = limit + 1
+
+    if (user.permission == UserPermission.ADMINISTRATOR) {
+      const result = await databaseService.bill
+        .aggregate([
+          {
+            $lookup: {
+              from: 'bus_routes',
+              localField: 'bus_route',
+              foreignField: '_id',
+              as: 'bus_route'
+            }
+          },
+          {
+            $unwind: '$bus_route'
+          },
+          {
+            $sort: {
+              booking_time: -1
+            }
+          },
+          {
+            $skip: payload.current
+          },
+          {
+            $limit: next
+          }
+        ])
+        .toArray()
+
+      const continued = result.length > limit
+
+      const bill = result.slice(0, limit)
+
+      const current = payload.current + bill.length
+
+      if (bill.length === 0) {
+        return {
+          message: ORDER_MESSAGE.NO_MATCHING_RESULTS_FOUND,
+          current: payload.current,
+          continued: false,
+          vehicle: []
+        }
+      } else {
+        return {
+          current,
+          continued,
+          bill
+        }
+      }
+    } else {
+      const result = await databaseService.bill
+        .aggregate([
+          {
+            $lookup: {
+              from: 'bus_routes',
+              localField: 'bus_route',
+              foreignField: '_id',
+              as: 'bus_route'
+            }
+          },
+          {
+            $unwind: '$bus_route'
+          },
+          {
+            $lookup: {
+              from: 'vehicles',
+              localField: 'bus_route.vehicle',
+              foreignField: '_id',
+              as: 'vehicle_info'
+            }
+          },
+          {
+            $unwind: '$vehicle_info'
+          },
+          {
+            $match: {
+              $or: [
+                {
+                  'vehicle_info.user': user._id
+                }
+              ]
+            }
+          },
+          {
+            $project: {
+              vehicle_info: 0
+            }
+          },
+          {
+            $sort: { booking_time: -1 }
+          },
+          {
+            $skip: payload.current
+          },
+          {
+            $limit: next
+          }
+        ])
+        .toArray()
+
+      const continued = result.length > limit
+
+      const bill = result.slice(0, limit)
+
+      const current = payload.current + bill.length
+
+      if (bill.length === 0) {
+        return {
+          message: ORDER_MESSAGE.NO_MATCHING_RESULTS_FOUND,
+          current: payload.current,
+          continued: false,
+          vehicle: []
+        }
+      } else {
+        return {
+          current,
+          continued,
+          bill
+        }
+      }
+    }
   }
 
   private getFormatDate(date: Date): string {

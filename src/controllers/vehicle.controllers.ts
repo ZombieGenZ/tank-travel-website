@@ -57,7 +57,6 @@ export const createController = async (
   res: Response
 ) => {
   const user = req.user as User
-  const user_id = user._id
   const preview = req.preview as ImageType[]
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -65,7 +64,7 @@ export const createController = async (
     refresh_token
   }
 
-  await VehicleService.createVehicle(req.body, user_id, preview)
+  await VehicleService.createVehicle(req.body, user, preview)
 
   res.json({
     message: VEHICLE_MESSGAE.CREATE_VEHICLE_SUCCESS,

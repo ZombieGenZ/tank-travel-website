@@ -125,7 +125,10 @@ export const BUSROUTE_MESSAGE = {
   CURRENT_IS_MUST_BE_A_NUMBER: 'Số trang hiện tại phải là một số',
   CURRENT_IS_MUST_BE_GREATER_THAN_0: 'Số trang hiện tại phải lớn hơn 0',
   NO_MATCHING_RESULTS_FOUND: 'Không tìm thấy kết quả phù hợp',
-  KEYWORDS_IS_REQUIRED: 'Không được bỏ trống từ khóa'
+  KEYWORDS_IS_REQUIRED: 'Không được bỏ trống từ khóa',
+  DEPARTURE_TIME_MUST_BE_GREATER_THAN_NOW: 'Thời gian khởi hành phải lớn hơn thời gian hiện tại',
+  ARRIVAL_TIME_MUST_BE_GREATER_THAN_NOW: 'Thời gian đến dự kiến phải lớn hơn thời gian hiện tại',
+  PRICE_MUST_BE_LESS_THAN_100000000: 'Giá vé phải nhỏ hơn 100,000,000 vnđ'
 } as const
 
 export const ORDER_MESSAGE = {
@@ -145,5 +148,14 @@ export const ORDER_MESSAGE = {
   QUANTITY_MUST_BE_GREATER_THAN_0: 'Số lượng vé phải lớn hơn 0',
   QUANTITY_MUST_BE_LESS_THAN_REMAINING_QUANTITY: 'Số lượng vé của tuyến không đủ',
   BALANCE_NOT_ENOUGH: 'Số dư của bạn không đủ để thực hiện giao dịch này',
-  ORDER_SUCCESS: 'Đặt vé thành công!'
+  ORDER_SUCCESS: 'Đặt vé thành công!',
+  CURRENT_IS_REQUIRED: 'Số trang hiện tại là bắt buộc',
+  CURRENT_IS_MUST_BE_A_NUMBER: 'Số trang hiện tại phải là một số',
+  CURRENT_IS_MUST_BE_GREATER_THAN_0: 'Số trang hiện tại phải lớn hơn 0',
+  NO_MATCHING_RESULTS_FOUND: 'Không tìm thấy kết quả phù hợp',
+  ORDER_ID_IS_REQUIRED: 'Không được bỏ trống id đơn hàng',
+  ORDER_ID_IS_MUST_BE_A_STRING: 'Id đơn hàng phải là một chuỗi ký tự',
+  ORDER_ID_IS_MUST_BE_A_MONGO_ID: 'Id đơn hàng không đúng định dạng',
+  ORDER_ID_IS_NOT_EXIST: 'Id đơn hàng không tồn tại',
+  QUANTITY_MUST_BE_LESS_THAN_1000: 'Số lượng vé phải nhỏ hơn 1000'
 } as const
