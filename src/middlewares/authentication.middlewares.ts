@@ -60,6 +60,11 @@ export const authenticationValidator = async (req: Request, res: Response, next:
       publicKey: process.env.SECURITY_JWT_SECRET_ACCESS_TOKEN as string
     })) as TokenPayload
 
+    await verifyToken({
+      token: token as string,
+      publicKey: process.env.SECURITY_JWT_SECRET_REFRESH_TOKEN as string
+    })
+
     const { user_id } = decoded_access_token
     const user = await databaseService.users.findOne({ _id: new ObjectId(user_id) })
 
@@ -111,6 +116,11 @@ export const authenticationValidator = async (req: Request, res: Response, next:
 
 export const customerAuthenticationValidator = async (req: Request, res: Response, next: NextFunction) => {
   const user = req.user as User
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
 
   if (
     user &&
@@ -122,27 +132,46 @@ export const customerAuthenticationValidator = async (req: Request, res: Respons
     return
   }
 
-  res.status(HTTPSTATUS.UNAUTHORIZED).json({ message: AUTHENTICATION_MESSAGE.NOT_PERMISSION_TODO_THIS })
+  res.status(HTTPSTATUS.UNAUTHORIZED).json({
+    message: AUTHENTICATION_MESSAGE.NOT_PERMISSION_TODO_THIS,
+    authenticate
+  })
 }
 
 export const businessAuthenticationValidator = async (req: Request, res: Response, next: NextFunction) => {
   const user = req.user as User
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
 
   if (user && (user.permission == UserPermission.BUSINESS || user.permission == UserPermission.ADMINISTRATOR)) {
     next()
     return
   }
 
-  res.status(HTTPSTATUS.UNAUTHORIZED).json({ message: AUTHENTICATION_MESSAGE.NOT_PERMISSION_TODO_THIS })
+  res.status(HTTPSTATUS.UNAUTHORIZED).json({
+    message: AUTHENTICATION_MESSAGE.NOT_PERMISSION_TODO_THIS,
+    authenticate
+  })
 }
 
 export const administratorAuthenticationValidator = async (req: Request, res: Response, next: NextFunction) => {
   const user = req.user as User
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
 
   if (user && user.permission == UserPermission.ADMINISTRATOR) {
     next()
     return
   }
 
-  res.status(HTTPSTATUS.UNAUTHORIZED).json({ message: AUTHENTICATION_MESSAGE.NOT_PERMISSION_TODO_THIS })
+  res.status(HTTPSTATUS.UNAUTHORIZED).json({
+    message: AUTHENTICATION_MESSAGE.NOT_PERMISSION_TODO_THIS,
+    authenticate
+  })
 }

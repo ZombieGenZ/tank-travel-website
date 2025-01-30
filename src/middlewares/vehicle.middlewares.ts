@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import { VehicleImage } from '~/models/schemas/vehicle.chemas'
+import { ImageType } from '~/constants/image'
 import { checkSchema, validationResult } from 'express-validator'
 import { SeatType, UserPermission, VehicleTypeEnum } from '~/constants/enum'
 import { VEHICLE_MESSGAE, AUTHENTICATION_MESSAGE } from '~/constants/message'
@@ -67,6 +67,11 @@ export const authenticateCreateValidator = async (req: Request, res: Response, n
       token: token as string,
       publicKey: process.env.SECURITY_JWT_SECRET_ACCESS_TOKEN as string
     })) as TokenPayload
+
+    await verifyToken({
+      token: token as string,
+      publicKey: process.env.SECURITY_JWT_SECRET_REFRESH_TOKEN as string
+    })
 
     const { user_id } = decoded_access_token
     const user = await databaseService.users.findOne({ _id: new ObjectId(user_id) })
@@ -272,7 +277,7 @@ export const createValidator = (req: Request, res: Response, next: NextFunction)
     })
     .catch((err) => {
       deleteTemporaryFile(req.files)
-      res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ message: err.mapped(), authenticate })
+      res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ message: err, authenticate })
       return
     })
 }
@@ -305,7 +310,7 @@ export const setupCreateImage = async (req: Request, res: Response, next: NextFu
 
   const processPromises = images.map(
     (file: Express.Multer.File) =>
-      new Promise<VehicleImage>((resolve, reject) => {
+      new Promise<ImageType>((resolve, reject) => {
         const imgPath = path.join(directoryPath, file.filename)
 
         sharp(imgPath)
@@ -340,7 +345,7 @@ export const setupCreateImage = async (req: Request, res: Response, next: NextFu
                   })
               })
               .then(() => {
-                const img: VehicleImage = {
+                const img: ImageType = {
                   path: `public/images/upload/vehicle/${user._id}/${file.filename}`,
                   type: file.mimetype,
                   url: `${process.env.APP_URL}/images/upload/vehicle/${user._id}/${file.filename}`,
@@ -385,7 +390,13 @@ export const deleteTemporaryFile = async (files: any) => {
   await Promise.allSettled(promises)
 }
 
-export const updateValidator = validate(
+export const updateValidator = async (req: Request, res: Response, next: NextFunction) => {
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
   checkSchema(
     {
       vehicle_id: {
@@ -536,9 +547,28 @@ export const updateValidator = validate(
     },
     ['body']
   )
-)
+    .run(req)
+    .then(() => {
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ message: errors.mapped(), authenticate })
+        return
+      }
+      next()
+      return
+    })
+    .catch((err) => {
+      res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ message: err, authenticate })
+      return
+    })
+}
 
-export const vehicleIdValidator = validate(
+export const vehicleIdValidator = (req: Request, res: Response, next: NextFunction) => {
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
   checkSchema(
     {
       vehicle_id: {
@@ -580,9 +610,28 @@ export const vehicleIdValidator = validate(
     },
     ['body']
   )
-)
+    .run(req)
+    .then(() => {
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        return
+      }
+      next()
+      return
+    })
+    .catch((err) => {
+      res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ message: err, authenticate })
+      return
+    })
+}
 
-export const getVehicleValidator = validate(
+export const getVehicleValidator = (req: Request, res: Response, next: NextFunction) => {
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
   checkSchema(
     {
       current: {
@@ -604,9 +653,28 @@ export const getVehicleValidator = validate(
     },
     ['body']
   )
-)
+    .run(req)
+    .then(() => {
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        return
+      }
+      next()
+      return
+    })
+    .catch((err) => {
+      res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ message: err, authenticate })
+      return
+    })
+}
 
-export const findVehicleValidator = validate(
+export const findVehicleValidator = (req: Request, res: Response, next: NextFunction) => {
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
   checkSchema(
     {
       keywords: {
@@ -618,9 +686,28 @@ export const findVehicleValidator = validate(
     },
     ['body']
   )
-)
+    .run(req)
+    .then(() => {
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        return
+      }
+      next()
+      return
+    })
+    .catch((err) => {
+      res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ message: err, authenticate })
+      return
+    })
+}
 
-export const censorVehicleValidator = validate(
+export const censorVehicleValidator = (req: Request, res: Response, next: NextFunction) => {
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
   checkSchema(
     {
       decision: {
@@ -634,4 +721,18 @@ export const censorVehicleValidator = validate(
     },
     ['body']
   )
-)
+    .run(req)
+    .then(() => {
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        return
+      }
+      next()
+      return
+    })
+    .catch((err) => {
+      res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ message: err, authenticate })
+      return
+    })
+}

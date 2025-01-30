@@ -34,7 +34,7 @@ export const loginController = async (req: Request, res: Response) => {
 
   res.json({
     message: USER_MESSAGE.LOGIN_SUCCESS,
-    result
+    authenticate: result
   })
 }
 

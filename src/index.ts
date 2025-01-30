@@ -28,7 +28,7 @@ app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Hello, World!' })
 })
 
-app.use('/test/vehicle/create', (req: Request, res: Response) => {
+app.get('/test/vehicle/create', (req: Request, res: Response) => {
   res.render('test/vehicle.create.ejs')
 })
 

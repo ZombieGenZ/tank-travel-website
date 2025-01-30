@@ -12,7 +12,8 @@ import {
   GetVehicleListRequestBody
 } from '~/models/requests/vehicle.requests'
 import User from '~/models/schemas/users.schemas'
-import { Vehicle, VehicleImage } from '~/models/schemas/vehicle.chemas'
+import { Vehicle } from '~/models/schemas/vehicle.chemas'
+import { ImageType } from '~/constants/image'
 import VehicleService from '~/services/vehicle.services'
 
 export const getVehicleType = async (req: Request<ParamsDictionary, any, GetVehicleInfoRequestBody>, res: Response) => {
@@ -57,7 +58,7 @@ export const createController = async (
 ) => {
   const user = req.user as User
   const user_id = user._id
-  const preview = req.preview as VehicleImage[]
+  const preview = req.preview as ImageType[]
   const { access_token, refresh_token } = req
   const authenticate = {
     access_token,

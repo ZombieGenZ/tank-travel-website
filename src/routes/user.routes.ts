@@ -53,7 +53,7 @@ router.post('/register', registerValidator, wrapRequestHandler(registerControlle
 
 /*
  * Description: Đăng nhập vào một tài khoản hiện có trên CSDL
- * Path: /users/login
+ * Path: /api/users/login
  * Method: POST
  * Body: {
  *    email: string,
@@ -64,12 +64,18 @@ router.post('/login', loginValidator, wrapRequestHandler(loginController))
 
 /*
  * Description: Đăng xuất khỏi một tài khoản hiện có trên CSDL
- * Path: /users/logout
+ * Path: /api/users/logout
  * Method: DELETE
  * Body: {
  *    refresh_token: string
  * }
  */
 router.delete('/logout', refreshTokenValidator, wrapRequestHandler(logoutController))
+
+// DOITAFTER: Làm chức năng quên mật khẩu
+// DOITAFTER: Làm chức năng thay đổi mật khẩu
+// DOITAFTER: Làm chức năng thay đổi email
+// DOITAFTER: Làm chức năng thay đổi số điện thoại
+// DOITAFTER: Làm chức năng thay đổi thay đổi avatar
 
 export default router

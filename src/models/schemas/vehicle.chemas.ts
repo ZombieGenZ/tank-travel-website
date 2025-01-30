@@ -1,5 +1,6 @@
 import { ObjectId } from 'mongodb'
 import { VehicleTypeEnum, VehicleStatus, SeatType } from '~/constants/enum'
+import { ImageType } from '~/constants/image'
 
 interface VehicleType {
   _id?: ObjectId
@@ -8,19 +9,12 @@ interface VehicleType {
   seats: number
   rules: string
   amenities: string // tiện nghi
-  preview: VehicleImage[]
+  preview: ImageType[]
   license_plate: string // Biển số xe
   user: ObjectId
   created_at?: Date
   updated_at?: Date
   status?: VehicleStatus
-}
-
-export interface VehicleImage {
-  type: string
-  path: string
-  url: string
-  size: number // Kích thước của ảnh (byte)
 }
 
 export class Vehicle {
@@ -30,7 +24,7 @@ export class Vehicle {
   seats: number
   rules: string
   amenities: string
-  preview: VehicleImage[]
+  preview: ImageType[]
   license_plate: string
   user: ObjectId
   created_at: Date

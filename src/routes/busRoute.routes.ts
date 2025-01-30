@@ -131,4 +131,7 @@ router.get(
   wrapRequestHandler(findBusRouteController)
 )
 
+// DOITAFTER: Làm chức năng lấy thông tin tuyến để load lên cho khách hàng
+// DOITAFTER: Làm chức năng tìm kiếm thông tin tuyến để load lên cho khách hàng
+
 export default router

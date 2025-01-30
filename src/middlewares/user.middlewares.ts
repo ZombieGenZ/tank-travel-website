@@ -235,7 +235,6 @@ export const registerValidator = validate(
             })
 
             if (email_verify_code === null) {
-              console.log('here')
               throw new Error(USER_MESSAGE.EMAIL_VERIFY_CODE_INVALID)
             }
 
@@ -313,65 +312,6 @@ export const loginValidator = validate(
     ['body']
   )
 )
-
-// export const accessTokenValidator = validate(
-//   checkSchema(
-//     {
-//       authorization: {
-//         trim: true,
-//         custom: {
-//           options: async (value: string, { req }) => {
-//             if (!value) {
-//               throw new ErrorWithStatus({
-//                 message: USER_MESSAGE.AUTHORIZATION_IS_REQUESTED,
-//                 status: HTTPSTATUS.UNAUTHORIZED
-//               })
-//             }
-
-//             if (typeof value !== 'string') {
-//               throw new ErrorWithStatus({
-//                 message: USER_MESSAGE.AUTHORIZATION_MUST_BE_A_STRING,
-//                 status: HTTPSTATUS.UNAUTHORIZED
-//               })
-//             }
-
-//             if (value === '') {
-//               throw new ErrorWithStatus({
-//                 message: USER_MESSAGE.AUTHORIZATION_IS_REQUESTED,
-//                 status: HTTPSTATUS.UNAUTHORIZED
-//               })
-//             }
-
-//             try {
-//               const access_token = value.split(' ')[1]
-//               if (!access_token) {
-//                 throw new ErrorWithStatus({
-//                   message: USER_MESSAGE.AUTHORIZATION_IS_REQUESTED,
-//                   status: HTTPSTATUS.UNAUTHORIZED
-//                 })
-//               }
-
-//               const decoded_authorization = await verifyToken({
-//                 token: access_token,
-//                 publicKey: process.env.SECURITY_JWT_SECRET_ACCESS_TOKEN as string
-//               })
-
-//               ;(req as Request).decoded_authorization = decoded_authorization
-
-//               return true
-//             } catch {
-//               throw new ErrorWithStatus({
-//                 message: USER_MESSAGE.AUTHORIZATION_INVALID,
-//                 status: HTTPSTATUS.UNAUTHORIZED
-//               })
-//             }
-//           }
-//         }
-//       }
-//     },
-//     ['headers']
-//   )
-// )
 
 export const refreshTokenValidator = validate(
   checkSchema(

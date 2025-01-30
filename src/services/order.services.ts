@@ -1,15 +1,14 @@
 import { ObjectId } from 'mongodb'
 import { OrderRequestBody } from '~/models/requests/order.requests'
-import { Bill } from '~/models/schemas/bill.schemas'
+import { BillDetail } from '~/models/schemas/billDetail.schemas'
 import databaseService from './database.services'
 import { BusRoute } from '~/models/schemas/busRoute.schemas'
 import { sendMail } from '~/utils/mail'
 import User from '~/models/schemas/users.schemas'
 import { SeatType, VehicleTypeEnum } from '~/constants/enum'
 import { Vehicle } from '~/models/schemas/vehicle.chemas'
-import path from 'path'
-import fs from 'fs'
-import { defaultGeneralStatistics } from '~/constants/generalstatistics'
+import { Bill } from '~/models/schemas/bill.schemas'
+import { Profit } from '~/models/schemas/profit.schemas'
 
 class OrderService {
   async order(payload: OrderRequestBody, user: User, busRoute: BusRoute) {
@@ -20,18 +19,35 @@ class OrderService {
     const totalRevenue =
       payload.quantity * busRoute.price -
       ((busRoute.price * payload.quantity) / 100) * Number(process.env.REVENUE_TAX as string)
+    let profit = await databaseService.profit.findOne({
+      time: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
+    })
     const revenue = ((busRoute.price * payload.quantity) / 100) * Number(process.env.REVENUE_TAX as string)
-    const orders: Bill[] = []
 
-    for (let i = 0; i < payload.quantity; i++) {
-      const order = new Bill({
+    if (profit === null) {
+      const result = await databaseService.profit.insertOne(new Profit({}))
+      profit = await databaseService.profit.findOne({ _id: result.insertedId })
+    }
+
+    const bill = await databaseService.bill.insertOne(
+      new Bill({
         ...payload,
         bus_route: new ObjectId(payload.bus_route_id),
         user: user._id,
         booking_time: date,
+        totalPrice: totalPrice
+      })
+    )
+
+    const billDetails: BillDetail[] = []
+
+    for (let i = 0; i < payload.quantity; i++) {
+      const billDetail = new BillDetail({
+        ...payload,
+        bill: bill.insertedId,
         price: busRoute.price
       })
-      orders.push(order)
+      billDetails.push(billDetail)
     }
 
     const email_subject = `Vé điện từ - ${process.env.TRADEMARK_NAME}`
@@ -52,7 +68,7 @@ class OrderService {
                   </tr>
                                     <tr>
                       <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Số ghế</th>
-                      <td style="border: 1px solid #ddd; padding: 10px; text-align: left;">${payload.quantity}</td>
+                      <td style="border: 1px solid #ddd; padding: 10px; text-align: left;">${payload.quantity} ghế</td>
                   </tr>
                   <tr>
                       <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Số hiệu</th>
@@ -120,7 +136,7 @@ class OrderService {
     `
 
     await Promise.all([
-      databaseService.order.insertMany(orders),
+      databaseService.billDetail.insertMany(billDetails),
       databaseService.busRoute.updateOne(
         { _id: new ObjectId(payload.bus_route_id) },
         {
@@ -152,23 +168,19 @@ class OrderService {
         }
       ),
       sendMail(user.email, email_subject, email_html),
-      sendMail(user.email, bill_email_subject, bill_email_html)
+      sendMail(user.email, bill_email_subject, bill_email_html),
+      databaseService.profit.updateOne(
+        {
+          _id: (profit as Profit)._id
+        },
+        {
+          $set: {
+            revenue: (profit as Profit).revenue + revenue
+          },
+          $currentDate: { last_update: true }
+        }
+      )
     ])
-
-    const statisticsPath = path.join(__dirname, '../../data/generalstatistics.json')
-
-    if (!fs.existsSync(statisticsPath)) {
-      fs.writeFileSync(statisticsPath, JSON.stringify(defaultGeneralStatistics, null, 2), 'utf8')
-    }
-
-    const data = fs.readFileSync(statisticsPath, 'utf8')
-
-    const statistics = JSON.parse(data)
-
-    statistics.revenue += revenue
-    statistics.lastUpdate = new Date().toISOString()
-
-    fs.writeFileSync(statisticsPath, JSON.stringify(statistics, null, 2), 'utf8')
   }
 
   private getFormatDate(date: Date): string {

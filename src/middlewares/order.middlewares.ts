@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
-import { checkSchema } from 'express-validator'
+import { checkSchema, validationResult } from 'express-validator'
 import { ObjectId } from 'mongodb'
 import HTTPSTATUS from '~/constants/httpStatus'
 import { ORDER_MESSAGE } from '~/constants/message'
@@ -10,7 +10,12 @@ import User from '~/models/schemas/users.schemas'
 import databaseService from '~/services/database.services'
 import { validate } from '~/utils/validation'
 
-export const orderValidator = validate(
+export const orderValidator = (req: Request, res: Response, next: NextFunction) => {
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
   checkSchema(
     {
       bus_route_id: {
@@ -126,7 +131,21 @@ export const orderValidator = validate(
     },
     ['body']
   )
-)
+    .run(req)
+    .then(() => {
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        return
+      }
+      next()
+      return
+    })
+    .catch((err) => {
+      res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ message: err, authenticate })
+      return
+    })
+}
 
 export const quantityValidator = (
   req: Request<ParamsDictionary, any, OrderRequestBody>,
@@ -135,18 +154,27 @@ export const quantityValidator = (
 ) => {
   const busRoute = req.bus_route as BusRoute
   const { quantity } = req.body
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
 
   if (isNaN(busRoute.quantity) || isNaN(quantity)) {
-    res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ message: ORDER_MESSAGE.QUANTITY_MUST_BE_INT })
+    res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({
+      message: ORDER_MESSAGE.QUANTITY_MUST_BE_INT,
+      authenticate
+    })
     return
   }
 
   const remainingQuantity = busRoute.quantity - quantity
 
   if (remainingQuantity < 0) {
-    res
-      .status(HTTPSTATUS.UNPROCESSABLE_ENTITY)
-      .json({ message: ORDER_MESSAGE.QUANTITY_MUST_BE_LESS_THAN_REMAINING_QUANTITY })
+    res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({
+      message: ORDER_MESSAGE.QUANTITY_MUST_BE_LESS_THAN_REMAINING_QUANTITY,
+      authenticate
+    })
     return
   }
 
@@ -161,11 +189,19 @@ export const priceValidator = (
   const user = req.user as User
   const busRoute = req.bus_route as BusRoute
   const { quantity } = req.body as { quantity: number }
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
 
   const totalPrice = quantity * busRoute.price
 
   if (totalPrice > user.balance) {
-    res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ message: ORDER_MESSAGE.BALANCE_NOT_ENOUGH })
+    res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({
+      message: ORDER_MESSAGE.BALANCE_NOT_ENOUGH,
+      authenticate
+    })
     return
   }
 

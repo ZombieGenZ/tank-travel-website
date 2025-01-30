@@ -1,13 +1,20 @@
-import { Request } from 'express'
-import { checkSchema } from 'express-validator'
+import { Request, Response, NextFunction } from 'express'
+import { checkSchema, validationResult } from 'express-validator'
 import { ObjectId } from 'mongodb'
 import { UserPermission } from '~/constants/enum'
+import HTTPSTATUS from '~/constants/httpStatus'
 import { BUSROUTE_MESSAGE, VEHICLE_MESSGAE } from '~/constants/message'
 import User from '~/models/schemas/users.schemas'
 import databaseService from '~/services/database.services'
 import { validate } from '~/utils/validation'
 
-export const createValidator = validate(
+export const createValidator = (req: Request, res: Response, next: NextFunction) => {
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
   checkSchema(
     {
       vehicle_id: {
@@ -159,9 +166,29 @@ export const createValidator = validate(
     },
     ['body']
   )
-)
+    .run(req)
+    .then(() => {
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        return
+      }
+      next()
+      return
+    })
+    .catch((err) => {
+      res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ message: err, authenticate })
+      return
+    })
+}
 
-export const updateValidator = validate(
+export const updateValidator = (req: Request, res: Response, next: NextFunction) => {
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
   checkSchema(
     {
       bus_route_id: {
@@ -375,9 +402,29 @@ export const updateValidator = validate(
     },
     ['body']
   )
-)
+    .run(req)
+    .then(() => {
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        return
+      }
+      next()
+      return
+    })
+    .catch((err) => {
+      res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ message: err, authenticate })
+      return
+    })
+}
 
-export const deleteValidator = validate(
+export const deleteValidator = (req: Request, res: Response, next: NextFunction) => {
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
   checkSchema(
     {
       bus_route_id: {
@@ -447,9 +494,29 @@ export const deleteValidator = validate(
     },
     ['body']
   )
-)
+    .run(req)
+    .then(() => {
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        return
+      }
+      next()
+      return
+    })
+    .catch((err) => {
+      res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ message: err, authenticate })
+      return
+    })
+}
 
-export const getBusRouteValidator = validate(
+export const getBusRouteValidator = (req: Request, res: Response, next: NextFunction) => {
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
   checkSchema(
     {
       current: {
@@ -471,9 +538,29 @@ export const getBusRouteValidator = validate(
     },
     ['body']
   )
-)
+    .run(req)
+    .then(() => {
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        return
+      }
+      next()
+      return
+    })
+    .catch((err) => {
+      res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ message: err, authenticate })
+      return
+    })
+}
 
-export const findBusRouteValidator = validate(
+export const findBusRouteValidator = (req: Request, res: Response, next: NextFunction) => {
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
   checkSchema(
     {
       keywords: {
@@ -485,4 +572,18 @@ export const findBusRouteValidator = validate(
     },
     ['body']
   )
-)
+    .run(req)
+    .then(() => {
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        return
+      }
+      next()
+      return
+    })
+    .catch((err) => {
+      res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ message: err, authenticate })
+      return
+    })
+}

@@ -2,12 +2,12 @@ import {
   CensorVehicleRequestBody,
   CreateVehicleRequestBody,
   FindVehicleRequestBody,
-  GetVehicleListRequestBody,
   GetVehicleRequestBody,
   UpdateVehicleRequestBody
 } from '~/models/requests/vehicle.requests'
 import databaseService from './database.services'
-import { Vehicle, VehicleImage } from '~/models/schemas/vehicle.chemas'
+import { Vehicle } from '~/models/schemas/vehicle.chemas'
+import { ImageType } from '~/constants/image'
 import { ObjectId } from 'mongodb'
 import fs from 'fs'
 import { VEHICLE_MESSGAE } from '~/constants/message'
@@ -18,7 +18,7 @@ import HTTPSTATUS from '~/constants/httpStatus'
 import User from '~/models/schemas/users.schemas'
 
 class VehicleService {
-  async createVehicle(payload: CreateVehicleRequestBody, user_id: ObjectId, preview: VehicleImage[]) {
+  async createVehicle(payload: CreateVehicleRequestBody, user_id: ObjectId, preview: ImageType[]) {
     await databaseService.vehicles.insertOne(
       new Vehicle({
         ...payload,

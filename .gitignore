@@ -4,6 +4,7 @@ dist/
 public/**
 !public/images/
 !public/images/system/
+!public/images/system/**
 !public/images/upload/
 !public/images/upload/vehicle
 !public/images/upload/vehicle/temporary
