@@ -85,7 +85,7 @@ class BusRouteService {
         .aggregate([
           {
             $lookup: {
-              from: 'vehicles',
+              from: process.env.DATABASE_VEHICLE_COLLECTION,
               localField: 'vehicle',
               foreignField: '_id',
               as: 'vehicle_info'
@@ -191,7 +191,7 @@ class BusRouteService {
       const pipeline = [
         {
           $lookup: {
-            from: 'vehicles',
+            from: process.env.DATABASE_VEHICLE_COLLECTION,
             localField: 'vehicle',
             foreignField: '_id',
             as: 'vehicle_info'

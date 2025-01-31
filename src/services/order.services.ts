@@ -208,7 +208,7 @@ class OrderService {
         },
         {
           $lookup: {
-            from: 'bus_routes',
+            from: process.env.DATABASE_BUS_ROUTE_COLLECTION,
             localField: 'bus_route',
             foreignField: '_id',
             as: 'bus_route'
@@ -261,7 +261,7 @@ class OrderService {
       .aggregate([
         {
           $lookup: {
-            from: 'bill',
+            from: process.env.DATABASE_BILL_COLLECTION,
             localField: 'bill',
             foreignField: '_id',
             as: 'bill_info'
@@ -272,7 +272,7 @@ class OrderService {
         },
         {
           $lookup: {
-            from: 'bus_routes',
+            from: process.env.DATABASE_BUS_ROUTE_COLLECTION,
             localField: 'bill_info.bus_route',
             foreignField: '_id',
             as: 'bus_route'
@@ -332,7 +332,7 @@ class OrderService {
         .aggregate([
           {
             $lookup: {
-              from: 'bus_routes',
+              from: process.env.DATABASE_BUS_ROUTE_COLLECTION,
               localField: 'bus_route',
               foreignField: '_id',
               as: 'bus_route'
@@ -380,7 +380,7 @@ class OrderService {
         .aggregate([
           {
             $lookup: {
-              from: 'bus_routes',
+              from: process.env.DATABASE_BUS_ROUTE_COLLECTION,
               localField: 'bus_route',
               foreignField: '_id',
               as: 'bus_route'
@@ -391,7 +391,7 @@ class OrderService {
           },
           {
             $lookup: {
-              from: 'vehicles',
+              from: process.env.DATABASE_VEHICLE_COLLECTION,
               localField: 'bus_route.vehicle',
               foreignField: '_id',
               as: 'vehicle_info'
@@ -457,7 +457,7 @@ class OrderService {
       .aggregate<User>([
         {
           $lookup: {
-            from: 'users',
+            from: process.env.DATABASE_USER_COLLECTION,
             localField: 'user',
             foreignField: '_id',
             as: 'user'

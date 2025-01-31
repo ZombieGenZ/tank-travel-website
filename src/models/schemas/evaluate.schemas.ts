@@ -10,6 +10,8 @@ interface EvaluateType {
     user: ObjectId
     content: string
   } | null
+  created_at?: Date
+  updated_at?: Date
 }
 
 export class Evaluate {
@@ -18,10 +20,12 @@ export class Evaluate {
   vehicle: ObjectId
   star: number
   content: string
-  feedback?: {
+  feedback: {
     user: ObjectId
     content: string
   } | null
+  created_at: Date
+  updated_at: Date
   constructor(evaluate: EvaluateType) {
     this._id = evaluate._id || new ObjectId()
     this.user = evaluate.user
@@ -29,5 +33,7 @@ export class Evaluate {
     this.star = evaluate.star
     this.content = evaluate.content
     this.feedback = evaluate.feedback || null
+    this.created_at = evaluate.created_at || new Date()
+    this.updated_at = evaluate.updated_at || new Date()
   }
 }

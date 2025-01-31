@@ -47,7 +47,7 @@ export const orderValidator = (req: Request, res: Response, next: NextFunction) 
                 },
                 {
                   $lookup: {
-                    from: 'vehicles',
+                    from: process.env.DATABASE_VEHICLE_COLLECTION,
                     localField: 'vehicle',
                     foreignField: '_id',
                     as: 'vehicle_info'
@@ -371,7 +371,7 @@ export const cancelTicketValidator = async (
               .aggregate<BillDetail>([
                 {
                   $lookup: {
-                    from: 'bill',
+                    from: process.env.DATABASE_BILL_COLLECTION,
                     localField: 'bill',
                     foreignField: '_id',
                     as: 'bill_info'

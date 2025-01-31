@@ -164,3 +164,19 @@ export const ORDER_MESSAGE = {
   TICKET_ID_IS_NOT_EXIST: 'Id vé xe không tồn tại',
   CANCELED_TICKET_SUCCESS: 'Đã hủy vé thành công'
 } as const
+
+export const EVALUATE_MESSAGE = {
+  VEHICLE_ID_IS_REQUIRED: 'Không được bỏ trống id phương tiện',
+  VEHICLE_ID_IS_MUST_BE_A_STRING: 'Id phương tiện phải là một chuỗi ký tự',
+  VEHICLE_ID_IS_INVALID: 'Id phương tiện không đúng định dạng',
+  VEHICLE_ID_IS_NOT_EXIST: 'Id phương tiện không tồn tại',
+  VEHICLE_ID_IS_NOT_EXIST_IN_BILL: 'Bạn phải trải nghiệm phương tiện này mới có thể đánh giá',
+  RATING_IS_REQUIRED: 'Không được bỏ trống xếp hạn đánh giá',
+  RATING_IS_MUST_BE_A_NUMBER: 'Xếp hạng đánh giá phải là một số',
+  RATING_IS_INVALID: 'Xếp hạng đánh giá không hợp lệ',
+  CONTENT_IS_REQUIRED: 'Không được bỏ trống nội dung đánh giá',
+  CONTENT_IS_MUST_BE_A_STRING: 'Nội dung đánh giá phải là một chuỗi ký tự',
+  CONTENT_LENGTH_MUST_BE_FROM_1_TO_500: 'Nội dung đánh giá phải có độ dài từ 1 đến 500 ký tự',
+  VEHICLE_ID_IS_ALREADY_EVALUATED: 'Bạn đã đánh giá cho phương tiện này rồi',
+  CREATE_EVALUATE_SUCCESS: 'Đánh giá thành công'
+} as const

@@ -252,7 +252,7 @@ export const updateValidator = (req: Request, res: Response, next: NextFunction)
                   },
                   {
                     $lookup: {
-                      from: 'vehicles',
+                      from: process.env.DATABASE_VEHICLE_COLLECTION,
                       localField: 'vehicle',
                       foreignField: '_id',
                       as: 'vehicle_info'
@@ -500,7 +500,7 @@ export const deleteValidator = (req: Request, res: Response, next: NextFunction)
                   },
                   {
                     $lookup: {
-                      from: 'vehicles',
+                      from: process.env.DATABASE_VEHICLE_COLLECTION,
                       localField: 'vehicle',
                       foreignField: '_id',
                       as: 'vehicle_info'

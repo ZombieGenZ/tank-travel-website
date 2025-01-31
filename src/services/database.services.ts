@@ -8,6 +8,7 @@ import { BusRoute } from '~/models/schemas/busRoute.schemas'
 import { BillDetail } from '~/models/schemas/billDetail.schemas'
 import { Bill } from '~/models/schemas/bill.schemas'
 import { Profit } from '~/models/schemas/profit.schemas'
+import { Evaluate } from '~/models/schemas/evaluate.schemas'
 dotenv.config()
 
 const uri = `mongodb+srv://${process.env.DATABASE_USERNAME}:${process.env.DATABASE_PASSWORD}@datvexe.bxmnu.mongodb.net/?retryWrites=true&w=majority&appName=DatVeXe`
@@ -32,27 +33,29 @@ export class DatabaseService {
   get users(): Collection<User> {
     return this.db.collection(process.env.DATABASE_USER_COLLECTION as string)
   }
-
   get refreshToken(): Collection<RefreshToken> {
     return this.db.collection(process.env.DATABASE_REFRESH_TOKEN_COLLECTION as string)
   }
   get emailVerifyCodes(): Collection<EmailVerifyCode> {
-    return this.db.collection(process.env.EMAIL_VERIFY_CODE_COLLECTION as string)
+    return this.db.collection(process.env.DATABASE_EMAIL_VERIFY_CODE_COLLECTION as string)
   }
   get vehicles(): Collection<Vehicle> {
-    return this.db.collection(process.env.VEHICLE_COLLECTION as string)
+    return this.db.collection(process.env.DATABASE_VEHICLE_COLLECTION as string)
   }
   get busRoute(): Collection<BusRoute> {
-    return this.db.collection(process.env.BUS_ROUTE_COLLECTION as string)
+    return this.db.collection(process.env.DATABASE_BUS_ROUTE_COLLECTION as string)
   }
   get profit(): Collection<Profit> {
-    return this.db.collection(process.env.PROFIT_COLLECTION as string)
+    return this.db.collection(process.env.DATABASE_PROFIT_COLLECTION as string)
   }
   get bill(): Collection<Bill> {
-    return this.db.collection(process.env.BILL_COLLECTION as string)
+    return this.db.collection(process.env.DATABASE_BILL_COLLECTION as string)
   }
   get billDetail(): Collection<BillDetail> {
-    return this.db.collection(process.env.BILL_DETAIL_COLLECTION as string)
+    return this.db.collection(process.env.DATABASE_BILL_DETAIL_COLLECTION as string)
+  }
+  get evaluate(): Collection<Evaluate> {
+    return this.db.collection(process.env.DATABASE_EVALUATE_COLLECTION as string)
   }
 }
 

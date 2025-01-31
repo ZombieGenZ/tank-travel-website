@@ -13,6 +13,7 @@ import userApi from '~/routes/user.routes'
 import vehicleApi from '~/routes/vehicle.routes'
 import busRouteApi from '~/routes/busRoute.routes'
 import orderApi from '~/routes/order.routes'
+import evaluateApi from '~/routes/evaluate.routes'
 
 const app = express()
 
@@ -36,6 +37,7 @@ app.use('/api/users', userApi)
 app.use('/api/vehicle', vehicleApi)
 app.use('/api/bus-route', busRouteApi)
 app.use('/api/order', orderApi)
+app.use('/api/evaluate', evaluateApi)
 
 app.use(defaultErrorHandler)
 
