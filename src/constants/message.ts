@@ -184,5 +184,9 @@ export const EVALUATE_MESSAGE = {
   EVALUATE_ID_IS_INVALID: 'Id đánh giá không đúng định dạng',
   EVALUATE_ID_IS_NOT_EXIST: 'Id đánh giá không tồn tại hoặc bạn không có quyền làm điều này',
   UPDATE_EVALUATE_SUCCESS: 'Cập nhật đánh giá thành công',
-  DELETE_EVALUATE_SUCCESS: 'Xóa đánh giá thành công'
+  DELETE_EVALUATE_SUCCESS: 'Xóa đánh giá thành công',
+  CURRENT_IS_REQUIRED: 'Không được bỏ trống số trang hiện tại',
+  CURRENT_IS_MUST_BE_A_NUMBER: 'Số trang hiện tại phải là một số',
+  CURRENT_IS_MUST_BE_GREATER_THAN_0: 'Số trang hiện tại phải lớn hơn 0',
+  NO_MATCHING_RESULTS_FOUND: 'Không tìm thấy kết quả phù hợp'
 } as const

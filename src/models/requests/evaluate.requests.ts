@@ -16,3 +16,8 @@ export interface DeleteEvaluateRequestBody {
   refresh_token: string
   evaluate_id: string
 }
+
+export interface GetEvaluateRequestBody {
+  refresh_token: string
+  current: number
+}

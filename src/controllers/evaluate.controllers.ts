@@ -4,7 +4,8 @@ import { EVALUATE_MESSAGE } from '~/constants/message'
 import {
   CreateEvaluateRequestBody,
   UpdateEvaluateRequestBody,
-  DeleteEvaluateRequestBody
+  DeleteEvaluateRequestBody,
+  GetEvaluateRequestBody
 } from '~/models/requests/evaluate.requests'
 import User from '~/models/schemas/users.schemas'
 import EvaluateService from '~/services/evaluate.services'
@@ -64,6 +65,25 @@ export const deleteEvaluateController = async (
 
   res.json({
     messgae: EVALUATE_MESSAGE.DELETE_EVALUATE_SUCCESS,
+    authenticate
+  })
+}
+
+export const getEvaluateController = async (
+  req: Request<ParamsDictionary, any, GetEvaluateRequestBody>,
+  res: Response
+) => {
+  const user = req.user as User
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  const result = await EvaluateService.GetEvaluate(req.body, user)
+
+  res.json({
+    result,
     authenticate
   })
 }

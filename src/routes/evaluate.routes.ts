@@ -2,14 +2,21 @@ import express from 'express'
 import {
   createEvaluateController,
   updateEvaluateController,
-  deleteEvaluateController
+  deleteEvaluateController,
+  getEvaluateController
 } from '~/controllers/evaluate.controllers'
 import {
   authenticationValidator,
   customerAuthenticationValidator,
+  businessAuthenticationValidator,
   administratorAuthenticationValidator
 } from '~/middlewares/authentication.middlewares'
-import { createValidator, updateValidator, deleteValidator } from '~/middlewares/evaluate.middlewares'
+import {
+  createValidator,
+  updateValidator,
+  deleteValidator,
+  getEvaluateValidator
+} from '~/middlewares/evaluate.middlewares'
 import { wrapRequestHandler } from '~/utils/handlers'
 const router = express.Router()
 
@@ -60,7 +67,7 @@ router.put(
 /*
  * Description: Xóa một đánh giá có trong CSDL
  * Path: /api/evaluate/delete
- * Method: PUT
+ * Method: DELETE
  * headers: {
  *    authorization: Bearer <token>
  * },
@@ -75,6 +82,26 @@ router.delete(
   administratorAuthenticationValidator,
   deleteValidator,
   wrapRequestHandler(deleteEvaluateController)
+)
+
+/*
+ * Description: Lấy danh sách đánh giá của một phương tiện có trong CSDL
+ * Path: /api/evaluate/get-evaluate
+ * Method: GET
+ * headers: {
+ *    authorization: Bearer <token>
+ * },
+ * Body: {
+ *    refresh_token: string,
+ *    current: number
+ * }
+ */
+router.get(
+  '/get-evaluate',
+  authenticationValidator,
+  businessAuthenticationValidator,
+  getEvaluateValidator,
+  wrapRequestHandler(getEvaluateController)
 )
 
 export default router
