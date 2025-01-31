@@ -51,11 +51,22 @@ class OrderService {
       billDetails.push(billDetail)
     }
 
+    const billUrl = `${process.env.APP_URL}/bill/ticket?id=${bill.insertedId}`
+
     const email_subject = `Vé điện từ - ${process.env.TRADEMARK_NAME}`
     const email_html = `
       <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px;">
           <div style="max-width: 600px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
               <h2 style="text-align: center; color: #333;">Vé Điện Tử - ${process.env.TRADEMARK_NAME}</h2>
+              
+              <div style="text-align: center; margin: 20px 0;">
+                  <img src="cid:ticket-qr"
+                      alt="QR Code Vé ${vehicle.vehicle_type == VehicleTypeEnum.BUS ? 'xe khách' : vehicle.vehicle_type == VehicleTypeEnum.TRAIN ? 'tàu hỏa' : vehicle.vehicle_type == VehicleTypeEnum.PLANE ? 'máy bay' : 'Không xác định'} tuyến ${busRoute.start_point} - ${busRoute.end_point}" 
+                      style="width: 150px; height: 150px;"
+                  />
+                  <p style="margin: 10px 0; font-size: 14px; color: #666;">Sử dụng QR Code này để xuất trình vé của bạn</p>
+              </div>
+              
               <p>Xin chào <strong>${payload.name}</strong>,</p>
               <p>Chúng tôi xin gửi đến bạn thông tin vé xe của chuyến đi sắp tới:</p>
               <table style="margin-top: 20px; border-collapse: collapse; width: 100%;">
@@ -168,7 +179,7 @@ class OrderService {
           }
         }
       ),
-      sendMail(user.email, email_subject, email_html),
+      sendMail(user.email, email_subject, email_html, billUrl),
       sendMail(user.email, bill_email_subject, bill_email_html),
       databaseService.profit.updateOne(
         {
