@@ -14,7 +14,7 @@ interface EvaluateType {
   updated_at?: Date
 }
 
-export class Evaluate {
+export default class Evaluate {
   _id: ObjectId
   user: ObjectId
   vehicle: ObjectId

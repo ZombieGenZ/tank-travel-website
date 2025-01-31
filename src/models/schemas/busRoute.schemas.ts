@@ -14,7 +14,7 @@ interface BusRouteType {
   updated_at?: Date
 }
 
-export class BusRoute {
+export default class BusRoute {
   _id: ObjectId
   vehicle: ObjectId
   start_point: string

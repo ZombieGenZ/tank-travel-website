@@ -6,7 +6,7 @@ import {
   FindBusRouteRequestBody
 } from '~/models/requests/busRoute.requests'
 import databaseService from './database.services'
-import { BusRoute } from '~/models/schemas/busRoute.schemas'
+import BusRoute from '~/models/schemas/busRoute.schemas'
 import { ObjectId } from 'mongodb'
 import { UserPermission } from '~/constants/enum'
 import User from '~/models/schemas/users.schemas'

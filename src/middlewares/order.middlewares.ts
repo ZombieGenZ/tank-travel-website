@@ -10,10 +10,10 @@ import {
   GetOrderDetailRequestBody,
   CancelTicketRequestBody
 } from '~/models/requests/order.requests'
-import { BusRoute } from '~/models/schemas/busRoute.schemas'
+import BusRoute from '~/models/schemas/busRoute.schemas'
 import User from '~/models/schemas/users.schemas'
 import databaseService from '~/services/database.services'
-import { BillDetail } from '~/models/schemas/billDetail.schemas'
+import BillDetail from '~/models/schemas/billDetail.schemas'
 import { TicketStatus } from '~/constants/enum'
 
 export const orderValidator = (req: Request, res: Response, next: NextFunction) => {
@@ -400,7 +400,7 @@ export const cancelTicketValidator = async (
               throw new Error(ORDER_MESSAGE.TICKET_ID_IS_NOT_EXIST)
             }
 
-            ;(req as Request).BillDetail = ticket
+            ;(req as Request).billDetail = ticket
 
             return true
           }

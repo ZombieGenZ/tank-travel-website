@@ -12,7 +12,7 @@ import {
   GetVehicleListRequestBody
 } from '~/models/requests/vehicle.requests'
 import User from '~/models/schemas/users.schemas'
-import { Vehicle } from '~/models/schemas/vehicle.chemas'
+import Vehicle from '~/models/schemas/vehicle.chemas'
 import { ImageType } from '~/constants/image'
 import VehicleService from '~/services/vehicle.services'
 

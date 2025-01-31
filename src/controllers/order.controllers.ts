@@ -1,4 +1,4 @@
-import { BillDetail } from '~/models/schemas/billDetail.schemas'
+import BillDetail from '~/models/schemas/billDetail.schemas'
 import { Request, Response, NextFunction } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { ORDER_MESSAGE } from '~/constants/message'
@@ -8,7 +8,7 @@ import {
   GetOrderDetailRequestBody,
   CancelTicketRequestBody
 } from '~/models/requests/order.requests'
-import { BusRoute } from '~/models/schemas/busRoute.schemas'
+import BusRoute from '~/models/schemas/busRoute.schemas'
 import User from '~/models/schemas/users.schemas'
 import OrderService from '~/services/order.services'
 
@@ -92,7 +92,7 @@ export const cancelTicketController = async (
   res: Response
 ) => {
   const user = req.user as User
-  const billDetail = req.BillDetail as BillDetail
+  const billDetail = req.billDetail as BillDetail
 
   const { access_token, refresh_token } = req
   const authenticate = {

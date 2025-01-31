@@ -17,7 +17,7 @@ interface VehicleType {
   status?: VehicleStatus
 }
 
-export class Vehicle {
+export default class Vehicle {
   _id: ObjectId
   vehicle_type: VehicleTypeEnum
   seat_type: SeatType

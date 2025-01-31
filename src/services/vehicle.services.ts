@@ -6,7 +6,7 @@ import {
   UpdateVehicleRequestBody
 } from '~/models/requests/vehicle.requests'
 import databaseService from './database.services'
-import { Vehicle } from '~/models/schemas/vehicle.chemas'
+import Vehicle from '~/models/schemas/vehicle.chemas'
 import { ImageType } from '~/constants/image'
 import { ObjectId } from 'mongodb'
 import fs from 'fs'

@@ -178,5 +178,11 @@ export const EVALUATE_MESSAGE = {
   CONTENT_IS_MUST_BE_A_STRING: 'Nội dung đánh giá phải là một chuỗi ký tự',
   CONTENT_LENGTH_MUST_BE_FROM_1_TO_500: 'Nội dung đánh giá phải có độ dài từ 1 đến 500 ký tự',
   VEHICLE_ID_IS_ALREADY_EVALUATED: 'Bạn đã đánh giá cho phương tiện này rồi',
-  CREATE_EVALUATE_SUCCESS: 'Đánh giá thành công'
+  CREATE_EVALUATE_SUCCESS: 'Đánh giá thành công',
+  EVALUATE_ID_IS_REQUIRED: 'Không được bỏ trống Id đánh giá',
+  EVALUATE_ID_IS_MUST_BE_A_STRING: 'Id đánh giá phải là một chuỗi ký tự',
+  EVALUATE_ID_IS_INVALID: 'Id đánh giá không đúng định dạng',
+  EVALUATE_ID_IS_NOT_EXIST: 'Id đánh giá không tồn tại hoặc bạn không có quyền làm điều này',
+  UPDATE_EVALUATE_SUCCESS: 'Cập nhật đánh giá thành công',
+  DELETE_EVALUATE_SUCCESS: 'Xóa đánh giá thành công'
 } as const

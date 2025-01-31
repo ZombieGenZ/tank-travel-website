@@ -1,10 +1,11 @@
 import { Request } from 'express'
-import User from './models/schemas/Users.schema'
+import User from './models/schemas/users.schemas'
 import { TokenPayload } from '~/models/requests/user.requests'
-import { Vehicle } from '~/models/schemas/vehicle.chemas'
+import Vehicle from '~/models/schemas/vehicle.chemas'
 import { ImageType } from '~/constants/image'
 import { BusRoute } from './models/schemas/busRoute.schemas'
 import { BillDetail } from '~/models/schemas/billDetail.schemas'
+import { Evaluate } from '~/models/schemas/evaluate.schemas'
 
 declare module 'express' {
   interface Request {
@@ -17,6 +18,7 @@ declare module 'express' {
     preview?: ImageType[]
     vehicle?: Vehicle
     bus_route?: BusRoute
-    BillDetail?: BillDetail
+    billDetail?: BillDetail
+    evaluate?: Evaluate
   }
 }

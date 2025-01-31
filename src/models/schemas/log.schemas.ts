@@ -8,7 +8,7 @@ interface LogType {
   time?: Date
 }
 
-class Log {
+export default class Log {
   _id: ObjectId
   log_type: LogTypeEnum
   content: string

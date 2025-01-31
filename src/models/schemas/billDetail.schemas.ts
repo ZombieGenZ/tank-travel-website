@@ -11,7 +11,7 @@ interface BillDetailType {
   price: number
 }
 
-export class BillDetail {
+export default class BillDetail {
   _id: ObjectId
   bill: ObjectId
   cancellation_time: Date

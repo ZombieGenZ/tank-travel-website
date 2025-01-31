@@ -7,7 +7,7 @@ interface ProfitType {
   last_update?: Date
 }
 
-export class Profit {
+export default class Profit {
   _id: ObjectId
   time: string
   revenue: number

@@ -9,7 +9,7 @@ interface BillType {
   quantity: number
 }
 
-export class Bill {
+export default class Bill {
   _id: ObjectId
   bus_route: ObjectId
   user: ObjectId

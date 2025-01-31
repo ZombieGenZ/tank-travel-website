@@ -9,7 +9,7 @@ interface RevenueType {
   status?: RevenueStatus
 }
 
-class Revenue {
+export default class Revenue {
   _id: ObjectId
   create_time: Date
   amount: number
