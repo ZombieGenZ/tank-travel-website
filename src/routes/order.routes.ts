@@ -3,7 +3,8 @@ import {
   getOrderController,
   orderController,
   getOrderDetailListController,
-  getOrderListController
+  getOrderListController,
+  cancelTicketController
 } from '~/controllers/order.controllers'
 import {
   authenticationValidator,
@@ -11,11 +12,12 @@ import {
   businessAuthenticationValidator
 } from '~/middlewares/authentication.middlewares'
 import {
-  getOrderDetailValidator,
-  getOrderValidator,
   orderValidator,
   priceValidator,
-  quantityValidator
+  quantityValidator,
+  getOrderValidator,
+  getOrderDetailValidator,
+  cancelTicketValidator
 } from '~/middlewares/order.middlewares'
 import { wrapRequestHandler } from '~/utils/handlers'
 const router = express.Router()
@@ -104,6 +106,26 @@ router.get(
   businessAuthenticationValidator,
   getOrderValidator,
   wrapRequestHandler(getOrderController)
+)
+
+/*
+ * Description: Hũy vé của một đơn hàng
+ * Path: /api/order/cancel-ticket
+ * Method: PUT
+ * headers: {
+ *    authorization: Bearer <token>
+ * },
+ * Body: {
+ *    refresh_token: string,
+ *    ticket_id: string
+ * }
+ */
+router.put(
+  '/cancel-ticket',
+  authenticationValidator,
+  customerAuthenticationValidator,
+  cancelTicketValidator,
+  wrapRequestHandler(cancelTicketController)
 )
 
 export default router

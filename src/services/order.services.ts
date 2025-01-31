@@ -5,7 +5,7 @@ import databaseService from './database.services'
 import { BusRoute } from '~/models/schemas/busRoute.schemas'
 import { sendMail } from '~/utils/mail'
 import User from '~/models/schemas/users.schemas'
-import { SeatType, UserPermission, VehicleTypeEnum } from '~/constants/enum'
+import { SeatType, TicketStatus, UserPermission, VehicleTypeEnum } from '~/constants/enum'
 import { Vehicle } from '~/models/schemas/vehicle.chemas'
 import { Bill } from '~/models/schemas/bill.schemas'
 import { Profit } from '~/models/schemas/profit.schemas'
@@ -436,6 +436,140 @@ class OrderService {
         }
       }
     }
+  }
+
+  async cancelTicketDetail(user: User, billDetail: BillDetail) {
+    const date = new Date()
+    const bill = (await databaseService.bill.findOne({ _id: billDetail.bill })) as Bill
+    const busRoute = (await databaseService.busRoute.findOne({ _id: bill.bus_route })) as BusRoute
+    const authorVehicle = await databaseService.vehicles
+      .aggregate<User>([
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'user',
+            foreignField: '_id',
+            as: 'user'
+          }
+        },
+        {
+          $unwind: '$user'
+        },
+        {
+          $match: {
+            _id: busRoute.vehicle
+          }
+        },
+        {
+          $replaceRoot: { newRoot: '$user' }
+        }
+      ])
+      .toArray()
+      .then((users) => users[0])
+    const booking_time = new Date(bill.booking_time)
+    const profit = (await databaseService.profit.findOne({
+      time: `${booking_time.getFullYear()}-${String(booking_time.getMonth() + 1).padStart(2, '0')}`
+    })) as Profit
+
+    const departure_time = new Date(busRoute.departure_time)
+    const diffInMs = departure_time.getTime() - date.getTime()
+    const diffInHours = diffInMs / (1000 * 60 * 60)
+
+    let refundPercent: number
+
+    if (diffInHours > 24) {
+      refundPercent = 80
+    } else if (diffInHours >= 12 && diffInHours <= 24) {
+      refundPercent = 50
+    } else if (diffInHours >= 4 && diffInHours <= 12) {
+      refundPercent = 20
+    } else {
+      refundPercent = 0
+    }
+
+    // số tiền refund về cho người dùng
+    const refund = (billDetail.price / 100) * refundPercent
+
+    // doanh thu của doanh nghiệp
+    const oldRevenue = billDetail.price - (billDetail.price / 100) * Number(process.env.REVENUE_TAX as string)
+    const newRevenue =
+      billDetail.price - refund - ((billDetail.price - refund) / 100) * Number(process.env.REVENUE_TAX as string)
+
+    // lợi nhuận của công ty
+    const oldProfit = (billDetail.price / 100) * Number(process.env.REVENUE_TAX as string)
+    const newProfit = ((billDetail.price - refund) / 100) * Number(process.env.REVENUE_TAX as string)
+
+    const totalPrice = bill.totalPrice - billDetail.price
+    const totalQuantity = bill.quantity - 1
+
+    Promise.all([
+      databaseService.billDetail.updateOne(
+        {
+          _id: billDetail._id
+        },
+        {
+          $set: {
+            status: TicketStatus.CANCELLED,
+            cancellation_time: date
+          }
+        }
+      ),
+      databaseService.profit.updateOne(
+        {
+          time: `${booking_time.getFullYear()}-${String(booking_time.getMonth() + 1).padStart(2, '0')}`
+        },
+        {
+          $set: {
+            revenue: profit.revenue - oldProfit + newProfit
+          },
+          $currentDate: {
+            last_update: true
+          }
+        }
+      ),
+      databaseService.users.updateOne(
+        {
+          _id: authorVehicle._id
+        },
+        {
+          $set: {
+            revenue: authorVehicle.revenue - oldRevenue + newRevenue
+          }
+        }
+      ),
+      databaseService.bill.updateOne(
+        {
+          _id: bill._id
+        },
+        {
+          $set: {
+            totalPrice: totalPrice,
+            quantity: totalQuantity
+          }
+        }
+      ),
+      databaseService.busRoute.updateOne(
+        {
+          _id: busRoute._id
+        },
+        {
+          $set: {
+            quantity: busRoute.quantity + 1,
+            sold: busRoute.sold - 1
+          }
+        }
+      ),
+      databaseService.users.updateOne(
+        {
+          _id: user._id
+        },
+        {
+          $set: {
+            balance: user.balance + refund
+          }
+        }
+      )
+    ])
   }
 
   private getFormatDate(date: Date): string {

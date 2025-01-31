@@ -4,11 +4,17 @@ import { checkSchema, validationResult } from 'express-validator'
 import { ObjectId } from 'mongodb'
 import HTTPSTATUS from '~/constants/httpStatus'
 import { ORDER_MESSAGE } from '~/constants/message'
-import { OrderRequestBody, GetOrderRequestBody, GetOrderDetailRequestBody } from '~/models/requests/order.requests'
+import {
+  OrderRequestBody,
+  GetOrderRequestBody,
+  GetOrderDetailRequestBody,
+  CancelTicketRequestBody
+} from '~/models/requests/order.requests'
 import { BusRoute } from '~/models/schemas/busRoute.schemas'
 import User from '~/models/schemas/users.schemas'
 import databaseService from '~/services/database.services'
-import { validate } from '~/utils/validation'
+import { BillDetail } from '~/models/schemas/billDetail.schemas'
+import { TicketStatus } from '~/constants/enum'
 
 export const orderValidator = (req: Request, res: Response, next: NextFunction) => {
   const { access_token, refresh_token } = req
@@ -311,6 +317,91 @@ export const getOrderDetailValidator = (
             if (value < 0) {
               throw new Error(ORDER_MESSAGE.CURRENT_IS_MUST_BE_GREATER_THAN_0)
             }
+            return true
+          }
+        }
+      }
+    },
+    ['body']
+  )
+    .run(req)
+    .then(() => {
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        return
+      }
+      next()
+      return
+    })
+    .catch((err) => {
+      res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ message: err, authenticate })
+      return
+    })
+}
+
+export const cancelTicketValidator = async (
+  req: Request<ParamsDictionary, any, CancelTicketRequestBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  checkSchema(
+    {
+      ticket_id: {
+        notEmpty: {
+          errorMessage: ORDER_MESSAGE.TICKET_ID_IS_REQUIRED
+        },
+        trim: true,
+        isString: {
+          errorMessage: ORDER_MESSAGE.TICKET_ID_IS_MUST_BE_A_STRING
+        },
+        isMongoId: {
+          errorMessage: ORDER_MESSAGE.TICKET_ID_IS_MUST_BE_A_MONGO_ID
+        },
+        custom: {
+          options: async (value, { req }) => {
+            const user = req.user as User
+            const ticket = await databaseService.billDetail
+              .aggregate<BillDetail>([
+                {
+                  $lookup: {
+                    from: 'bill',
+                    localField: 'bill',
+                    foreignField: '_id',
+                    as: 'bill_info'
+                  }
+                },
+                {
+                  $unwind: '$bill_info'
+                },
+                {
+                  $match: {
+                    _id: new ObjectId(value),
+                    'bill_info.user': user._id,
+                    status: TicketStatus.PAID
+                  }
+                },
+                {
+                  $project: {
+                    bill_info: 0
+                  }
+                }
+              ])
+              .toArray()
+              .then((tickets) => tickets[0])
+
+            if (ticket === null || ticket === undefined) {
+              throw new Error(ORDER_MESSAGE.TICKET_ID_IS_NOT_EXIST)
+            }
+
+            ;(req as Request).BillDetail = ticket
+
             return true
           }
         }

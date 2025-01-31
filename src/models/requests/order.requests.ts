@@ -16,3 +16,8 @@ export interface GetOrderDetailRequestBody {
   order_id: string
   current: number
 }
+
+export interface CancelTicketRequestBody {
+  refresh_token: string
+  ticket_id: string
+}

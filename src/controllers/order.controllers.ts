@@ -1,7 +1,13 @@
+import { BillDetail } from '~/models/schemas/billDetail.schemas'
 import { Request, Response, NextFunction } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { ORDER_MESSAGE } from '~/constants/message'
-import { OrderRequestBody, GetOrderRequestBody, GetOrderDetailRequestBody } from '~/models/requests/order.requests'
+import {
+  OrderRequestBody,
+  GetOrderRequestBody,
+  GetOrderDetailRequestBody,
+  CancelTicketRequestBody
+} from '~/models/requests/order.requests'
 import { BusRoute } from '~/models/schemas/busRoute.schemas'
 import User from '~/models/schemas/users.schemas'
 import OrderService from '~/services/order.services'
@@ -77,6 +83,27 @@ export const getOrderController = async (req: Request<ParamsDictionary, any, Get
 
   res.json({
     result,
+    authenticate
+  })
+}
+
+export const cancelTicketController = async (
+  req: Request<ParamsDictionary, any, CancelTicketRequestBody>,
+  res: Response
+) => {
+  const user = req.user as User
+  const billDetail = req.BillDetail as BillDetail
+
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  await OrderService.cancelTicketDetail(user, billDetail)
+
+  res.json({
+    message: ORDER_MESSAGE.CANCELED_TICKET_SUCCESS,
     authenticate
   })
 }

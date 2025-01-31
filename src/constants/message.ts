@@ -157,5 +157,10 @@ export const ORDER_MESSAGE = {
   ORDER_ID_IS_MUST_BE_A_STRING: 'Id đơn hàng phải là một chuỗi ký tự',
   ORDER_ID_IS_MUST_BE_A_MONGO_ID: 'Id đơn hàng không đúng định dạng',
   ORDER_ID_IS_NOT_EXIST: 'Id đơn hàng không tồn tại',
-  QUANTITY_MUST_BE_LESS_THAN_1000: 'Số lượng vé phải nhỏ hơn 1000'
+  QUANTITY_MUST_BE_LESS_THAN_1000: 'Số lượng vé phải nhỏ hơn 1000',
+  TICKET_ID_IS_REQUIRED: 'Không được bỏ trống id vé xe',
+  TICKET_ID_IS_MUST_BE_A_STRING: 'Id vé xe phải là một chuỗi ký tự',
+  TICKET_ID_IS_MUST_BE_A_MONGO_ID: 'Id vé xe không đúng định dạng',
+  TICKET_ID_IS_NOT_EXIST: 'Id vé xe không tồn tại',
+  CANCELED_TICKET_SUCCESS: 'Đã hủy vé thành công'
 } as const
