@@ -27,12 +27,19 @@ export interface LogoutRequestBody {
   refresh_token: string
 }
 
-export interface SendForgotPasswordBody {
+export interface SendForgotPasswordRequestBody {
   email: string
 }
 
-export interface ForgotPasswordBody {
+export interface ForgotPasswordRequestBody {
   token: string
+  new_password: string
+  comform_new_password: string
+}
+
+export interface ChangePasswordRequestBody {
+  refresh_token: string
+  password: string
   new_password: string
   comform_new_password: string
 }

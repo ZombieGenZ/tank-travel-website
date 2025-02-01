@@ -1,11 +1,12 @@
-import { Request } from 'express'
-import { checkSchema } from 'express-validator'
+import { Request, Response, NextFunction } from 'express'
+import { checkSchema, validationResult } from 'express-validator'
 import { JsonWebTokenError } from 'jsonwebtoken'
 import { ObjectId } from 'mongodb'
 import { UserStatus } from '~/constants/enum'
 import HTTPSTATUS from '~/constants/httpStatus'
 import { USER_MESSAGE } from '~/constants/message'
 import { ErrorWithStatus } from '~/models/errors'
+import User from '~/models/schemas/users.schemas'
 import databaseService from '~/services/database.services'
 import UserServices from '~/services/user.services'
 import { HashPassword } from '~/utils/encryption'
@@ -368,6 +369,43 @@ export const refreshTokenValidator = validate(
   )
 )
 
+export const sendEmailForgotPasswordValidator = validate(
+  checkSchema({
+    email: {
+      notEmpty: {
+        errorMessage: USER_MESSAGE.EMAIL_IS_REQUIRED
+      },
+      trim: true,
+      isString: {
+        errorMessage: USER_MESSAGE.EMAIL_IS_MUST_BE_A_STRING
+      },
+      isLength: {
+        options: {
+          min: 5,
+          max: 100
+        },
+        errorMessage: USER_MESSAGE.EMAIL_LENGTH_MUST_BE_FROM_5_TO_100
+      },
+      isEmail: {
+        errorMessage: USER_MESSAGE.EMAIL_IS_NOT_VALID
+      },
+      custom: {
+        options: async (value, { req }) => {
+          const user = await databaseService.users.findOne({ email: value })
+
+          if (user === null) {
+            throw new Error(USER_MESSAGE.USERS_NOT_FOUND)
+          }
+
+          ;(req as Request).user = user
+
+          return true
+        }
+      }
+    }
+  })
+)
+
 export const forgotPasswordValidator = validate(
   checkSchema(
     {
@@ -435,10 +473,10 @@ export const forgotPasswordValidator = validate(
       },
       new_password: {
         notEmpty: {
-          errorMessage: USER_MESSAGE.PASSWORD_IS_REQUIRED
+          errorMessage: USER_MESSAGE.NEW_PASSWORD_IS_REQUIRED
         },
         isString: {
-          errorMessage: USER_MESSAGE.PASSWORD_MUST_BE_A_STRING
+          errorMessage: USER_MESSAGE.NEW_PASSWORD_MUST_BE_A_STRING
         },
         trim: true,
         isLength: {
@@ -446,18 +484,18 @@ export const forgotPasswordValidator = validate(
             min: 8,
             max: 100
           },
-          errorMessage: USER_MESSAGE.PASSOWRD_LENGTH_MUST_BE_FROM_8_TO_100
+          errorMessage: USER_MESSAGE.NEW_PASSOWRD_LENGTH_MUST_BE_FROM_8_TO_100
         },
         isStrongPassword: {
-          errorMessage: USER_MESSAGE.PASSOWRD_MUST_BE_STRONG
+          errorMessage: USER_MESSAGE.NEW_PASSOWRD_MUST_BE_STRONG
         }
       },
       comform_new_password: {
         notEmpty: {
-          errorMessage: USER_MESSAGE.COMFIRM_PASSWORD_IS_REQUIRED
+          errorMessage: USER_MESSAGE.COMFIRM_NEW_PASSWORD_IS_REQUIRED
         },
         isString: {
-          errorMessage: USER_MESSAGE.COMFIRM_PASSWORD_MUST_BE_A_STRING
+          errorMessage: USER_MESSAGE.COMFIRM_NEW_PASSWORD_MUST_BE_A_STRING
         },
         trim: true,
         isLength: {
@@ -465,15 +503,15 @@ export const forgotPasswordValidator = validate(
             min: 8,
             max: 100
           },
-          errorMessage: USER_MESSAGE.COMFIRM_PASSWORD_LENGTH_MUST_BE_FROM_8_TO_100
+          errorMessage: USER_MESSAGE.COMFIRM_NEW_PASSWORD_LENGTH_MUST_BE_FROM_8_TO_100
         },
         isStrongPassword: {
-          errorMessage: USER_MESSAGE.COMFORM_PASSWORD_MUST_BE_STRONG
+          errorMessage: USER_MESSAGE.COMFORM_NEW_PASSWORD_MUST_BE_STRONG
         },
         custom: {
           options: async (value, { req }) => {
             if (value !== req.body.new_password) {
-              throw new Error(USER_MESSAGE.COMFIRM_PASSWORD_MUST_BE_THE_SAME_AS_PASSWORD)
+              throw new Error(USER_MESSAGE.COMFIRM_NEW_PASSWORD_MUST_BE_THE_SAME_AS_PASSWORD)
             }
 
             return true
@@ -485,39 +523,107 @@ export const forgotPasswordValidator = validate(
   )
 )
 
-export const sendEmailForgotPasswordValidator = validate(
-  checkSchema({
-    email: {
-      notEmpty: {
-        errorMessage: USER_MESSAGE.EMAIL_IS_REQUIRED
-      },
-      trim: true,
-      isString: {
-        errorMessage: USER_MESSAGE.EMAIL_IS_MUST_BE_A_STRING
-      },
-      isLength: {
-        options: {
-          min: 5,
-          max: 100
+export const changePasswordValidator = async (req: Request, res: Response, next: NextFunction) => {
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  checkSchema(
+    {
+      password: {
+        notEmpty: {
+          errorMessage: USER_MESSAGE.PASSWORD_IS_REQUIRED
         },
-        errorMessage: USER_MESSAGE.EMAIL_LENGTH_MUST_BE_FROM_5_TO_100
-      },
-      isEmail: {
-        errorMessage: USER_MESSAGE.EMAIL_IS_NOT_VALID
-      },
-      custom: {
-        options: async (value, { req }) => {
-          const user = await databaseService.users.findOne({ email: value })
+        isString: {
+          errorMessage: USER_MESSAGE.PASSWORD_MUST_BE_A_STRING
+        },
+        custom: {
+          options: async (value, { req }) => {
+            const user = req.user as User
 
-          if (user === null) {
-            throw new Error(USER_MESSAGE.USERS_NOT_FOUND)
+            if (HashPassword(value) !== user.password) {
+              throw new Error(USER_MESSAGE.PASSWORD_INCORRECT)
+            }
+
+            return true
           }
+        }
+      },
+      new_password: {
+        notEmpty: {
+          errorMessage: USER_MESSAGE.NEW_PASSWORD_IS_REQUIRED
+        },
+        isString: {
+          errorMessage: USER_MESSAGE.NEW_PASSWORD_MUST_BE_A_STRING
+        },
+        trim: true,
+        isLength: {
+          options: {
+            min: 8,
+            max: 100
+          },
+          errorMessage: USER_MESSAGE.NEW_PASSOWRD_LENGTH_MUST_BE_FROM_8_TO_100
+        },
+        isStrongPassword: {
+          errorMessage: USER_MESSAGE.NEW_PASSOWRD_MUST_BE_STRONG
+        },
+        custom: {
+          options: async (value, { req }) => {
+            const user = req.user as User
 
-          ;(req as Request).user = user
+            if (HashPassword(req.body.new_password) === user.password) {
+              throw new Error(USER_MESSAGE.NEW_PASSWORD_MUST_BE_DIFFERENT_FROM_OLD_PASSWORD)
+            }
 
-          return true
+            return true
+          }
+        }
+      },
+      comform_new_password: {
+        notEmpty: {
+          errorMessage: USER_MESSAGE.COMFIRM_NEW_PASSWORD_IS_REQUIRED
+        },
+        isString: {
+          errorMessage: USER_MESSAGE.COMFIRM_NEW_PASSWORD_MUST_BE_A_STRING
+        },
+        trim: true,
+        isLength: {
+          options: {
+            min: 8,
+            max: 100
+          },
+          errorMessage: USER_MESSAGE.COMFIRM_NEW_PASSWORD_LENGTH_MUST_BE_FROM_8_TO_100
+        },
+        isStrongPassword: {
+          errorMessage: USER_MESSAGE.COMFORM_NEW_PASSWORD_MUST_BE_STRONG
+        },
+        custom: {
+          options: async (value, { req }) => {
+            if (value !== req.body.new_password) {
+              throw new Error(USER_MESSAGE.COMFIRM_NEW_PASSWORD_MUST_BE_THE_SAME_AS_PASSWORD)
+            }
+
+            return true
+          }
         }
       }
-    }
-  })
-)
+    },
+    ['body']
+  )
+    .run(req)
+    .then(() => {
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        return
+      }
+      next()
+      return
+    })
+    .catch((err) => {
+      res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ message: err, authenticate })
+      return
+    })
+}

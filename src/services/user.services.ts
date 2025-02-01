@@ -1,8 +1,9 @@
 import {
   RegisterRequestBody,
   EmailVerifyBody,
-  SendForgotPasswordBody,
-  ForgotPasswordBody
+  SendForgotPasswordRequestBody,
+  ForgotPasswordRequestBody,
+  ChangePasswordRequestBody
 } from '~/models/requests/user.requests'
 import databaseService from './database.services'
 import { HashPassword } from '~/utils/encryption'
@@ -223,7 +224,7 @@ class UserService {
     await databaseService.refreshToken.deleteOne({ token: refresh_token })
   }
 
-  async sendEmailForgotPassword(payload: SendForgotPasswordBody, user: User) {
+  async sendEmailForgotPassword(payload: SendForgotPasswordRequestBody, user: User) {
     const token = await this.signForgotPassword(user._id.toString())
     const url = `${process.env.APP_URL}/forgot-password?token=${token}`
 
@@ -290,21 +291,47 @@ class UserService {
     ])
   }
 
-  async forgotPassword(payload: ForgotPasswordBody, user_id: string) {
-    await databaseService.users.updateOne(
-      {
-        _id: new ObjectId(user_id)
-      },
-      {
-        $set: {
-          password: HashPassword(payload.new_password),
-          forgot_password_token: ''
+  async forgotPassword(payload: ForgotPasswordRequestBody, user_id: string) {
+    await Promise.all([
+      databaseService.users.updateOne(
+        {
+          _id: new ObjectId(user_id)
         },
-        $currentDate: {
-          updated_at: true
+        {
+          $set: {
+            password: HashPassword(payload.new_password),
+            forgot_password_token: ''
+          },
+          $currentDate: {
+            updated_at: true
+          }
         }
-      }
-    )
+      ),
+      databaseService.refreshToken.deleteMany({
+        user_id: new ObjectId(user_id)
+      })
+    ])
+  }
+
+  async changePassword(payload: ChangePasswordRequestBody, user: User) {
+    await Promise.all([
+      databaseService.users.updateOne(
+        {
+          _id: user._id
+        },
+        {
+          $set: {
+            password: HashPassword(payload.new_password)
+          },
+          $currentDate: {
+            updated_at: true
+          }
+        }
+      ),
+      databaseService.refreshToken.deleteMany({
+        user_id: user._id
+      })
+    ])
   }
 }
 

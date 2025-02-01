@@ -6,9 +6,10 @@ import {
   LogoutRequestBody,
   RegisterRequestBody,
   EmailVerifyBody,
-  SendForgotPasswordBody,
-  ForgotPasswordBody,
-  TokenPayload
+  SendForgotPasswordRequestBody,
+  ForgotPasswordRequestBody,
+  TokenPayload,
+  ChangePasswordRequestBody
 } from '~/models/requests/user.requests'
 import User from '~/models/schemas/users.schemas'
 import UserServices from '~/services/user.services'
@@ -56,7 +57,7 @@ export const logoutController = async (req: Request<ParamsDictionary, any, Logou
 }
 
 export const sendEmailForgotPasswordController = async (
-  req: Request<ParamsDictionary, any, SendForgotPasswordBody>,
+  req: Request<ParamsDictionary, any, SendForgotPasswordRequestBody>,
   res: Response
 ) => {
   const user = req.user as User
@@ -69,12 +70,25 @@ export const sendEmailForgotPasswordController = async (
 }
 
 export const forgotPasswordController = async (
-  req: Request<ParamsDictionary, any, ForgotPasswordBody>,
+  req: Request<ParamsDictionary, any, ForgotPasswordRequestBody>,
   res: Response
 ) => {
   const { user_id } = req.decoded_forgot_password_token as TokenPayload
 
   await UserServices.forgotPassword(req.body, user_id)
+
+  res.json({
+    message: USER_MESSAGE.CHANGED_PASSWORD_SUCCESS
+  })
+}
+
+export const changePasswordController = async (
+  req: Request<ParamsDictionary, any, ChangePasswordRequestBody>,
+  res: Response
+) => {
+  const user = req.user as User
+
+  await UserServices.changePassword(req.body, user)
 
   res.json({
     message: USER_MESSAGE.CHANGED_PASSWORD_SUCCESS

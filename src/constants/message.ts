@@ -52,9 +52,22 @@ export const USER_MESSAGE = {
   TOKEN_IS_REQUESTED: 'Token thay đổi mật khẩu là bắt buộc',
   TOKEN_MUST_BE_A_STRING: 'Token thay đổi mật khẩu phải là một chuỗi ký tự',
   TOKEN_INVALID: 'Token thay đổi mật khẩu không hợp lệ',
-  CHANGED_PASSWORD_SUCCESS: 'Thay đổi mật khẩu thành công!',
+  CHANGED_PASSWORD_SUCCESS: 'Thay đổi mật khẩu thành công! Vui lòng đăng nhập lại',
   USER_NOT_FOUND: 'Không tìm thấy người dùng',
-  FORGOT_PASSWORD_TOKEN_INVALID: 'Token thay đổi mật khẩu không hợp lệ'
+  FORGOT_PASSWORD_TOKEN_INVALID: 'Token thay đổi mật khẩu không hợp lệ',
+  NEW_PASSWORD_IS_REQUIRED: 'Không được để trống mật khẩu mới',
+  NEW_PASSWORD_MUST_BE_A_STRING: 'Mật khẩu mới phải là một chuỗi ký tự',
+  NEW_PASSOWRD_LENGTH_MUST_BE_FROM_8_TO_100: 'Mật khẩu mới phải có độ dài từ 8 đến 100 ký tự',
+  NEW_PASSOWRD_MUST_BE_STRONG:
+    'Mật khẩu mới phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt',
+  COMFIRM_NEW_PASSWORD_IS_REQUIRED: 'Không được để trống xác nhận mật khẩu mới',
+  COMFIRM_NEW_PASSWORD_MUST_BE_A_STRING: 'Xác nhận mật khẩu mới phải là một chuỗi ký tự',
+  COMFIRM_NEW_PASSWORD_LENGTH_MUST_BE_FROM_8_TO_100: 'Xác nhận mật khẩu mới phải có độ dài từ 8 đến 100 ký tự',
+  COMFORM_NEW_PASSWORD_MUST_BE_STRONG:
+    'Xác nhận mật khẩu mới phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt',
+  COMFIRM_NEW_PASSWORD_MUST_BE_THE_SAME_AS_PASSWORD: 'Xác nhận mật khẩu mới phải giống với mật khẩu mới',
+  PASSWORD_INCORRECT: 'Mật khẩu không chính xác',
+  NEW_PASSWORD_MUST_BE_DIFFERENT_FROM_OLD_PASSWORD: 'Mật khẩu mới phải khác mật khẩu cũ'
 } as const
 
 export const AUTHENTICATION_MESSAGE = {

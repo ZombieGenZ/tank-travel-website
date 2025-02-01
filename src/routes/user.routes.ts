@@ -6,8 +6,10 @@ import {
   sendEmailController,
   reSendEmailController,
   sendEmailForgotPasswordController,
-  forgotPasswordController
+  forgotPasswordController,
+  changePasswordController
 } from '~/controllers/user.controllers'
+import { authenticationValidator } from '~/middlewares/authentication.middlewares'
 import {
   registerValidator,
   loginValidator,
@@ -15,7 +17,8 @@ import {
   sendEmailVerifyValidator,
   reSendEmailVerifyValidator,
   sendEmailForgotPasswordValidator,
-  forgotPasswordValidator
+  forgotPasswordValidator,
+  changePasswordValidator
 } from '~/middlewares/user.middlewares'
 import { wrapRequestHandler } from '~/utils/handlers'
 const router = express.Router()
@@ -102,8 +105,28 @@ router.post(
  */
 router.post('/forgot-password', forgotPasswordValidator, wrapRequestHandler(forgotPasswordController))
 
+/*
+ * Description: Thay đổi mật khẩu cho một tài khoản có trong CSDL
+ * Path: /api/users/change-password
+ * Method: PUT
+ * headers: {
+ *    authorization: Bearer <token>
+ * },
+ * Body: {
+ *    refresh_token: string,
+ *    password: string,
+ *    new_password: string,
+ *    comform_new_password: string
+ * }
+ */
+router.put(
+  '/change-password',
+  authenticationValidator,
+  changePasswordValidator,
+  wrapRequestHandler(changePasswordController)
+)
+
 // DOITAFTER: Làm chức năng thay đổi mật khẩu
-// DOITAFTER: Làm chức năng thay đổi email
 // DOITAFTER: Làm chức năng thay đổi số điện thoại
 // DOITAFTER: Làm chức năng thay đổi thay đổi avatar
 
