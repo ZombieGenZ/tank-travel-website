@@ -11,6 +11,7 @@ export interface RegisterRequestBody {
   phone: string
   password: string
   confirm_password: string
+  email_verify_code: string
 }
 
 export interface LoginRequestBody {
@@ -47,4 +48,10 @@ export interface ChangePasswordRequestBody {
 export interface SendEmailVerifyChangeEmailRequestBody {
   refresh_token: string
   email: string
+}
+
+export interface ChangeEmailRequestBody {
+  refresh_token: string
+  new_email: string
+  email_verify_code: string
 }

@@ -4,7 +4,8 @@ import {
   SendForgotPasswordRequestBody,
   ForgotPasswordRequestBody,
   ChangePasswordRequestBody,
-  SendEmailVerifyChangeEmailRequestBody
+  SendEmailVerifyChangeEmailRequestBody,
+  ChangeEmailRequestBody
 } from '~/models/requests/user.requests'
 import databaseService from './database.services'
 import { HashPassword } from '~/utils/encryption'
@@ -293,10 +294,59 @@ class UserService {
   }
 
   async forgotPassword(payload: ForgotPasswordRequestBody, user_id: string) {
+    const user = (await databaseService.users.findOne({ _id: new ObjectId(user_id) })) as User
+    const date = new Date()
+    const email_subject = `Thông báo thay đổi mật khẩu - ${process.env.TRADEMARK_NAME}`
+    const email_html = `
+      <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
+          <div style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
+              <div style="text-align: center; padding: 20px 0; background-color: #003366;">
+                  <h1 style="color: #ffffff; margin: 0; font-size: 24px;">${process.env.TRADEMARK_NAME}</h1>
+              </div>
+
+              <div style="padding: 30px; text-align: left;">
+                  <h2 style="color: #003366; margin-bottom: 20px;">Thông báo đặt lại mật khẩu thành công</h2>
+                  
+                  <p style="color: #333333; font-size: 16px; line-height: 1.6;">
+                      Xin chào quý khách,
+                  </p>
+                  
+                  <p style="color: #333333; font-size: 16px; line-height: 1.6;">
+                      Chúng tôi xin thông báo rằng mật khẩu tài khoản ${process.env.TRADEMARK_NAME} của quý khách đã được đặt lại thành công vào lúc <strong>${this.getFormatDate(date)}</strong>.
+                  </p>
+
+                  <p style="color: #333333; font-size: 16px; line-height: 1.6;">
+                      Vì lý do bảo mật, chúng tôi khuyến nghị quý khách:
+                  </p>
+                  <ul style="color: #333333; font-size: 16px; line-height: 1.6;">
+                      <li style="margin-bottom: 10px;">Không chia sẻ mật khẩu với bất kỳ ai</li>
+                      <li style="margin-bottom: 10px;">Sử dụng mật khẩu mạnh, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt</li>
+                      <li style="margin-bottom: 10px;">Thường xuyên thay đổi mật khẩu định kỳ</li>
+                  </ul>
+
+                  <p style="color: #d93025; font-size: 16px; line-height: 1.6; font-weight: bold;">
+                      Nếu quý khách không thực hiện thay đổi này, vui lòng liên hệ ngay với bộ phận hỗ trợ của chúng tôi để được hỗ trợ kịp thời.
+                  </p>
+              </div>
+
+              <div style="padding: 20px; text-align: center; background-color: #f8f8f8; border-top: 1px solid #eeeeee;">
+                  <p style="color: #666666; font-size: 14px; margin: 0;">
+                      © ${date.getFullYear()} ${process.env.TRADEMARK_NAME}. Tất cả các quyền được bảo lưu.
+                  </p>
+                  <p style="color: #666666; font-size: 14px; margin: 10px 0;">
+                      Bộ phận Hỗ trợ Khách hàng:<br>
+                      Email: <a href="mailto:${process.env.SUPPORT_EMAIL}" style="color: #003366;">${process.env.SUPPORT_EMAIL}</a><br>
+                      Hotline: <a href="tel:${process.env.SUPPORT_EMAIL}" style="color: #003366;">${process.env.SUPPORT_PHONE_DISPLAY}</a> (24/7)<br>
+                  </p>
+              </div>
+          </div>
+      </body>
+    `
+
     await Promise.all([
       databaseService.users.updateOne(
         {
-          _id: new ObjectId(user_id)
+          _id: user._id
         },
         {
           $set: {
@@ -309,12 +359,61 @@ class UserService {
         }
       ),
       databaseService.refreshToken.deleteMany({
-        user_id: new ObjectId(user_id)
-      })
+        user_id: user._id
+      }),
+      sendMail(user.email, email_subject, email_html)
     ])
   }
 
   async changePassword(payload: ChangePasswordRequestBody, user: User) {
+    const date = new Date()
+    const email_subject = `Thông báo thay đổi mật khẩu - ${process.env.TRADEMARK_NAME}`
+    const email_html = `
+      <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
+          <div style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
+              <div style="text-align: center; padding: 20px 0; background-color: #003366;">
+                  <h1 style="color: #ffffff; margin: 0; font-size: 24px;">${process.env.TRADEMARK_NAME}</h1>
+              </div>
+
+              <div style="padding: 30px; text-align: left;">
+                  <h2 style="color: #003366; margin-bottom: 20px;">Thông báo đặt lại mật khẩu thành công</h2>
+                  
+                  <p style="color: #333333; font-size: 16px; line-height: 1.6;">
+                      Xin chào quý khách,
+                  </p>
+                  
+                  <p style="color: #333333; font-size: 16px; line-height: 1.6;">
+                      Chúng tôi xin thông báo rằng mật khẩu tài khoản ${process.env.TRADEMARK_NAME} của quý khách đã được đặt lại thành công vào lúc <strong>${this.getFormatDate(date)}</strong>.
+                  </p>
+
+                  <p style="color: #333333; font-size: 16px; line-height: 1.6;">
+                      Vì lý do bảo mật, chúng tôi khuyến nghị quý khách:
+                  </p>
+                  <ul style="color: #333333; font-size: 16px; line-height: 1.6;">
+                      <li style="margin-bottom: 10px;">Không chia sẻ mật khẩu với bất kỳ ai</li>
+                      <li style="margin-bottom: 10px;">Sử dụng mật khẩu mạnh, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt</li>
+                      <li style="margin-bottom: 10px;">Thường xuyên thay đổi mật khẩu định kỳ</li>
+                  </ul>
+
+                  <p style="color: #d93025; font-size: 16px; line-height: 1.6; font-weight: bold;">
+                      Nếu quý khách không thực hiện thay đổi này, vui lòng liên hệ ngay với bộ phận hỗ trợ của chúng tôi để được hỗ trợ kịp thời.
+                  </p>
+              </div>
+
+              <div style="padding: 20px; text-align: center; background-color: #f8f8f8; border-top: 1px solid #eeeeee;">
+                  <p style="color: #666666; font-size: 14px; margin: 0;">
+                      © ${date.getFullYear()} ${process.env.TRADEMARK_NAME}. Tất cả các quyền được bảo lưu.
+                  </p>
+                  <p style="color: #666666; font-size: 14px; margin: 10px 0;">
+                      Bộ phận Hỗ trợ Khách hàng:<br>
+                      Email: <a href="mailto:${process.env.SUPPORT_EMAIL}" style="color: #003366;">${process.env.SUPPORT_EMAIL}</a><br>
+                      Hotline: <a href="tel:${process.env.SUPPORT_EMAIL}" style="color: #003366;">${process.env.SUPPORT_PHONE_DISPLAY}</a> (24/7)<br>
+                  </p>
+              </div>
+          </div>
+      </body>
+    `
+
     await Promise.all([
       databaseService.users.updateOne(
         {
@@ -331,7 +430,8 @@ class UserService {
       ),
       databaseService.refreshToken.deleteMany({
         user_id: user._id
-      })
+      }),
+      sendMail(user.email, email_subject, email_html)
     ])
   }
 
@@ -414,6 +514,80 @@ class UserService {
       ),
       sendMail(email, email_verify_subject, email_verify_html)
     ])
+  }
+
+  async changeEmail(payload: ChangeEmailRequestBody, user: User) {
+    const email_subject = `Thông báo thay đổi email - ${process.env.TRADEMARK_NAME}`
+    const email_html = `
+      <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
+          <div style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
+              <div style="text-align: center; padding: 20px 0; background-color: #003366;">
+                  <h1 style="color: #ffffff; margin: 0; font-size: 24px;">${process.env.TRADEMARK_NAME}</h1>
+              </div>
+
+              <div style="padding: 30px; text-align: left;">
+                  <h2 style="color: #003366; margin-bottom: 20px;">Thông báo thay đổi địa chỉ email</h2>
+                  
+                  <p style="color: #333333; font-size: 16px; line-height: 1.6;">
+                      Xin chào quý khách,
+                  </p>
+                  
+                  <p style="color: #333333; font-size: 16px; line-height: 1.6;">
+                      Chúng tôi xin thông báo địa chỉ email liên kết với tài khoản ${process.env.TRADEMARK_NAME} của quý khách đã được thay đổi.
+                  </p>
+
+                  <p style="color: #333333; font-size: 16px; line-height: 1.6;">
+                      Email này được gửi đến địa chỉ email cũ của bạn để đảm bảo tính bảo mật. Nếu bạn không thực hiện thay đổi này, tài khoản của bạn có thể đã bị xâm phạm.
+                  </p>
+
+                  <p style="color: #d93025; font-size: 16px; line-height: 1.6; font-weight: bold;">
+                      Nếu quý khách không thực hiện thay đổi này, vui lòng liên hệ ngay với bộ phận hỗ trợ của chúng tôi để được hỗ trợ kịp thời.
+                  </p>
+              </div>
+
+              <div style="padding: 20px; text-align: center; background-color: #f8f8f8; border-top: 1px solid #eeeeee;">
+                  <p style="color: #666666; font-size: 14px; margin: 0;">
+                      © ${new Date().getFullYear()} ${process.env.TRADEMARK_NAME}. Tất cả các quyền được bảo lưu.
+                  </p>
+                  <p style="color: #666666; font-size: 14px; margin: 10px 0;">
+                      Bộ phận Hỗ trợ Khách hàng:<br>
+                      Email: <a href="mailto:${process.env.SUPPORT_EMAIL}" style="color: #003366;">${process.env.SUPPORT_EMAIL}</a><br>
+                      Hotline: <a href="tel:${process.env.SUPPORT_EMAIL}" style="color: #003366;">${process.env.SUPPORT_PHONE_DISPLAY}</a> (24/7)<br>
+                  </p>
+              </div>
+          </div>
+      </body>
+    `
+
+    await Promise.all([
+      databaseService.users.updateOne(
+        {
+          _id: user._id
+        },
+        {
+          $set: {
+            email: payload.new_email
+          },
+          $currentDate: {
+            updated_at: true
+          }
+        }
+      ),
+      databaseService.emailVerifyCodes.deleteOne({ email: payload.new_email }),
+      databaseService.refreshToken.deleteMany({ user_id: new ObjectId(user._id) }),
+      sendMail(user.email, email_subject, email_html)
+    ])
+  }
+  private getFormatDate(date: Date): string {
+    const formatDate = new Date(date)
+    const second = String(formatDate.getSeconds()).padStart(2, '0')
+    const minute = String(formatDate.getMinutes()).padStart(2, '0')
+    const hour = String(formatDate.getHours()).padStart(2, '0')
+    const day = String(formatDate.getDate()).padStart(2, '0')
+    const month = String(formatDate.getMonth() + 1).padStart(2, '0')
+    const year = formatDate.getFullYear()
+
+    return `${hour}:${minute}:${second} ${day}/${month}/${year}`
   }
 }
 

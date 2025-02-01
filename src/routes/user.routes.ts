@@ -9,7 +9,8 @@ import {
   forgotPasswordController,
   changePasswordController,
   sendEmailVerifyController,
-  reSendEmailVerifyController
+  reSendEmailVerifyController,
+  changeEmailController
 } from '~/controllers/user.controllers'
 import { authenticationValidator } from '~/middlewares/authentication.middlewares'
 import {
@@ -20,7 +21,8 @@ import {
   reSendEmailVerifyValidator,
   sendEmailForgotPasswordValidator,
   forgotPasswordValidator,
-  changePasswordValidator
+  changePasswordValidator,
+  changeEmailValidator
 } from '~/middlewares/user.middlewares'
 import { wrapRequestHandler } from '~/utils/handlers'
 const router = express.Router()
@@ -165,6 +167,21 @@ router.put(
   reSendEmailVerifyValidator,
   wrapRequestHandler(reSendEmailVerifyController)
 )
+
+/*
+ * Description: Thay đổi email cho một tài khoản có trong CSDL
+ * Path: /api/users/change-email
+ * Method: PUT
+ * headers: {
+ *    authorization: Bearer <token>
+ * },
+ * Body: {
+ *    refresh_token: string,
+ *    new_email: string,
+ *    email_verify_code: string
+ * }
+ */
+router.put('/change-email', authenticationValidator, changeEmailValidator, wrapRequestHandler(changeEmailController))
 
 // DOITAFTER: Làm chức năng thay đổi số điện thoại
 // DOITAFTER: Làm chức năng thay đổi thay đổi avatar

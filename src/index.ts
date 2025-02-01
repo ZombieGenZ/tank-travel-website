@@ -22,6 +22,7 @@ app.use(express.static(path.join(__dirname, '../public')))
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.set('view engine', 'ejs')
+app.set('trust proxy', true)
 
 databaseService.connect()
 

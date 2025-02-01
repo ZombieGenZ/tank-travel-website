@@ -10,10 +10,12 @@ import {
   ForgotPasswordRequestBody,
   TokenPayload,
   ChangePasswordRequestBody,
-  SendEmailVerifyChangeEmailRequestBody
+  SendEmailVerifyChangeEmailRequestBody,
+  ChangeEmailRequestBody
 } from '~/models/requests/user.requests'
 import User from '~/models/schemas/users.schemas'
 import UserServices from '~/services/user.services'
+import axios from 'axios'
 
 export const sendEmailController = async (
   req: Request<ParamsDictionary, any, EmailVerifyRequestBody>,
@@ -125,5 +127,18 @@ export const reSendEmailVerifyController = async (
 
   res.json({
     message: USER_MESSAGE.EMAIL_VERIFY_CODE_RESEND_SUCCESS
+  })
+}
+
+export const changeEmailController = async (
+  req: Request<ParamsDictionary, any, ChangeEmailRequestBody>,
+  res: Response
+) => {
+  const user = req.user as User
+
+  await UserServices.changeEmail(req.body, user)
+
+  res.json({
+    message: USER_MESSAGE.CHANGED_EMAIL_SUCCESS
   })
 }

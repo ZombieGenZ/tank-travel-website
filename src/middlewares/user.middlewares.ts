@@ -6,6 +6,7 @@ import { UserStatus } from '~/constants/enum'
 import HTTPSTATUS from '~/constants/httpStatus'
 import { USER_MESSAGE } from '~/constants/message'
 import { ErrorWithStatus } from '~/models/errors'
+import { TokenPayload } from '~/models/requests/user.requests'
 import User from '~/models/schemas/users.schemas'
 import databaseService from '~/services/database.services'
 import UserServices from '~/services/user.services'
@@ -488,6 +489,35 @@ export const forgotPasswordValidator = validate(
         },
         isStrongPassword: {
           errorMessage: USER_MESSAGE.NEW_PASSOWRD_MUST_BE_STRONG
+        },
+        custom: {
+          options: async (value, { req }) => {
+            try {
+              const decoded_token = await verifyToken({
+                token: req.body.token,
+                publicKey: process.env.SECURITY_JWT_SECRET_FORGOT_PASSWORD_TOKEN as string
+              })
+
+              const user = await databaseService.users.findOne({ _id: new ObjectId(decoded_token.user_id) })
+
+              if (user?.password === HashPassword(value)) {
+                throw new Error(USER_MESSAGE.NEW_PASSWORD_MUST_BE_DIFFERENT_FROM_OLD_PASSWORD)
+              }
+
+              ;(req as Request).decoded_forgot_password_token = decoded_token
+
+              return true
+            } catch (error) {
+              if (error instanceof JsonWebTokenError) {
+                throw new ErrorWithStatus({
+                  message: USER_MESSAGE.TOKEN_INVALID,
+                  status: HTTPSTATUS.UNAUTHORIZED
+                })
+              }
+
+              throw error
+            }
+          }
         }
       },
       comform_new_password: {
@@ -572,8 +602,9 @@ export const changePasswordValidator = async (req: Request, res: Response, next:
         custom: {
           options: async (value, { req }) => {
             const user = req.user as User
+            const newPassword = HashPassword(value)
 
-            if (HashPassword(req.body.new_password) === user.password) {
+            if (newPassword === user.password) {
               throw new Error(USER_MESSAGE.NEW_PASSWORD_MUST_BE_DIFFERENT_FROM_OLD_PASSWORD)
             }
 
@@ -603,6 +634,91 @@ export const changePasswordValidator = async (req: Request, res: Response, next:
           options: async (value, { req }) => {
             if (value !== req.body.new_password) {
               throw new Error(USER_MESSAGE.COMFIRM_NEW_PASSWORD_MUST_BE_THE_SAME_AS_PASSWORD)
+            }
+
+            return true
+          }
+        }
+      }
+    },
+    ['body']
+  )
+    .run(req)
+    .then(() => {
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        return
+      }
+      next()
+      return
+    })
+    .catch((err) => {
+      res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ message: err, authenticate })
+      return
+    })
+}
+
+export const changeEmailValidator = async (req: Request, res: Response, next: NextFunction) => {
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  checkSchema(
+    {
+      new_email: {
+        notEmpty: {
+          errorMessage: USER_MESSAGE.EMAIL_IS_REQUIRED
+        },
+        trim: true,
+        isLength: {
+          options: {
+            min: 5,
+            max: 100
+          },
+          errorMessage: USER_MESSAGE.EMAIL_LENGTH_MUST_BE_FROM_5_TO_100
+        },
+        isEmail: {
+          errorMessage: USER_MESSAGE.EMAIL_IS_NOT_VALID
+        },
+        custom: {
+          options: async (value) => {
+            const result = await UserServices.checkEmailExits(value)
+
+            if (result) {
+              throw new Error(USER_MESSAGE.EMAIL_IS_ALWAYS_EXISTENT)
+            }
+
+            return true
+          }
+        }
+      },
+      email_verify_code: {
+        notEmpty: {
+          errorMessage: USER_MESSAGE.EMAIL_VERIFY_CODE_IS_REQUESTED
+        },
+        isString: {
+          errorMessage: USER_MESSAGE.EMAIL_VERIFY_CODE_MUST_BE_A_STRING
+        },
+        trim: true,
+        isLength: {
+          options: {
+            min: 9,
+            max: 9
+          },
+          errorMessage: USER_MESSAGE.EMAIL_VERIFY_CODE_INVALID
+        },
+        custom: {
+          options: async (value, { req }) => {
+            const email_verify_code = await databaseService.emailVerifyCodes.findOne({
+              email: req.body.new_email,
+              code: value
+            })
+
+            if (email_verify_code === null) {
+              throw new Error(USER_MESSAGE.EMAIL_VERIFY_CODE_INVALID)
             }
 
             return true

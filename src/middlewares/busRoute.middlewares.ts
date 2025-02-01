@@ -522,8 +522,6 @@ export const deleteValidator = (req: Request, res: Response, next: NextFunction)
 
               const bus_route = result[0]
 
-              console.log(bus_route)
-
               if (bus_route === null || bus_route === undefined) {
                 throw new Error(BUSROUTE_MESSAGE.BUS_ROUTE_ID_IS_NOT_EXIST)
               }
