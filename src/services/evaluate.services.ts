@@ -2,7 +2,10 @@ import {
   CreateEvaluateRequestBody,
   UpdateEvaluateRequestBody,
   DeleteEvaluateRequestBody,
-  GetEvaluateRequestBody
+  GetEvaluateRequestBody,
+  CreateFeedbackRequestBody,
+  UpdateFeedbackRequestBody,
+  DeleteFeedbackRequestBody
 } from '~/models/requests/evaluate.requests'
 import User from '~/models/schemas/users.schemas'
 import databaseService from './database.services'
@@ -23,6 +26,7 @@ class EvaluateService {
       })
     )
   }
+
   async UpdateEvaluate(payload: UpdateEvaluateRequestBody, evaluate: Evaluate) {
     await databaseService.evaluate.updateOne(
       {
@@ -39,9 +43,11 @@ class EvaluateService {
       }
     )
   }
+
   async DeleteEvaluate(payload: DeleteEvaluateRequestBody) {
     await databaseService.evaluate.deleteOne({ _id: new ObjectId(payload.evaluate_id) })
   }
+
   async GetEvaluate(payload: GetEvaluateRequestBody, user: User) {
     const limit = Number(process.env.LOAD_QUANTITY_LIMIT as string)
     const next = limit + 1
@@ -122,6 +128,55 @@ class EvaluateService {
         }
       }
     }
+  }
+
+  async CreateFeedback(payload: CreateFeedbackRequestBody, user: User, evaluate: Evaluate) {
+    await databaseService.evaluate.updateOne(
+      {
+        _id: evaluate._id
+      },
+      {
+        $set: {
+          feedback: {
+            user: user._id,
+            content: payload.content
+          }
+        },
+        $currentDate: {
+          updated_at: true
+        }
+      }
+    )
+  }
+
+  async UpdateFeedback(payload: UpdateFeedbackRequestBody, user: User, evaluate: Evaluate) {
+    await databaseService.evaluate.updateOne(
+      {
+        _id: evaluate._id
+      },
+      {
+        $set: {
+          'feedback.user': user._id,
+          'feedback.content': payload.content
+        },
+        $currentDate: {
+          updated_at: true
+        }
+      }
+    )
+  }
+
+  async DeleteFeedBack(payload: DeleteFeedbackRequestBody) {
+    await databaseService.evaluate.updateOne(
+      {
+        _id: new ObjectId(payload.evaluate_id)
+      },
+      {
+        $set: {
+          feedback: null
+        }
+      }
+    )
   }
 }
 

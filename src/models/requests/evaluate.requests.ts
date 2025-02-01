@@ -21,3 +21,20 @@ export interface GetEvaluateRequestBody {
   refresh_token: string
   current: number
 }
+
+export interface CreateFeedbackRequestBody {
+  refresh_token: string
+  evaluate_id: string
+  content: string
+}
+
+export interface UpdateFeedbackRequestBody {
+  refresh_token: string
+  evaluate_id: string
+  content: string
+}
+
+export interface DeleteFeedbackRequestBody {
+  refresh_token: string
+  evaluate_id: string
+}

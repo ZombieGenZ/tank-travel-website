@@ -5,7 +5,10 @@ import {
   CreateEvaluateRequestBody,
   UpdateEvaluateRequestBody,
   DeleteEvaluateRequestBody,
-  GetEvaluateRequestBody
+  GetEvaluateRequestBody,
+  CreateFeedbackRequestBody,
+  UpdateFeedbackRequestBody,
+  DeleteFeedbackRequestBody
 } from '~/models/requests/evaluate.requests'
 import User from '~/models/schemas/users.schemas'
 import EvaluateService from '~/services/evaluate.services'
@@ -84,6 +87,64 @@ export const getEvaluateController = async (
 
   res.json({
     result,
+    authenticate
+  })
+}
+
+export const createFeedbackController = async (
+  req: Request<ParamsDictionary, any, CreateFeedbackRequestBody>,
+  res: Response
+) => {
+  const user = req.user as User
+  const evaluate = req.evaluate as Evaluate
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  await EvaluateService.CreateFeedback(req.body, user, evaluate)
+
+  res.json({
+    message: EVALUATE_MESSAGE.CREATE_EVALUATE_FEEDBACK_SUCCESS,
+    authenticate
+  })
+}
+
+export const updateFeedbackController = async (
+  req: Request<ParamsDictionary, any, UpdateFeedbackRequestBody>,
+  res: Response
+) => {
+  const user = req.user as User
+  const evaluate = req.evaluate as Evaluate
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  await EvaluateService.UpdateFeedback(req.body, user, evaluate)
+
+  res.json({
+    message: EVALUATE_MESSAGE.UPDATE_EVALUATE_FEEDBACK_SUCCESS,
+    authenticate
+  })
+}
+
+export const deleteFeedbackController = async (
+  req: Request<ParamsDictionary, any, DeleteFeedbackRequestBody>,
+  res: Response
+) => {
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  await EvaluateService.DeleteFeedBack(req.body)
+
+  res.json({
+    message: EVALUATE_MESSAGE.DELETE_EVALUATE_FEEDBACK_SUCCESS,
     authenticate
   })
 }

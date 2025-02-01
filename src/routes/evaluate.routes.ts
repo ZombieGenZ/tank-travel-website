@@ -3,7 +3,10 @@ import {
   createEvaluateController,
   updateEvaluateController,
   deleteEvaluateController,
-  getEvaluateController
+  getEvaluateController,
+  createFeedbackController,
+  updateFeedbackController,
+  deleteFeedbackController
 } from '~/controllers/evaluate.controllers'
 import {
   authenticationValidator,
@@ -15,7 +18,10 @@ import {
   createValidator,
   updateValidator,
   deleteValidator,
-  getEvaluateValidator
+  getEvaluateValidator,
+  createFeedbackValidator,
+  updateFeedbackValidator,
+  deleteFeedbackValidator
 } from '~/middlewares/evaluate.middlewares'
 import { wrapRequestHandler } from '~/utils/handlers'
 const router = express.Router()
@@ -102,6 +108,68 @@ router.get(
   businessAuthenticationValidator,
   getEvaluateValidator,
   wrapRequestHandler(getEvaluateController)
+)
+
+/*
+ * Description: Tạo phản hồi cho một đánh giá có trong CSDL
+ * Path: /api/evaluate/create-feedback
+ * Method: POST
+ * headers: {
+ *    authorization: Bearer <token>
+ * },
+ * Body: {
+ *    refresh_token: string,
+ *    evaluate_id: string,
+ *    content: string
+ * }
+ */
+router.post(
+  '/create-feedback',
+  authenticationValidator,
+  businessAuthenticationValidator,
+  createFeedbackValidator,
+  wrapRequestHandler(createFeedbackController)
+)
+
+/*
+ * Description: Sửa phản hồi cho một đánh giá có trong CSDL
+ * Path: /api/evaluate/update-feedback
+ * Method: PUT
+ * headers: {
+ *    authorization: Bearer <token>
+ * },
+ * Body: {
+ *    refresh_token: string,
+ *    evaluate_id: string,
+ *    content: string
+ * }
+ */
+router.put(
+  '/update-feedback',
+  authenticationValidator,
+  businessAuthenticationValidator,
+  updateFeedbackValidator,
+  wrapRequestHandler(updateFeedbackController)
+)
+
+/*
+ * Description: Xóa phản hồi cho một đánh giá có trong CSDL
+ * Path: /api/evaluate/delete-feedback
+ * Method: DELETE
+ * headers: {
+ *    authorization: Bearer <token>
+ * },
+ * Body: {
+ *    refresh_token: string,
+ *    evaluate_id: string
+ * }
+ */
+router.delete(
+  '/delete-feedback',
+  authenticationValidator,
+  administratorAuthenticationValidator,
+  deleteFeedbackValidator,
+  wrapRequestHandler(deleteFeedbackController)
 )
 
 export default router

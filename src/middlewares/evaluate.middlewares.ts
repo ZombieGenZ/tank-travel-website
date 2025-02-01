@@ -4,6 +4,7 @@ import { ObjectId } from 'mongodb'
 import { UserPermission } from '~/constants/enum'
 import HTTPSTATUS from '~/constants/httpStatus'
 import { EVALUATE_MESSAGE } from '~/constants/message'
+import Evaluate from '~/models/schemas/evaluate.schemas'
 import User from '~/models/schemas/users.schemas'
 import databaseService from '~/services/database.services'
 
@@ -315,6 +316,301 @@ export const getEvaluateValidator = (req: Request, res: Response, next: NextFunc
             if (value < 0) {
               throw new Error(EVALUATE_MESSAGE.CURRENT_IS_MUST_BE_GREATER_THAN_0)
             }
+            return true
+          }
+        }
+      }
+    },
+    ['body']
+  )
+    .run(req)
+    .then(() => {
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        return
+      }
+      next()
+      return
+    })
+    .catch((err) => {
+      res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ message: err, authenticate })
+      return
+    })
+}
+
+export const createFeedbackValidator = (req: Request, res: Response, next: NextFunction) => {
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  checkSchema(
+    {
+      evaluate_id: {
+        notEmpty: {
+          errorMessage: EVALUATE_MESSAGE.EVALUATE_ID_IS_REQUIRED
+        },
+        trim: true,
+        isString: {
+          errorMessage: EVALUATE_MESSAGE.EVALUATE_ID_IS_MUST_BE_A_STRING
+        },
+        isMongoId: {
+          errorMessage: EVALUATE_MESSAGE.EVALUATE_ID_IS_INVALID
+        },
+        custom: {
+          options: async (value, { req }) => {
+            const user = (req as Request).user as User
+
+            if (user.permission === UserPermission.ADMINISTRATOR) {
+              const evaluate = await databaseService.evaluate.findOne({ _id: new ObjectId(value) })
+
+              if (evaluate === null) {
+                throw new Error(EVALUATE_MESSAGE.EVALUATE_ID_IS_NOT_EXIST)
+              }
+
+              if (evaluate.feedback !== null) {
+                throw new Error(EVALUATE_MESSAGE.EVALUATE_ID_IS_ALREADY_HAVE_FEEDBACK)
+              }
+
+              ;(req as Request).evaluate = evaluate
+
+              return true
+            } else {
+              const evaluate = await databaseService.evaluate
+                .aggregate<Evaluate>([
+                  {
+                    $match: {
+                      _id: new ObjectId(value)
+                    }
+                  },
+                  {
+                    $lookup: {
+                      from: process.env.DATABASE_VEHICLE_COLLECTION,
+                      localField: 'vehicle',
+                      foreignField: '_id',
+                      as: 'vehicle_info'
+                    }
+                  },
+                  {
+                    $unwind: '$vehicle_info'
+                  },
+                  {
+                    $match: {
+                      'vehicle_info.user': user._id
+                    }
+                  },
+                  {
+                    $project: {
+                      vehicle_info: 0
+                    }
+                  }
+                ])
+                .toArray()
+
+              if (evaluate === null || evaluate === undefined || evaluate.length === 0) {
+                throw new Error(EVALUATE_MESSAGE.EVALUATE_ID_IS_NOT_EXIST)
+              }
+
+              if (evaluate[0].feedback !== null) {
+                throw new Error(EVALUATE_MESSAGE.EVALUATE_ID_IS_ALREADY_HAVE_FEEDBACK)
+              }
+
+              ;(req as Request).evaluate = evaluate[0]
+              return true
+            }
+          }
+        }
+      },
+      content: {
+        notEmpty: {
+          errorMessage: EVALUATE_MESSAGE.CONTENT_IS_REQUIRED
+        },
+        trim: true,
+        isString: {
+          errorMessage: EVALUATE_MESSAGE.CONTENT_IS_MUST_BE_A_STRING
+        },
+        isLength: {
+          options: {
+            min: 1,
+            max: 500
+          },
+          errorMessage: EVALUATE_MESSAGE.CONTENT_LENGTH_MUST_BE_FROM_1_TO_500
+        }
+      }
+    },
+    ['body']
+  )
+    .run(req)
+    .then(() => {
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        return
+      }
+      next()
+      return
+    })
+    .catch((err) => {
+      res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ message: err, authenticate })
+      return
+    })
+}
+
+export const updateFeedbackValidator = (req: Request, res: Response, next: NextFunction) => {
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  checkSchema(
+    {
+      evaluate_id: {
+        notEmpty: {
+          errorMessage: EVALUATE_MESSAGE.EVALUATE_ID_IS_REQUIRED
+        },
+        trim: true,
+        isString: {
+          errorMessage: EVALUATE_MESSAGE.EVALUATE_ID_IS_MUST_BE_A_STRING
+        },
+        isMongoId: {
+          errorMessage: EVALUATE_MESSAGE.EVALUATE_ID_IS_INVALID
+        },
+        custom: {
+          options: async (value, { req }) => {
+            const user = (req as Request).user as User
+
+            if (user.permission === UserPermission.ADMINISTRATOR) {
+              const evaluate = await databaseService.evaluate.findOne({ _id: new ObjectId(value) })
+
+              if (evaluate === null) {
+                throw new Error(EVALUATE_MESSAGE.EVALUATE_ID_IS_NOT_EXIST)
+              }
+
+              if (evaluate.feedback === null) {
+                throw new Error(EVALUATE_MESSAGE.EVALUATE_ID_IS_NOT_HAVE_FEEDBACK)
+              }
+
+              ;(req as Request).evaluate = evaluate
+
+              return true
+            } else {
+              const evaluate = await databaseService.evaluate
+                .aggregate<Evaluate>([
+                  {
+                    $match: {
+                      _id: new ObjectId(value)
+                    }
+                  },
+                  {
+                    $lookup: {
+                      from: process.env.DATABASE_VEHICLE_COLLECTION,
+                      localField: 'vehicle',
+                      foreignField: '_id',
+                      as: 'vehicle_info'
+                    }
+                  },
+                  {
+                    $unwind: '$vehicle_info'
+                  },
+                  {
+                    $match: {
+                      'vehicle_info.user': user._id
+                    }
+                  },
+                  {
+                    $project: {
+                      vehicle_info: 0
+                    }
+                  }
+                ])
+                .toArray()
+
+              if (evaluate === null || evaluate === undefined || evaluate.length === 0) {
+                throw new Error(EVALUATE_MESSAGE.EVALUATE_ID_IS_NOT_EXIST)
+              }
+
+              if (evaluate[0].feedback === null) {
+                throw new Error(EVALUATE_MESSAGE.EVALUATE_ID_IS_NOT_HAVE_FEEDBACK)
+              }
+
+              ;(req as Request).evaluate = evaluate[0]
+              return true
+            }
+          }
+        }
+      },
+      content: {
+        notEmpty: {
+          errorMessage: EVALUATE_MESSAGE.CONTENT_IS_REQUIRED
+        },
+        trim: true,
+        isString: {
+          errorMessage: EVALUATE_MESSAGE.CONTENT_IS_MUST_BE_A_STRING
+        },
+        isLength: {
+          options: {
+            min: 1,
+            max: 500
+          },
+          errorMessage: EVALUATE_MESSAGE.CONTENT_LENGTH_MUST_BE_FROM_1_TO_500
+        }
+      }
+    },
+    ['body']
+  )
+    .run(req)
+    .then(() => {
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        return
+      }
+      next()
+      return
+    })
+    .catch((err) => {
+      res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ message: err, authenticate })
+      return
+    })
+}
+
+export const deleteFeedbackValidator = (req: Request, res: Response, next: NextFunction) => {
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  checkSchema(
+    {
+      evaluate_id: {
+        notEmpty: {
+          errorMessage: EVALUATE_MESSAGE.EVALUATE_ID_IS_REQUIRED
+        },
+        trim: true,
+        isString: {
+          errorMessage: EVALUATE_MESSAGE.EVALUATE_ID_IS_MUST_BE_A_STRING
+        },
+        isMongoId: {
+          errorMessage: EVALUATE_MESSAGE.EVALUATE_ID_IS_INVALID
+        },
+        custom: {
+          options: async (value, { req }) => {
+            const evaluate = await databaseService.evaluate.findOne({ _id: new ObjectId(value) })
+
+            if (evaluate === null) {
+              throw new Error(EVALUATE_MESSAGE.EVALUATE_ID_IS_NOT_EXIST)
+            }
+
+            if (evaluate.feedback === null) {
+              throw new Error(EVALUATE_MESSAGE.EVALUATE_ID_IS_NOT_HAVE_FEEDBACK)
+            }
+
+            ;(req as Request).evaluate = evaluate
+
             return true
           }
         }
