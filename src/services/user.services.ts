@@ -1,4 +1,9 @@
-import { RegisterRequestBody, EmailVerifyBody } from '~/models/requests/user.requests'
+import {
+  RegisterRequestBody,
+  EmailVerifyBody,
+  SendForgotPasswordBody,
+  ForgotPasswordBody
+} from '~/models/requests/user.requests'
 import databaseService from './database.services'
 import { HashPassword } from '~/utils/encryption'
 import User from '~/models/schemas/users.schemas'
@@ -54,9 +59,10 @@ class UserService {
       </div>
     `
 
-    await databaseService.emailVerifyCodes.insertOne(new EmailVerifyCode({ email, code }))
-
-    sendMail(email, email_verify_subject, email_verify_html)
+    await Promise.all([
+      databaseService.emailVerifyCodes.insertOne(new EmailVerifyCode({ email, code })),
+      sendMail(email, email_verify_subject, email_verify_html)
+    ])
   }
 
   async reSendEmailVerify(payload: EmailVerifyBody) {
@@ -89,16 +95,17 @@ class UserService {
       </div>
     `
 
-    await databaseService.emailVerifyCodes.updateOne(
-      {
-        email
-      },
-      {
-        $set: { code }
-      }
-    )
-
-    sendMail(email, email_verify_subject, email_verify_html)
+    await Promise.all([
+      databaseService.emailVerifyCodes.updateOne(
+        {
+          email
+        },
+        {
+          $set: { code }
+        }
+      ),
+      sendMail(email, email_verify_subject, email_verify_html)
+    ])
   }
 
   async register(payload: RegisterRequestBody) {
@@ -180,6 +187,19 @@ class UserService {
     })
   }
 
+  signForgotPassword(user_id: string) {
+    return signToken({
+      payload: {
+        user_id: user_id,
+        token_type: TokenType.ForgotPasswordToken
+      },
+      privateKey: process.env.SECURITY_JWT_SECRET_FORGOT_PASSWORD_TOKEN as string,
+      options: {
+        expiresIn: process.env.SECURITY_FORGOT_PASSWORD_EXPIRES_IN
+      }
+    })
+  }
+
   private signAccessTokenAndRefreshToken(user_id: string) {
     return Promise.all([this.signAccessToken(user_id), this.signRefreshToken(user_id)])
   }
@@ -201,6 +221,90 @@ class UserService {
 
   async logout(refresh_token: string) {
     await databaseService.refreshToken.deleteOne({ token: refresh_token })
+  }
+
+  async sendEmailForgotPassword(payload: SendForgotPasswordBody, user: User) {
+    const token = await this.signForgotPassword(user._id.toString())
+    const url = `${process.env.APP_URL}/forgot-password?token=${token}`
+
+    const email_forgot_password_subject = `Yêu cầu đặt lại mật khẩu - ${process.env.TRADEMARK_NAME}`
+    const email_forgot_password_html = `
+      <div style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
+          <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+              <div style="text-align: center; padding: 20px;">
+                  <h1 style="color: #333333; margin: 0;">${process.env.TRADEMARK_NAME}</h1>
+              </div>
+              
+              <div style="background-color: #ffffff; padding: 30px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                  <h2 style="color: #333333; margin-top: 0;">Xác nhận đổi mật khẩu</h2>
+                  
+                  <p style="color: #666666; line-height: 1.6;">
+                      Xin chào quý khách,
+                  </p>
+                  
+                  <p style="color: #666666; line-height: 1.6;">
+                      Chúng tôi nhận được yêu cầu đặt lại mật khẩu cho tài khoản ${process.env.TRADEMARK_NAME} của quý khách. Vui lòng nhấp vào nút bên dưới để đặt lại mật khẩu của quý khách:
+                  </p>
+                  
+                  <div style="text-align: center; margin: 30px 0;">
+                      <a href="${url}" style="background-color: #4CAF50; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; font-weight: bold;">Đặt lại mật khẩu</a>
+                  </div>
+                  
+                  <p style="color: #666666; line-height: 1.6;">
+                      Nếu quý khách không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này hoặc liên hệ với chúng tôi nếu quý khách có bất kỳ thắc mắc nào.
+                  </p>
+                  
+                  <p style="color: #666666; line-height: 1.6;">
+                      Lưu ý: Liên kết này sẽ hết hạn sau 24 giờ vì lý do bảo mật.
+                  </p>
+                  
+                  <hr style="border: none; border-top: 1px solid #eeeeee; margin: 30px 0;">
+                  
+                  <p style="color: #999999; font-size: 12px; text-align: center;">
+                      Email này được gửi tự động từ ${process.env.TRADEMARK_NAME}. Vui lòng không trả lời email này.
+                  </p>
+              </div>
+              
+              <div style="text-align: center; padding: 20px; color: #999999; font-size: 12px;">
+                  <p>© ${new Date().getFullYear()} ${process.env.TRADEMARK_NAME}. Mọi quyền được bảo lưu.</p>
+              </div>
+          </div>
+      </d>
+    `
+
+    await Promise.all([
+      databaseService.users.updateOne(
+        {
+          _id: user._id
+        },
+        {
+          $set: {
+            forgot_password_token: token
+          },
+          $currentDate: {
+            updated_at: true
+          }
+        }
+      ),
+      sendMail(payload.email, email_forgot_password_subject, email_forgot_password_html)
+    ])
+  }
+
+  async forgotPassword(payload: ForgotPasswordBody, user_id: string) {
+    await databaseService.users.updateOne(
+      {
+        _id: new ObjectId(user_id)
+      },
+      {
+        $set: {
+          password: HashPassword(payload.new_password),
+          forgot_password_token: ''
+        },
+        $currentDate: {
+          updated_at: true
+        }
+      }
+    )
   }
 }
 

@@ -14,7 +14,7 @@ declare module 'express' {
     access_token?: string
     refresh_token?: string
     decoded_refresh_token?: TokenPayload
-    decoded_email_verify_token?: TokenPayload
+    decoded_forgot_password_token?: TokenPayload
     preview?: ImageType[]
     vehicle?: Vehicle
     bus_route?: BusRoute

@@ -46,7 +46,15 @@ export const USER_MESSAGE = {
   EMAIL_VERIFY_CODE_INVALID: 'Mã xác thực email không hợp lệ',
   EMAIL_VERIFY_CODE_HAS_NOT_BEEN_SENT: 'Mã xác thực email chưa được gửi',
   EMAIL_VERIFY_CODE_RESEND_SUCCESS: 'Đã gửi lại mã xác thực email thành công!',
-  USER_IS_NOT_VERIFIED: 'Bạn phải xác thực email mới có thể sử dụng chức năng này'
+  USER_IS_NOT_VERIFIED: 'Bạn phải xác thực email mới có thể sử dụng chức năng này',
+  USERS_NOT_FOUND: 'Không tìm thấy người dùng với email này',
+  FORGOT_PASSWORD_SEND_EMAIL_SUCCESS: 'Gửi email thành công! Vui lòng kiểm tra hộp thư email của bạn',
+  TOKEN_IS_REQUESTED: 'Token thay đổi mật khẩu là bắt buộc',
+  TOKEN_MUST_BE_A_STRING: 'Token thay đổi mật khẩu phải là một chuỗi ký tự',
+  TOKEN_INVALID: 'Token thay đổi mật khẩu không hợp lệ',
+  CHANGED_PASSWORD_SUCCESS: 'Thay đổi mật khẩu thành công!',
+  USER_NOT_FOUND: 'Không tìm thấy người dùng',
+  FORGOT_PASSWORD_TOKEN_INVALID: 'Token thay đổi mật khẩu không hợp lệ'
 } as const
 
 export const AUTHENTICATION_MESSAGE = {

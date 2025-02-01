@@ -51,7 +51,7 @@ class OrderService {
       billDetails.push(billDetail)
     }
 
-    const billUrl = `${process.env.APP_URL}/bill/ticket?id=${bill.insertedId}`
+    const billUrl = `${process.env.APP_URL}/order/bill?id=${bill.insertedId}`
 
     const email_subject = `Vé điện từ - ${process.env.TRADEMARK_NAME}`
     const email_html = `

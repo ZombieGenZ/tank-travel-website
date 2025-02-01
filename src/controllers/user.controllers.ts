@@ -2,7 +2,14 @@ import { Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { ObjectId } from 'mongodb'
 import { USER_MESSAGE } from '~/constants/message'
-import { LogoutRequestBody, RegisterRequestBody, EmailVerifyBody, TokenPayload } from '~/models/requests/user.requests'
+import {
+  LogoutRequestBody,
+  RegisterRequestBody,
+  EmailVerifyBody,
+  SendForgotPasswordBody,
+  ForgotPasswordBody,
+  TokenPayload
+} from '~/models/requests/user.requests'
 import User from '~/models/schemas/users.schemas'
 import UserServices from '~/services/user.services'
 
@@ -45,5 +52,31 @@ export const logoutController = async (req: Request<ParamsDictionary, any, Logou
 
   res.json({
     message: USER_MESSAGE.LOGOUT_SUCCESS
+  })
+}
+
+export const sendEmailForgotPasswordController = async (
+  req: Request<ParamsDictionary, any, SendForgotPasswordBody>,
+  res: Response
+) => {
+  const user = req.user as User
+
+  await UserServices.sendEmailForgotPassword(req.body, user)
+
+  res.json({
+    message: USER_MESSAGE.FORGOT_PASSWORD_SEND_EMAIL_SUCCESS
+  })
+}
+
+export const forgotPasswordController = async (
+  req: Request<ParamsDictionary, any, ForgotPasswordBody>,
+  res: Response
+) => {
+  const { user_id } = req.decoded_forgot_password_token as TokenPayload
+
+  await UserServices.forgotPassword(req.body, user_id)
+
+  res.json({
+    message: USER_MESSAGE.CHANGED_PASSWORD_SUCCESS
   })
 }

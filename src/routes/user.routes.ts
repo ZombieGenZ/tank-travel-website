@@ -4,14 +4,18 @@ import {
   loginController,
   logoutController,
   sendEmailController,
-  reSendEmailController
+  reSendEmailController,
+  sendEmailForgotPasswordController,
+  forgotPasswordController
 } from '~/controllers/user.controllers'
 import {
   registerValidator,
   loginValidator,
   refreshTokenValidator,
   sendEmailVerifyValidator,
-  reSendEmailVerifyValidator
+  reSendEmailVerifyValidator,
+  sendEmailForgotPasswordValidator,
+  forgotPasswordValidator
 } from '~/middlewares/user.middlewares'
 import { wrapRequestHandler } from '~/utils/handlers'
 const router = express.Router()
@@ -72,7 +76,32 @@ router.post('/login', loginValidator, wrapRequestHandler(loginController))
  */
 router.delete('/logout', refreshTokenValidator, wrapRequestHandler(logoutController))
 
-// DOITAFTER: Làm chức năng quên mật khẩu
+/*
+ * Description: Gửi email quên mật khẩu cho một tài khoản có trong CSDL
+ * Path: /api/users/send-email-forgot-password
+ * Method: POST
+ * Body: {
+ *    email: string
+ * }
+ */
+router.post(
+  '/send-email-forgot-password',
+  sendEmailForgotPasswordValidator,
+  wrapRequestHandler(sendEmailForgotPasswordController)
+)
+
+/*
+ * Description: Sử dụng token để lấy lại mật khẩu cho một tài khoản có trong CSDL
+ * Path: /api/users/forgot-password
+ * Method: POST
+ * Body: {
+ *    token: string,
+ *    new_password: string,
+ *    comform_new_password: string
+ * }
+ */
+router.post('/forgot-password', forgotPasswordValidator, wrapRequestHandler(forgotPasswordController))
+
 // DOITAFTER: Làm chức năng thay đổi mật khẩu
 // DOITAFTER: Làm chức năng thay đổi email
 // DOITAFTER: Làm chức năng thay đổi số điện thoại

@@ -12,8 +12,7 @@ export enum UserPermission {
 export enum TokenType {
   AccessToken,
   RefreshToken,
-  ForgotPasswordToken,
-  EmailVerifyToken
+  ForgotPasswordToken
 }
 
 export enum VehicleTypeEnum {

@@ -1,6 +1,7 @@
 import { Request } from 'express'
 import { checkSchema } from 'express-validator'
 import { JsonWebTokenError } from 'jsonwebtoken'
+import { ObjectId } from 'mongodb'
 import { UserStatus } from '~/constants/enum'
 import HTTPSTATUS from '~/constants/httpStatus'
 import { USER_MESSAGE } from '~/constants/message'
@@ -34,11 +35,12 @@ export const sendEmailVerifyValidator = validate(
       custom: {
         options: async (value) => {
           const user = await databaseService.users.findOne({ email: value })
-          const email_verify_code = await databaseService.emailVerifyCodes.findOne({ email: value })
 
           if (user !== null) {
             throw new Error(USER_MESSAGE.EMAIL_IS_ALWAYS_EXISTENT)
           }
+
+          const email_verify_code = await databaseService.emailVerifyCodes.findOne({ email: value })
 
           if (email_verify_code !== null) {
             throw new Error(USER_MESSAGE.EMAIL_ALREADY_SENDING)
@@ -74,11 +76,12 @@ export const reSendEmailVerifyValidator = validate(
       custom: {
         options: async (value) => {
           const user = await databaseService.users.findOne({ email: value })
-          const email_verify_code = await databaseService.emailVerifyCodes.findOne({ email: value })
 
           if (user !== null) {
             throw new Error(USER_MESSAGE.EMAIL_IS_ALWAYS_EXISTENT)
           }
+
+          const email_verify_code = await databaseService.emailVerifyCodes.findOne({ email: value })
 
           if (email_verify_code === null) {
             throw new Error(USER_MESSAGE.EMAIL_VERIFY_CODE_HAS_NOT_BEEN_SENT)
@@ -296,17 +299,7 @@ export const loginValidator = validate(
         isString: {
           errorMessage: USER_MESSAGE.PASSWORD_MUST_BE_A_STRING
         },
-        trim: true,
-        isLength: {
-          options: {
-            min: 8,
-            max: 100
-          },
-          errorMessage: USER_MESSAGE.PASSOWRD_LENGTH_MUST_BE_FROM_8_TO_100
-        },
-        isStrongPassword: {
-          errorMessage: USER_MESSAGE.PASSOWRD_MUST_BE_STRONG
-        }
+        trim: true
       }
     },
     ['body']
@@ -375,7 +368,7 @@ export const refreshTokenValidator = validate(
   )
 )
 
-export const emailVerifyTokenValidator = validate(
+export const forgotPasswordValidator = validate(
   checkSchema(
     {
       token: {
@@ -383,38 +376,54 @@ export const emailVerifyTokenValidator = validate(
           options: async (value: string, { req }) => {
             if (!value) {
               throw new ErrorWithStatus({
-                message: USER_MESSAGE.EMAIL_VERIFY_TOKEN_IS_REQUESTED,
+                message: USER_MESSAGE.TOKEN_IS_REQUESTED,
                 status: HTTPSTATUS.UNAUTHORIZED
               })
             }
 
             if (typeof value !== 'string') {
               throw new ErrorWithStatus({
-                message: USER_MESSAGE.EMAIL_VERIFY_TOKEN_MUST_BE_A_STRING,
+                message: USER_MESSAGE.TOKEN_MUST_BE_A_STRING,
                 status: HTTPSTATUS.UNAUTHORIZED
               })
             }
 
             if (value === '') {
               throw new ErrorWithStatus({
-                message: USER_MESSAGE.EMAIL_VERIFY_TOKEN_IS_REQUESTED,
+                message: USER_MESSAGE.TOKEN_IS_REQUESTED,
                 status: HTTPSTATUS.UNAUTHORIZED
               })
             }
 
             try {
-              const decoded_email_verify_token = await verifyToken({
+              const decoded_token = await verifyToken({
                 token: value,
-                publicKey: process.env.SECURITY_JWT_EMAIL_VERIFY_TOKEN as string
+                publicKey: process.env.SECURITY_JWT_SECRET_FORGOT_PASSWORD_TOKEN as string
               })
 
-              ;(req as Request).decoded_email_verify_token = decoded_email_verify_token
+              const user = await databaseService.users.findOne({ _id: new ObjectId(decoded_token.user_id) })
+
+              if (user === null) {
+                throw new ErrorWithStatus({
+                  message: USER_MESSAGE.USER_NOT_FOUND,
+                  status: HTTPSTATUS.UNAUTHORIZED
+                })
+              }
+
+              if (user.forgot_password_token === '' || user.forgot_password_token !== value) {
+                throw new ErrorWithStatus({
+                  message: USER_MESSAGE.FORGOT_PASSWORD_TOKEN_INVALID,
+                  status: HTTPSTATUS.UNAUTHORIZED
+                })
+              }
+
+              ;(req as Request).decoded_forgot_password_token = decoded_token
 
               return true
             } catch (error) {
               if (error instanceof JsonWebTokenError) {
                 throw new ErrorWithStatus({
-                  message: USER_MESSAGE.REFRESH_TOKEN_INVALID,
+                  message: USER_MESSAGE.TOKEN_INVALID,
                   status: HTTPSTATUS.UNAUTHORIZED
                 })
               }
@@ -423,8 +432,92 @@ export const emailVerifyTokenValidator = validate(
             }
           }
         }
+      },
+      new_password: {
+        notEmpty: {
+          errorMessage: USER_MESSAGE.PASSWORD_IS_REQUIRED
+        },
+        isString: {
+          errorMessage: USER_MESSAGE.PASSWORD_MUST_BE_A_STRING
+        },
+        trim: true,
+        isLength: {
+          options: {
+            min: 8,
+            max: 100
+          },
+          errorMessage: USER_MESSAGE.PASSOWRD_LENGTH_MUST_BE_FROM_8_TO_100
+        },
+        isStrongPassword: {
+          errorMessage: USER_MESSAGE.PASSOWRD_MUST_BE_STRONG
+        }
+      },
+      comform_new_password: {
+        notEmpty: {
+          errorMessage: USER_MESSAGE.COMFIRM_PASSWORD_IS_REQUIRED
+        },
+        isString: {
+          errorMessage: USER_MESSAGE.COMFIRM_PASSWORD_MUST_BE_A_STRING
+        },
+        trim: true,
+        isLength: {
+          options: {
+            min: 8,
+            max: 100
+          },
+          errorMessage: USER_MESSAGE.COMFIRM_PASSWORD_LENGTH_MUST_BE_FROM_8_TO_100
+        },
+        isStrongPassword: {
+          errorMessage: USER_MESSAGE.COMFORM_PASSWORD_MUST_BE_STRONG
+        },
+        custom: {
+          options: async (value, { req }) => {
+            if (value !== req.body.new_password) {
+              throw new Error(USER_MESSAGE.COMFIRM_PASSWORD_MUST_BE_THE_SAME_AS_PASSWORD)
+            }
+
+            return true
+          }
+        }
       }
     },
-    ['query']
+    ['body']
   )
+)
+
+export const sendEmailForgotPasswordValidator = validate(
+  checkSchema({
+    email: {
+      notEmpty: {
+        errorMessage: USER_MESSAGE.EMAIL_IS_REQUIRED
+      },
+      trim: true,
+      isString: {
+        errorMessage: USER_MESSAGE.EMAIL_IS_MUST_BE_A_STRING
+      },
+      isLength: {
+        options: {
+          min: 5,
+          max: 100
+        },
+        errorMessage: USER_MESSAGE.EMAIL_LENGTH_MUST_BE_FROM_5_TO_100
+      },
+      isEmail: {
+        errorMessage: USER_MESSAGE.EMAIL_IS_NOT_VALID
+      },
+      custom: {
+        options: async (value, { req }) => {
+          const user = await databaseService.users.findOne({ email: value })
+
+          if (user === null) {
+            throw new Error(USER_MESSAGE.USERS_NOT_FOUND)
+          }
+
+          ;(req as Request).user = user
+
+          return true
+        }
+      }
+    }
+  })
 )
