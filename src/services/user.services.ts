@@ -1,9 +1,10 @@
 import {
   RegisterRequestBody,
-  EmailVerifyBody,
+  EmailVerifyRequestBody,
   SendForgotPasswordRequestBody,
   ForgotPasswordRequestBody,
-  ChangePasswordRequestBody
+  ChangePasswordRequestBody,
+  SendEmailVerifyChangeEmailRequestBody
 } from '~/models/requests/user.requests'
 import databaseService from './database.services'
 import { HashPassword } from '~/utils/encryption'
@@ -30,7 +31,7 @@ class UserService {
     return Math.floor(100000000 + Math.random() * 999999999).toString()
   }
 
-  async sendEmailVerify(payload: EmailVerifyBody) {
+  async sendEmailVerify(payload: EmailVerifyRequestBody) {
     const email = payload.email
     const code = this.randomCode()
 
@@ -66,7 +67,7 @@ class UserService {
     ])
   }
 
-  async reSendEmailVerify(payload: EmailVerifyBody) {
+  async reSendEmailVerify(payload: EmailVerifyRequestBody) {
     const email = payload.email
     const code = this.randomCode()
 
@@ -331,6 +332,87 @@ class UserService {
       databaseService.refreshToken.deleteMany({
         user_id: user._id
       })
+    ])
+  }
+
+  async sendEmailVerifyChangeEmail(payload: SendEmailVerifyChangeEmailRequestBody, user: User) {
+    const email = payload.email
+    const code = this.randomCode()
+
+    const email_verify_subject = `Xác nhận thay đổi email - ${process.env.TRADEMARK_NAME}`
+    const email_verify_html = `
+      <div style="margin: 0; padding: 0;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); overflow: hidden;">
+            <div style="background-color: #336699; color: white; text-align: center; padding: 20px;">
+                <h1 style="margin: 0; font-size: 24px;">${process.env.TRADEMARK_NAME}</h1>
+            </div>
+            <div style="padding: 30px; text-align: center;">
+                <p>Xin chào,</p>
+                <p>Chúng tôi nhận được yêu cầu thay đổi địa chỉ email của bạn trên ${process.env.TRADEMARK_NAME}.</p>
+                <p>Để xác nhận thay đổi email, vui lòng nhập mã sau:</p>
+                
+                <div style="background-color: #f0f0f0; border-radius: 10px; padding: 15px; margin: 20px 0; font-size: 36px; font-weight: bold; color: #336699; letter-spacing: 5px;">
+                    ${code}
+                </div>
+                
+                <p>Nếu bạn không thực hiện yêu cầu này, vui lòng bỏ qua email và kiểm tra lại bảo mật tài khoản của bạn.</p>
+            </div>
+            <div style="background-color: #f4f4f4; text-align: center; padding: 15px; font-size: 12px; color: #666;">
+                Trân trọng,<br>
+                Đội ngũ ${process.env.TRADEMARK_NAME}
+            </div>
+        </div>
+      </div>
+    `
+
+    await Promise.all([
+      databaseService.emailVerifyCodes.insertOne(new EmailVerifyCode({ email, code })),
+      sendMail(email, email_verify_subject, email_verify_html)
+    ])
+  }
+
+  async reSendEmailVerifyChangeEmail(payload: SendEmailVerifyChangeEmailRequestBody, user: User) {
+    const email = payload.email
+    const code = this.randomCode()
+
+    const email_verify_subject = `Xác nhận thay đổi email - ${process.env.TRADEMARK_NAME}`
+    const email_verify_html = `
+      <div style="margin: 0; padding: 0;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); overflow: hidden;">
+            <div style="background-color: #336699; color: white; text-align: center; padding: 20px;">
+                <h1 style="margin: 0; font-size: 24px;">${process.env.TRADEMARK_NAME}</h1>
+            </div>
+            <div style="padding: 30px; text-align: center;">
+                <p>Xin chào,</p>
+                <p>Chúng tôi nhận được yêu cầu thay đổi địa chỉ email của bạn trên ${process.env.TRADEMARK_NAME}.</p>
+                <p>Để xác nhận thay đổi email, vui lòng nhập mã sau:</p>
+                
+                <div style="background-color: #f0f0f0; border-radius: 10px; padding: 15px; margin: 20px 0; font-size: 36px; font-weight: bold; color: #336699; letter-spacing: 5px;">
+                    ${code}
+                </div>
+                
+                <p>Nếu bạn không thực hiện yêu cầu này, vui lòng bỏ qua email và kiểm tra lại bảo mật tài khoản của bạn.</p>
+            </div>
+            <div style="background-color: #f4f4f4; text-align: center; padding: 15px; font-size: 12px; color: #666;">
+                Trân trọng,<br>
+                Đội ngũ ${process.env.TRADEMARK_NAME}
+            </div>
+        </div>
+      </div>
+    `
+
+    await Promise.all([
+      databaseService.emailVerifyCodes.updateOne(
+        {
+          email: payload.email
+        },
+        {
+          $set: {
+            code: code
+          }
+        }
+      ),
+      sendMail(email, email_verify_subject, email_verify_html)
     ])
   }
 }

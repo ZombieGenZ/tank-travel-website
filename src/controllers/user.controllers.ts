@@ -5,22 +5,29 @@ import { USER_MESSAGE } from '~/constants/message'
 import {
   LogoutRequestBody,
   RegisterRequestBody,
-  EmailVerifyBody,
+  EmailVerifyRequestBody,
   SendForgotPasswordRequestBody,
   ForgotPasswordRequestBody,
   TokenPayload,
-  ChangePasswordRequestBody
+  ChangePasswordRequestBody,
+  SendEmailVerifyChangeEmailRequestBody
 } from '~/models/requests/user.requests'
 import User from '~/models/schemas/users.schemas'
 import UserServices from '~/services/user.services'
 
-export const sendEmailController = async (req: Request<ParamsDictionary, any, EmailVerifyBody>, res: Response) => {
+export const sendEmailController = async (
+  req: Request<ParamsDictionary, any, EmailVerifyRequestBody>,
+  res: Response
+) => {
   await UserServices.sendEmailVerify(req.body)
 
-  res.json({ message: USER_MESSAGE.EMAIL_SENDIING_SUCCESS })
+  res.json({ message: USER_MESSAGE.EMAIL_VERIFY_CODE_SEND_SUCCESS })
 }
 
-export const reSendEmailController = async (req: Request<ParamsDictionary, any, EmailVerifyBody>, res: Response) => {
+export const reSendEmailController = async (
+  req: Request<ParamsDictionary, any, EmailVerifyRequestBody>,
+  res: Response
+) => {
   await UserServices.reSendEmailVerify(req.body)
 
   res.json({ message: USER_MESSAGE.EMAIL_VERIFY_CODE_RESEND_SUCCESS })
@@ -92,5 +99,31 @@ export const changePasswordController = async (
 
   res.json({
     message: USER_MESSAGE.CHANGED_PASSWORD_SUCCESS
+  })
+}
+
+export const sendEmailVerifyController = async (
+  req: Request<ParamsDictionary, any, SendEmailVerifyChangeEmailRequestBody>,
+  res: Response
+) => {
+  const user = req.user as User
+
+  await UserServices.sendEmailVerifyChangeEmail(req.body, user)
+
+  res.json({
+    message: USER_MESSAGE.EMAIL_VERIFY_CODE_SEND_SUCCESS
+  })
+}
+
+export const reSendEmailVerifyController = async (
+  req: Request<ParamsDictionary, any, SendEmailVerifyChangeEmailRequestBody>,
+  res: Response
+) => {
+  const user = req.user as User
+
+  await UserServices.reSendEmailVerifyChangeEmail(req.body, user)
+
+  res.json({
+    message: USER_MESSAGE.EMAIL_VERIFY_CODE_RESEND_SUCCESS
   })
 }

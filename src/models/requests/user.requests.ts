@@ -1,7 +1,7 @@
 import { JwtPayload } from 'jsonwebtoken'
 import { TokenType } from '~/constants/enum'
 
-export interface EmailVerifyBody {
+export interface EmailVerifyRequestBody {
   email: string
 }
 
@@ -42,4 +42,9 @@ export interface ChangePasswordRequestBody {
   password: string
   new_password: string
   comform_new_password: string
+}
+
+export interface SendEmailVerifyChangeEmailRequestBody {
+  refresh_token: string
+  email: string
 }

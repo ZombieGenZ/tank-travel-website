@@ -7,7 +7,9 @@ import {
   reSendEmailController,
   sendEmailForgotPasswordController,
   forgotPasswordController,
-  changePasswordController
+  changePasswordController,
+  sendEmailVerifyController,
+  reSendEmailVerifyController
 } from '~/controllers/user.controllers'
 import { authenticationValidator } from '~/middlewares/authentication.middlewares'
 import {
@@ -126,7 +128,44 @@ router.put(
   wrapRequestHandler(changePasswordController)
 )
 
-// DOITAFTER: Làm chức năng thay đổi mật khẩu
+/*
+ * Description: Gữi mã xác nhận thay đổi email cho một tài khoản có trong CSDL
+ * Path: /api/users/send-email-verify-change-email
+ * Method: POST
+ * headers: {
+ *    authorization: Bearer <token>
+ * },
+ * Body: {
+ *    refresh_token: string,
+ *    email: string
+ * }
+ */
+router.post(
+  '/send-email-verify-change-email',
+  authenticationValidator,
+  sendEmailVerifyValidator,
+  wrapRequestHandler(sendEmailVerifyController)
+)
+
+/*
+ * Description: Gữi lại mã xác nhận thay đổi email cho một tài khoản có trong CSDL
+ * Path: /api/users/resend-email-verify-change-email
+ * Method: PUT
+ * headers: {
+ *    authorization: Bearer <token>
+ * },
+ * Body: {
+ *    refresh_token: string,
+ *    email: string
+ * }
+ */
+router.put(
+  '/resend-email-verify-change-email',
+  authenticationValidator,
+  reSendEmailVerifyValidator,
+  wrapRequestHandler(reSendEmailVerifyController)
+)
+
 // DOITAFTER: Làm chức năng thay đổi số điện thoại
 // DOITAFTER: Làm chức năng thay đổi thay đổi avatar
 
