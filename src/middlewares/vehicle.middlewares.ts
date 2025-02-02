@@ -12,7 +12,6 @@ import databaseService from '~/services/database.services'
 import userService from '~/services/user.services'
 import { ObjectId } from 'mongodb'
 import { TokenPayload } from '~/models/requests/user.requests'
-import { validate } from '~/utils/validation'
 import sharp from 'sharp'
 
 export const authenticateCreateValidator = async (req: Request, res: Response, next: NextFunction) => {

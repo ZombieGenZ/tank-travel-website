@@ -5,7 +5,8 @@ import {
   ForgotPasswordRequestBody,
   ChangePasswordRequestBody,
   SendEmailVerifyChangeEmailRequestBody,
-  ChangeEmailRequestBody
+  ChangeEmailRequestBody,
+  ChangePhoneRequestBody
 } from '~/models/requests/user.requests'
 import databaseService from './database.services'
 import { HashPassword } from '~/utils/encryption'
@@ -16,6 +17,7 @@ import RefreshToken from '~/models/schemas/refreshtoken.schemas'
 import { ObjectId } from 'mongodb'
 import { sendMail } from '~/utils/mail'
 import EmailVerifyCode from '~/models/schemas/emailverifycode.schemas'
+import { ImageType } from '~/constants/image'
 
 class UserService {
   async checkEmailExits(email: string) {
@@ -578,6 +580,77 @@ class UserService {
       sendMail(user.email, email_subject, email_html)
     ])
   }
+
+  async changePhone(payload: ChangePhoneRequestBody, user: User) {
+    const email_subject = `Thông báo thay đổi số điện thoại - ${process.env.TRADEMARK_NAME}`
+    const email_html = `
+      <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
+          <div style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
+              <div style="text-align: center; padding: 20px 0; background-color: #003366;">
+                  <h1 style="color: #ffffff; margin: 0; font-size: 24px;">${process.env.TRADEMARK_NAME}</h1>
+              </div>
+    
+              <div style="padding: 30px; text-align: left;">
+                  <h2 style="color: #003366; margin-bottom: 20px;">Thông báo thay đổi số điện thoại</h2>
+                  
+                  <p style="color: #333333; font-size: 16px; line-height: 1.6;">
+                      Xin chào quý khách,
+                  </p>
+                  
+                  <p style="color: #333333; font-size: 16px; line-height: 1.6;">
+                      Chúng tôi xin thông báo số điện thoại liên kết với tài khoản ${process.env.TRADEMARK_NAME} của quý khách đã được thay đổi.
+                  </p>
+    
+                  <p style="color: #333333; font-size: 16px; line-height: 1.6;">
+                      Email này được gửi đến để thông báo về việc thay đổi số điện thoại nhằm đảm bảo tính bảo mật. Nếu bạn không thực hiện thay đổi này, tài khoản của bạn có thể đã bị xâm phạm.
+                  </p>
+    
+                  <p style="color: #d93025; font-size: 16px; line-height: 1.6; font-weight: bold;">
+                      Nếu quý khách không thực hiện thay đổi này, vui lòng liên hệ ngay với bộ phận hỗ trợ của chúng tôi để được hỗ trợ kịp thời.
+                  </p>
+              </div>
+    
+              <div style="padding: 20px; text-align: center; background-color: #f8f8f8; border-top: 1px solid #eeeeee;">
+                  <p style="color: #666666; font-size: 14px; margin: 0;">
+                      © ${new Date().getFullYear()} ${process.env.TRADEMARK_NAME}. Tất cả các quyền được bảo lưu.
+                  </p>
+                  <p style="color: #666666; font-size: 14px; margin: 10px 0;">
+                      Bộ phận Hỗ trợ Khách hàng:<br>
+                      Email: <a href="mailto:${process.env.SUPPORT_EMAIL}" style="color: #003366;">${process.env.SUPPORT_EMAIL}</a><br>
+                      Hotline: <a href="tel:${process.env.SUPPORT_PHONE}" style="color: #003366;">${process.env.SUPPORT_PHONE_DISPLAY}</a> (24/7)<br>
+                  </p>
+              </div>
+          </div>
+      </body>
+    `
+
+    await Promise.all([
+      databaseService.users.updateOne(
+        {
+          _id: user._id
+        },
+        {
+          $set: {
+            phone: payload.new_phone
+          },
+          $currentDate: {
+            updated_at: true
+          }
+        }
+      ),
+      sendMail(user.email, email_subject, email_html)
+    ])
+  }
+
+  // async changeAvatar(file: Express.Multer.File, user: User) {
+  //   const image: ImageType = {
+  //     path: `public/images/upload/avatar/${user._id}/${file.filename}`,
+  //     type: file.mimetype,
+  //     url: `${process.env.APP_URL}/images/upload/vehicle/${user._id}/${file.filename}`,
+  //     size: file.size
+  //   }
+  // }
+
   private getFormatDate(date: Date): string {
     const formatDate = new Date(date)
     const second = String(formatDate.getSeconds()).padStart(2, '0')

@@ -11,7 +11,6 @@ export interface CreateVehicleRequestBody {
   seats: number
   rules: string
   amenities: string
-  preview: [string]
   license_plate: string
 }
 

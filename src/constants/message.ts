@@ -68,7 +68,8 @@ export const USER_MESSAGE = {
   COMFIRM_NEW_PASSWORD_MUST_BE_THE_SAME_AS_PASSWORD: 'Xác nhận mật khẩu mới phải giống với mật khẩu mới',
   PASSWORD_INCORRECT: 'Mật khẩu không chính xác',
   NEW_PASSWORD_MUST_BE_DIFFERENT_FROM_OLD_PASSWORD: 'Mật khẩu mới phải khác mật khẩu cũ',
-  CHANGED_EMAIL_SUCCESS: 'Thay đổi email thành công! Vui lòng đăng nhập lại'
+  CHANGED_EMAIL_SUCCESS: 'Thay đổi email thành công! Vui lòng đăng nhập lại',
+  CHANGED_PHONE_SUCCESS: 'Thay đổi số điện thoại thành công!'
 } as const
 
 export const AUTHENTICATION_MESSAGE = {

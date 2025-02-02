@@ -55,3 +55,12 @@ export interface ChangeEmailRequestBody {
   new_email: string
   email_verify_code: string
 }
+
+export interface ChangePhoneRequestBody {
+  refresh_token: string
+  new_phone: string
+}
+
+export interface ChangeAvatarRequestBody {
+  refresh_token: string
+}

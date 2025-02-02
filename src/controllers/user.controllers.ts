@@ -11,7 +11,9 @@ import {
   TokenPayload,
   ChangePasswordRequestBody,
   SendEmailVerifyChangeEmailRequestBody,
-  ChangeEmailRequestBody
+  ChangeEmailRequestBody,
+  ChangePhoneRequestBody,
+  ChangeAvatarRequestBody
 } from '~/models/requests/user.requests'
 import User from '~/models/schemas/users.schemas'
 import UserServices from '~/services/user.services'
@@ -142,3 +144,41 @@ export const changeEmailController = async (
     message: USER_MESSAGE.CHANGED_EMAIL_SUCCESS
   })
 }
+
+export const changePhoneController = async (
+  req: Request<ParamsDictionary, any, ChangePhoneRequestBody>,
+  res: Response
+) => {
+  const user = req.user as User
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  await UserServices.changePhone(req.body, user)
+
+  res.json({
+    message: USER_MESSAGE.CHANGED_PHONE_SUCCESS,
+    authenticate
+  })
+}
+
+// export const changeAvatarController = async (
+//   req: Request<ParamsDictionary, any, ChangeAvatarRequestBody>,
+//   res: Response
+// ) => {
+//   const user = req.user as User
+//   const { access_token, refresh_token } = req
+//   const authenticate = {
+//     access_token,
+//     refresh_token
+//   }
+
+//   await UserServices.changePhone(req.body, user)
+
+//   res.json({
+//     message: USER_MESSAGE.CHANGED_PHONE_SUCCESS,
+//     authenticate
+//   })
+// }

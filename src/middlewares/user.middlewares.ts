@@ -2,10 +2,12 @@ import { Request, Response, NextFunction } from 'express'
 import { checkSchema, validationResult } from 'express-validator'
 import { JsonWebTokenError } from 'jsonwebtoken'
 import { ObjectId } from 'mongodb'
+import sharp from 'sharp'
 import { UserStatus } from '~/constants/enum'
 import HTTPSTATUS from '~/constants/httpStatus'
-import { USER_MESSAGE } from '~/constants/message'
+import { AUTHENTICATION_MESSAGE, USER_MESSAGE } from '~/constants/message'
 import { ErrorWithStatus } from '~/models/errors'
+import { MulterFile } from '~/models/multerfile'
 import { TokenPayload } from '~/models/requests/user.requests'
 import User from '~/models/schemas/users.schemas'
 import databaseService from '~/services/database.services'
@@ -13,6 +15,8 @@ import UserServices from '~/services/user.services'
 import { HashPassword } from '~/utils/encryption'
 import { verifyToken } from '~/utils/jwt'
 import { validate } from '~/utils/validation'
+import UsersServices from '~/services/user.services'
+import fs from 'fs'
 
 export const sendEmailVerifyValidator = validate(
   checkSchema({
@@ -743,3 +747,215 @@ export const changeEmailValidator = async (req: Request, res: Response, next: Ne
       return
     })
 }
+
+export const changePhoneValidator = (req: Request, res: Response, next: NextFunction) => {
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  checkSchema(
+    {
+      new_phone: {
+        notEmpty: {
+          errorMessage: USER_MESSAGE.PHONE_IS_REQUIRED
+        },
+        trim: true,
+        isString: {
+          errorMessage: USER_MESSAGE.PHONE_MUST_BE_A_STRING
+        },
+        isLength: {
+          options: {
+            min: 10,
+            max: 11
+          },
+          errorMessage: USER_MESSAGE.PHONE_LENGTH_MUST_BE_FROM_10_TO_11
+        },
+        isMobilePhone: {
+          errorMessage: USER_MESSAGE.PHONE_IS_NOT_VALID
+        },
+        custom: {
+          options: async (value) => {
+            const result = await UserServices.checkPhoneNumberExits(value)
+
+            if (result) {
+              throw new Error(USER_MESSAGE.PHONE_IS_ALWAYS_EXISTENT)
+            }
+            return true
+          }
+        }
+      }
+    },
+    ['body']
+  )
+    .run(req)
+    .then(() => {
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        return
+      }
+      next()
+      return
+    })
+    .catch((err) => {
+      res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ message: err, authenticate })
+      return
+    })
+}
+
+// export const AuthenticationValidator = async (req: Request, res: Response, next: NextFunction) => {
+//   const { authorization } = req.headers
+//   const { refresh_token } = req.body
+
+//   if (!authorization || typeof authorization !== 'string' || authorization === '' || !authorization.split(' '[1])) {
+//     if (!refresh_token || typeof refresh_token !== 'string' || refresh_token === '') {
+
+//       res
+//         .status(HTTPSTATUS.UNAUTHORIZED)
+//         .json({ message: AUTHENTICATION_MESSAGE.ACCESS_TOKEN_AND_REFRESH_TOKEN_IS_MISSING })
+//       return
+//     }
+
+//     try {
+//       const decoded_refresh_token = (await verifyToken({
+//         token: refresh_token,
+//         publicKey: process.env.SECURITY_JWT_SECRET_REFRESH_TOKEN as string
+//       })) as TokenPayload
+
+//       const { user_id } = decoded_refresh_token
+//       const user = await databaseService.users.findOne({ _id: new ObjectId(user_id) })
+
+//       if (!user) {
+//         res
+//           .status(HTTPSTATUS.UNAUTHORIZED)
+//           .json({ message: AUTHENTICATION_MESSAGE.ACCESS_TOKEN_AND_REFRESH_TOKEN_IS_MISSING })
+//         return
+//       }
+
+//       const new_access_token = await UsersServices.signAccessToken(user_id)
+//       const new_refresh_token = await UsersServices.signRefreshToken(user_id)
+//       await UsersServices.changeRefreshToken(user_id, new_access_token)
+
+//       req.user = user
+//       req.access_token = new_access_token
+//       req.refresh_token = new_refresh_token
+
+//       next()
+//       return
+//     } catch (err) {
+//       res.status(HTTPSTATUS.UNAUTHORIZED).json({ message: AUTHENTICATION_MESSAGE.REFRESH_TOKEN_INVALID })
+//     }
+//   }
+
+//   try {
+//     const token = authorization?.split(' ')[1]
+
+//     const decoded_access_token = (await verifyToken({
+//       token: token as string,
+//       publicKey: process.env.SECURITY_JWT_SECRET_ACCESS_TOKEN as string
+//     })) as TokenPayload
+
+//     await verifyToken({
+//       token: token as string,
+//       publicKey: process.env.SECURITY_JWT_SECRET_REFRESH_TOKEN as string
+//     })
+
+//     const { user_id } = decoded_access_token
+//     const user = await databaseService.users.findOne({ _id: new ObjectId(user_id) })
+
+//     if (!user) {
+//       res
+//         .status(HTTPSTATUS.UNAUTHORIZED)
+//         .json({ message: AUTHENTICATION_MESSAGE.ACCESS_TOKEN_AND_REFRESH_TOKEN_IS_MISSING })
+//       return
+//     }
+
+//     req.user = user
+//     req.access_token = token
+//     req.refresh_token = refresh_token
+
+//     next()
+//     return
+//   } catch {
+//     try {
+//       const decoded_refresh_token = (await verifyToken({
+//         token: refresh_token,
+//         publicKey: process.env.SECURITY_JWT_SECRET_REFRESH_TOKEN as string
+//       })) as TokenPayload
+
+//       const { user_id } = decoded_refresh_token
+//       const user = await databaseService.users.findOne({ _id: new ObjectId(user_id) })
+
+//       if (!user) {
+//         res
+//           .status(HTTPSTATUS.UNAUTHORIZED)
+//           .json({ message: AUTHENTICATION_MESSAGE.ACCESS_TOKEN_AND_REFRESH_TOKEN_IS_MISSING })
+//         return
+//       }
+
+//       const new_access_token = await UsersServices.signAccessToken(user_id)
+//       const new_refresh_token = await UsersServices.signRefreshToken(user_id)
+//       await UsersServices.changeRefreshToken(user_id, new_access_token)
+
+//       req.user = user
+//       req.access_token = new_access_token
+//       req.refresh_token = new_refresh_token
+
+//       next()
+//       return
+//     } catch (err) {
+//       res.status(HTTPSTATUS.UNAUTHORIZED).json({ message: AUTHENTICATION_MESSAGE.REFRESH_TOKEN_INVALID })
+//     }
+//   }
+// }
+
+// export const image3x4Validator = async (req: Request, res: Response, next: NextFunction) => {
+//   const { access_token, refresh_token } = req
+//   const authenticate = {
+//     access_token,
+//     refresh_token
+//   }
+
+//   try {
+//     if (!req.file) {
+//       res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({
+//         messgae: 'Bạn phải gửi ảnh đại điện của mình lên',
+//         authenticate
+//       })
+//       return
+//     }
+
+//     const file = req.file as MulterFile
+//     const image = sharp(file.buffer)
+//     const metadata = await image.metadata()
+
+//     // Kiểm tra tỷ lệ 3:4
+//     const expectedRatio = 3 / 4
+//     const actualRatio = metadata.width! / metadata.height!
+
+//     // Cho phép sai số 1%
+//     const tolerance = 0.01
+//     if (Math.abs(actualRatio - expectedRatio) > tolerance) {
+//       res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({
+//         messgae: 'Ảnh phải có tỷ lệ 3:4',
+//         authenticate
+//       })
+//       return
+//     }
+
+//     // Nếu cần resize ảnh về kích thước chuẩn (ví dụ: 300x400)
+//     const resizedImage = await image
+//       .resize(300, 400, {
+//         fit: 'fill'
+//       })
+//       .toBuffer()
+
+//     req.file.buffer = resizedImage
+
+//     next()
+//   } catch (error) {
+//     next(error)
+//   }
+// }

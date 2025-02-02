@@ -10,7 +10,8 @@ import {
   changePasswordController,
   sendEmailVerifyController,
   reSendEmailVerifyController,
-  changeEmailController
+  changeEmailController,
+  changePhoneController
 } from '~/controllers/user.controllers'
 import { authenticationValidator } from '~/middlewares/authentication.middlewares'
 import {
@@ -22,10 +23,43 @@ import {
   sendEmailForgotPasswordValidator,
   forgotPasswordValidator,
   changePasswordValidator,
-  changeEmailValidator
+  changeEmailValidator,
+  changePhoneValidator //,
+  // AuthenticationValidator,
+  // image3x4Validator
 } from '~/middlewares/user.middlewares'
 import { wrapRequestHandler } from '~/utils/handlers'
+import multer from 'multer'
+import path from 'path'
+
 const router = express.Router()
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, `public/images/upload/avatar/temporary`)
+  },
+  filename: (req, file, cb) => {
+    const fileName = path.basename(file.originalname, path.extname(file.originalname))
+    const fileExt = path.extname(file.originalname)
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9)
+    cb(null, `${fileName}-${uniqueSuffix}${fileExt}`)
+  }
+})
+
+const upload = multer({
+  storage: storage,
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+      cb(null, true)
+    } else {
+      cb(null, false)
+    }
+  },
+  limits: {
+    fileSize: 1024 * 1024 * 5,
+    files: 30
+  }
+})
 
 /*
  * Description: Gửi email xác thực tài khoản
@@ -183,7 +217,40 @@ router.put(
  */
 router.put('/change-email', authenticationValidator, changeEmailValidator, wrapRequestHandler(changeEmailController))
 
-// DOITAFTER: Làm chức năng thay đổi số điện thoại
-// DOITAFTER: Làm chức năng thay đổi thay đổi avatar
+/*
+ * Description: Thay đổi số điện thoại cho một tài khoản có trong CSDL
+ * Path: /api/users/change-phone
+ * Method: PUT
+ * headers: {
+ *    authorization: Bearer <token>
+ * },
+ * Body: {
+ *    refresh_token: string,
+ *    new_phone: string
+ * }
+ */
+router.put('/change-phone', authenticationValidator, changePhoneValidator, wrapRequestHandler(changePhoneController))
+
+// DOITAFTER: Làm chức anwgn thay đổi ảnh đại điện
+
+/*
+ * Description: Thay đổi ảnh đại diện cho một tài khoản có trong CSDL
+ * Path: /api/users/change-avatar
+ * Method: PUT
+ * headers: {
+ *    authorization: Bearer <token>
+ * },
+ * Body: {
+ *    refresh_token: string,
+ *    new_avatar: file
+ * }
+ */
+// router.put(
+//   '/change-avatar',
+//   upload.single('new_avatar'),
+//   AuthenticationValidator,
+//   image3x4Validator,
+//   wrapRequestHandler(changePhoneController)
+// )
 
 export default router
