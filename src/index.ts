@@ -17,6 +17,7 @@ import vehicleApi from '~/routes/vehicle.routes'
 import busRouteApi from '~/routes/busRoute.routes'
 import orderApi from '~/routes/order.routes'
 import evaluateApi from '~/routes/evaluate.routes'
+import testApi from '~/routes/test.routes'
 
 const app = express()
 const server = createServer(app)
@@ -54,6 +55,7 @@ app.use('/api/vehicle', vehicleApi)
 app.use('/api/bus-route', busRouteApi)
 app.use('/api/order', orderApi)
 app.use('/api/evaluate', evaluateApi)
+app.use('/test', testApi)
 
 app.use(defaultErrorHandler)
 
@@ -70,7 +72,7 @@ io.on('connection', (socket: Socket) => {
   })
 })
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log()
   console.log(`\x1b[33mMáy chủ đang chạy trên port \x1b[36m${port}\x1b[0m`)
   console.log(`\x1b[33mTruy cập tại: \x1b[36m${process.env.APP_URL}/\x1b[0m`)

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test chat realtime</title>
+  <style>
+    .main {
+      width: 100%;
+      height: 100vh;
+      display: grid;
+      grid-template-rows: 1fr 50px;
+    }
+    .display {
+      display: flex;
+      flex-direction: column;
+    }
+    .my-chat {
+      padding: 2px;
+      float: right;
+      background-color: green;
+    }
+  </style>
+</head>
+<body>
+  <div class="main">
+    <div class="display" id="chat"></div>
+    <div class="chat">
+      <input type="text" id="msg">
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script>
+    const socket = io(`<%= host %>`);
+
+    const room = window.location.pathname;
+    socket.emit("join-room", room);
+
+    socket.on("new-message", (data) => {
+      const chat = document.getElementById('chat')
+      chat.innerHTML += `<p>[Room ${data.room}]: ${data.message}</p>`
+    });
+
+    function sendMessage() {
+        const message = document.getElementById("msg").value;
+        fetch(`/test/chat`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ message }),
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (!data.success) {
+            console.error("Error sending message");
+          }
+        });
+    }
+  </script>
+</body>
+</html>
