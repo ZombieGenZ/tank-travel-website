@@ -6,6 +6,7 @@ import { ImageType } from '~/constants/image'
 import { BusRoute } from './models/schemas/busRoute.schemas'
 import { BillDetail } from '~/models/schemas/billDetail.schemas'
 import { Evaluate } from '~/models/schemas/evaluate.schemas'
+import { Server as SocketIOServer } from 'socket.io'
 
 declare module 'express' {
   interface Request {
@@ -16,9 +17,11 @@ declare module 'express' {
     decoded_refresh_token?: TokenPayload
     decoded_forgot_password_token?: TokenPayload
     preview?: ImageType[]
+    avatar?: ImageType
     vehicle?: Vehicle
     bus_route?: BusRoute
     billDetail?: BillDetail
     evaluate?: Evaluate
+    io?: SocketIOServer
   }
 }

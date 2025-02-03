@@ -17,6 +17,8 @@ import { verifyToken } from '~/utils/jwt'
 import { validate } from '~/utils/validation'
 import UsersServices from '~/services/user.services'
 import fs from 'fs'
+import { ImageType } from '~/constants/image'
+import path from 'path'
 
 export const sendEmailVerifyValidator = validate(
   checkSchema({
@@ -805,157 +807,195 @@ export const changePhoneValidator = (req: Request, res: Response, next: NextFunc
     })
 }
 
-// export const AuthenticationValidator = async (req: Request, res: Response, next: NextFunction) => {
-//   const { authorization } = req.headers
-//   const { refresh_token } = req.body
+export const AuthenticationValidator = async (req: Request, res: Response, next: NextFunction) => {
+  const { authorization } = req.headers
+  const { refresh_token } = req.body
 
-//   if (!authorization || typeof authorization !== 'string' || authorization === '' || !authorization.split(' '[1])) {
-//     if (!refresh_token || typeof refresh_token !== 'string' || refresh_token === '') {
+  if (!authorization || typeof authorization !== 'string' || authorization === '' || !authorization.split(' '[1])) {
+    if (!refresh_token || typeof refresh_token !== 'string' || refresh_token === '') {
+      deleteTemporaryFile(req.file)
+      res
+        .status(HTTPSTATUS.UNAUTHORIZED)
+        .json({ message: AUTHENTICATION_MESSAGE.ACCESS_TOKEN_AND_REFRESH_TOKEN_IS_MISSING })
+      return
+    }
 
-//       res
-//         .status(HTTPSTATUS.UNAUTHORIZED)
-//         .json({ message: AUTHENTICATION_MESSAGE.ACCESS_TOKEN_AND_REFRESH_TOKEN_IS_MISSING })
-//       return
-//     }
+    try {
+      const decoded_refresh_token = (await verifyToken({
+        token: refresh_token,
+        publicKey: process.env.SECURITY_JWT_SECRET_REFRESH_TOKEN as string
+      })) as TokenPayload
 
-//     try {
-//       const decoded_refresh_token = (await verifyToken({
-//         token: refresh_token,
-//         publicKey: process.env.SECURITY_JWT_SECRET_REFRESH_TOKEN as string
-//       })) as TokenPayload
+      const { user_id } = decoded_refresh_token
+      const user = await databaseService.users.findOne({ _id: new ObjectId(user_id) })
 
-//       const { user_id } = decoded_refresh_token
-//       const user = await databaseService.users.findOne({ _id: new ObjectId(user_id) })
+      if (!user) {
+        deleteTemporaryFile(req.file)
+        res
+          .status(HTTPSTATUS.UNAUTHORIZED)
+          .json({ message: AUTHENTICATION_MESSAGE.ACCESS_TOKEN_AND_REFRESH_TOKEN_IS_MISSING })
+        return
+      }
 
-//       if (!user) {
-//         res
-//           .status(HTTPSTATUS.UNAUTHORIZED)
-//           .json({ message: AUTHENTICATION_MESSAGE.ACCESS_TOKEN_AND_REFRESH_TOKEN_IS_MISSING })
-//         return
-//       }
+      const new_access_token = await UsersServices.signAccessToken(user_id)
+      const new_refresh_token = await UsersServices.signRefreshToken(user_id)
+      await UsersServices.changeRefreshToken(user_id, new_access_token)
 
-//       const new_access_token = await UsersServices.signAccessToken(user_id)
-//       const new_refresh_token = await UsersServices.signRefreshToken(user_id)
-//       await UsersServices.changeRefreshToken(user_id, new_access_token)
+      req.user = user
+      req.access_token = new_access_token
+      req.refresh_token = new_refresh_token
 
-//       req.user = user
-//       req.access_token = new_access_token
-//       req.refresh_token = new_refresh_token
+      next()
+      return
+    } catch (err) {
+      deleteTemporaryFile(req.file)
+      res.status(HTTPSTATUS.UNAUTHORIZED).json({ message: AUTHENTICATION_MESSAGE.REFRESH_TOKEN_INVALID })
+    }
+  }
 
-//       next()
-//       return
-//     } catch (err) {
-//       res.status(HTTPSTATUS.UNAUTHORIZED).json({ message: AUTHENTICATION_MESSAGE.REFRESH_TOKEN_INVALID })
-//     }
-//   }
+  try {
+    const token = authorization?.split(' ')[1]
 
-//   try {
-//     const token = authorization?.split(' ')[1]
+    const decoded_access_token = (await verifyToken({
+      token: token as string,
+      publicKey: process.env.SECURITY_JWT_SECRET_ACCESS_TOKEN as string
+    })) as TokenPayload
 
-//     const decoded_access_token = (await verifyToken({
-//       token: token as string,
-//       publicKey: process.env.SECURITY_JWT_SECRET_ACCESS_TOKEN as string
-//     })) as TokenPayload
+    await verifyToken({
+      token: token as string,
+      publicKey: process.env.SECURITY_JWT_SECRET_REFRESH_TOKEN as string
+    })
 
-//     await verifyToken({
-//       token: token as string,
-//       publicKey: process.env.SECURITY_JWT_SECRET_REFRESH_TOKEN as string
-//     })
+    const { user_id } = decoded_access_token
+    const user = await databaseService.users.findOne({ _id: new ObjectId(user_id) })
 
-//     const { user_id } = decoded_access_token
-//     const user = await databaseService.users.findOne({ _id: new ObjectId(user_id) })
+    if (!user) {
+      deleteTemporaryFile(req.file)
+      res
+        .status(HTTPSTATUS.UNAUTHORIZED)
+        .json({ message: AUTHENTICATION_MESSAGE.ACCESS_TOKEN_AND_REFRESH_TOKEN_IS_MISSING })
+      return
+    }
 
-//     if (!user) {
-//       res
-//         .status(HTTPSTATUS.UNAUTHORIZED)
-//         .json({ message: AUTHENTICATION_MESSAGE.ACCESS_TOKEN_AND_REFRESH_TOKEN_IS_MISSING })
-//       return
-//     }
+    req.user = user
+    req.access_token = token
+    req.refresh_token = refresh_token
 
-//     req.user = user
-//     req.access_token = token
-//     req.refresh_token = refresh_token
+    next()
+    return
+  } catch {
+    try {
+      const decoded_refresh_token = (await verifyToken({
+        token: refresh_token,
+        publicKey: process.env.SECURITY_JWT_SECRET_REFRESH_TOKEN as string
+      })) as TokenPayload
 
-//     next()
-//     return
-//   } catch {
-//     try {
-//       const decoded_refresh_token = (await verifyToken({
-//         token: refresh_token,
-//         publicKey: process.env.SECURITY_JWT_SECRET_REFRESH_TOKEN as string
-//       })) as TokenPayload
+      const { user_id } = decoded_refresh_token
+      const user = await databaseService.users.findOne({ _id: new ObjectId(user_id) })
 
-//       const { user_id } = decoded_refresh_token
-//       const user = await databaseService.users.findOne({ _id: new ObjectId(user_id) })
+      if (!user) {
+        deleteTemporaryFile(req.file)
+        res
+          .status(HTTPSTATUS.UNAUTHORIZED)
+          .json({ message: AUTHENTICATION_MESSAGE.ACCESS_TOKEN_AND_REFRESH_TOKEN_IS_MISSING })
+        return
+      }
 
-//       if (!user) {
-//         res
-//           .status(HTTPSTATUS.UNAUTHORIZED)
-//           .json({ message: AUTHENTICATION_MESSAGE.ACCESS_TOKEN_AND_REFRESH_TOKEN_IS_MISSING })
-//         return
-//       }
+      const new_access_token = await UsersServices.signAccessToken(user_id)
+      const new_refresh_token = await UsersServices.signRefreshToken(user_id)
+      await UsersServices.changeRefreshToken(user_id, new_access_token)
 
-//       const new_access_token = await UsersServices.signAccessToken(user_id)
-//       const new_refresh_token = await UsersServices.signRefreshToken(user_id)
-//       await UsersServices.changeRefreshToken(user_id, new_access_token)
+      req.user = user
+      req.access_token = new_access_token
+      req.refresh_token = new_refresh_token
 
-//       req.user = user
-//       req.access_token = new_access_token
-//       req.refresh_token = new_refresh_token
+      next()
+      return
+    } catch (err) {
+      deleteTemporaryFile(req.file)
+      res.status(HTTPSTATUS.UNAUTHORIZED).json({ message: AUTHENTICATION_MESSAGE.REFRESH_TOKEN_INVALID })
+    }
+  }
+}
 
-//       next()
-//       return
-//     } catch (err) {
-//       res.status(HTTPSTATUS.UNAUTHORIZED).json({ message: AUTHENTICATION_MESSAGE.REFRESH_TOKEN_INVALID })
-//     }
-//   }
-// }
+export const image3x4Validator = async (req: Request, res: Response, next: NextFunction) => {
+  const user = req.user as User
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
 
-// export const image3x4Validator = async (req: Request, res: Response, next: NextFunction) => {
-//   const { access_token, refresh_token } = req
-//   const authenticate = {
-//     access_token,
-//     refresh_token
-//   }
+  try {
+    if (!req.file) {
+      deleteTemporaryFile(req.file)
+      res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({
+        message: USER_MESSAGE.AVATAR_IS_REQUIRED,
+        authenticate
+      })
+      return
+    }
 
-//   try {
-//     if (!req.file) {
-//       res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({
-//         messgae: 'Bạn phải gửi ảnh đại điện của mình lên',
-//         authenticate
-//       })
-//       return
-//     }
+    const file = req.file as MulterFile
 
-//     const file = req.file as MulterFile
-//     const image = sharp(file.buffer)
-//     const metadata = await image.metadata()
+    if (!file.mimetype.startsWith('image/')) {
+      deleteTemporaryFile(req.file)
+      res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({
+        message: USER_MESSAGE.AVATAR_3X4_MUST_BE_IMAGE,
+        authenticate
+      })
+      return
+    }
 
-//     // Kiểm tra tỷ lệ 3:4
-//     const expectedRatio = 3 / 4
-//     const actualRatio = metadata.width! / metadata.height!
+    const image = sharp(file.path)
+    const metadata = await image.metadata()
 
-//     // Cho phép sai số 1%
-//     const tolerance = 0.01
-//     if (Math.abs(actualRatio - expectedRatio) > tolerance) {
-//       res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({
-//         messgae: 'Ảnh phải có tỷ lệ 3:4',
-//         authenticate
-//       })
-//       return
-//     }
+    // Kiểm tra tỷ lệ 3:4
+    const expectedRatio = 3 / 4
+    const actualRatio = metadata.width! / metadata.height!
 
-//     // Nếu cần resize ảnh về kích thước chuẩn (ví dụ: 300x400)
-//     const resizedImage = await image
-//       .resize(300, 400, {
-//         fit: 'fill'
-//       })
-//       .toBuffer()
+    // Cho phép sai số 1%
+    const tolerance = 0.01
+    if (Math.abs(actualRatio - expectedRatio) > tolerance) {
+      deleteTemporaryFile(req.file)
+      res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({
+        message: USER_MESSAGE.IMAGE_MUST_BE_3x4_ASPECT_RATIO,
+        authenticate
+      })
+      return
+    }
 
-//     req.file.buffer = resizedImage
+    const directoryPath = path.resolve(__dirname, '../../public/images/upload/avatar')
+    const fileExt = path.extname(file.originalname)
+    const newPath = path.join(directoryPath, `${user._id}${fileExt}`)
 
-//     next()
-//   } catch (error) {
-//     next(error)
-//   }
-// }
+    if (fs.existsSync(newPath)) {
+      fs.unlinkSync(newPath)
+    }
+
+    fs.renameSync(file.path, newPath)
+
+    const avatar: ImageType = {
+      path: `public/images/upload/avatar/${user._id}${fileExt}`,
+      type: file.mimetype,
+      url: `${process.env.APP_URL}/images/upload/avatar/${user._id}${fileExt}`,
+      size: file.size
+    }
+
+    ;(req as Request).avatar = avatar
+
+    next()
+  } catch (error) {
+    deleteTemporaryFile(req.file)
+    console.log(error)
+    res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ error: 'error', authenticate })
+  }
+}
+
+export const deleteTemporaryFile = async (file: any) => {
+  try {
+    fs.unlinkSync(file.path)
+  } catch (err) {
+    console.log()
+  }
+}

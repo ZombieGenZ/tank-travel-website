@@ -69,7 +69,12 @@ export const USER_MESSAGE = {
   PASSWORD_INCORRECT: 'Mật khẩu không chính xác',
   NEW_PASSWORD_MUST_BE_DIFFERENT_FROM_OLD_PASSWORD: 'Mật khẩu mới phải khác mật khẩu cũ',
   CHANGED_EMAIL_SUCCESS: 'Thay đổi email thành công! Vui lòng đăng nhập lại',
-  CHANGED_PHONE_SUCCESS: 'Thay đổi số điện thoại thành công!'
+  CHANGED_PHONE_SUCCESS: 'Thay đổi số điện thoại thành công!',
+  AVATAR_IS_REQUIRED: 'Bạn phải gửi ảnh đại diện của mình lên',
+  IMAGE_MUST_BE_3x4_ASPECT_RATIO: 'Ảnh phải có tỷ lệ 3:4',
+  IMAGE_INVALID: 'File ảnh không hợp lệ',
+  AVATAR_3X4_MUST_BE_IMAGE: 'Ảnh đại diện phải là một file ảnh',
+  CHANGED_AVATAR_SUCCESS: 'Thay đổi ảnh đại diện thành công!'
 } as const
 
 export const AUTHENTICATION_MESSAGE = {

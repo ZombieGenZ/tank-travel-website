@@ -642,14 +642,44 @@ class UserService {
     ])
   }
 
-  // async changeAvatar(file: Express.Multer.File, user: User) {
-  //   const image: ImageType = {
-  //     path: `public/images/upload/avatar/${user._id}/${file.filename}`,
-  //     type: file.mimetype,
-  //     url: `${process.env.APP_URL}/images/upload/vehicle/${user._id}/${file.filename}`,
-  //     size: file.size
-  //   }
-  // }
+  async changeAvatar(user: User, avatar: ImageType) {
+    await databaseService.users.updateOne(
+      {
+        _id: user._id
+      },
+      {
+        $set: {
+          avatar: avatar
+        },
+        $currentDate: {
+          updated_at: true
+        }
+      }
+    )
+  }
+
+  async setDefaultAvatar(user: User) {
+    const avatarImage: ImageType = {
+      type: 'image/png',
+      path: 'publc/images/system/avatar.png',
+      url: `${process.env.APP_URL}/images/system/avatar.png`,
+      size: 36634
+    }
+
+    await databaseService.users.updateOne(
+      {
+        _id: user._id
+      },
+      {
+        $set: {
+          avatar: avatarImage
+        },
+        $currentDate: {
+          updated_at: true
+        }
+      }
+    )
+  }
 
   private getFormatDate(date: Date): string {
     const formatDate = new Date(date)

@@ -11,7 +11,9 @@ import {
   sendEmailVerifyController,
   reSendEmailVerifyController,
   changeEmailController,
-  changePhoneController
+  changePhoneController,
+  changeAvatarController,
+  setDefaultAvatarController
 } from '~/controllers/user.controllers'
 import { authenticationValidator } from '~/middlewares/authentication.middlewares'
 import {
@@ -24,9 +26,9 @@ import {
   forgotPasswordValidator,
   changePasswordValidator,
   changeEmailValidator,
-  changePhoneValidator //,
-  // AuthenticationValidator,
-  // image3x4Validator
+  changePhoneValidator,
+  AuthenticationValidator,
+  image3x4Validator
 } from '~/middlewares/user.middlewares'
 import { wrapRequestHandler } from '~/utils/handlers'
 import multer from 'multer'
@@ -57,7 +59,7 @@ const upload = multer({
   },
   limits: {
     fileSize: 1024 * 1024 * 5,
-    files: 30
+    files: 1
   }
 })
 
@@ -231,8 +233,6 @@ router.put('/change-email', authenticationValidator, changeEmailValidator, wrapR
  */
 router.put('/change-phone', authenticationValidator, changePhoneValidator, wrapRequestHandler(changePhoneController))
 
-// DOITAFTER: Làm chức anwgn thay đổi ảnh đại điện
-
 /*
  * Description: Thay đổi ảnh đại diện cho một tài khoản có trong CSDL
  * Path: /api/users/change-avatar
@@ -245,12 +245,25 @@ router.put('/change-phone', authenticationValidator, changePhoneValidator, wrapR
  *    new_avatar: file
  * }
  */
-// router.put(
-//   '/change-avatar',
-//   upload.single('new_avatar'),
-//   AuthenticationValidator,
-//   image3x4Validator,
-//   wrapRequestHandler(changePhoneController)
-// )
+router.put(
+  '/change-avatar',
+  upload.single('new_avatar'),
+  AuthenticationValidator,
+  image3x4Validator,
+  wrapRequestHandler(changeAvatarController)
+)
+
+/*
+ * Description: Thay đổi ảnh đại diện về mặc định cho một tài khoản có trong CSDL
+ * Path: /api/users/set-default-avatar
+ * Method: PUT
+ * headers: {
+ *    authorization: Bearer <token>
+ * },
+ * Body: {
+ *    refresh_token: string
+ * }
+ */
+router.put('/set-default-avatar', authenticationValidator, wrapRequestHandler(setDefaultAvatarController))
 
 export default router

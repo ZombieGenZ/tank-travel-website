@@ -17,7 +17,9 @@ import {
 } from '~/models/requests/user.requests'
 import User from '~/models/schemas/users.schemas'
 import UserServices from '~/services/user.services'
-import axios from 'axios'
+import { ImageType } from '~/constants/image'
+import fs from 'fs'
+import path from 'path'
 
 export const sendEmailController = async (
   req: Request<ParamsDictionary, any, EmailVerifyRequestBody>,
@@ -164,21 +166,41 @@ export const changePhoneController = async (
   })
 }
 
-// export const changeAvatarController = async (
-//   req: Request<ParamsDictionary, any, ChangeAvatarRequestBody>,
-//   res: Response
-// ) => {
-//   const user = req.user as User
-//   const { access_token, refresh_token } = req
-//   const authenticate = {
-//     access_token,
-//     refresh_token
-//   }
+export const changeAvatarController = async (
+  req: Request<ParamsDictionary, any, ChangeAvatarRequestBody>,
+  res: Response
+) => {
+  const user = req.user as User
+  const avatar = req.avatar as ImageType
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
 
-//   await UserServices.changePhone(req.body, user)
+  await UserServices.changeAvatar(user, avatar)
 
-//   res.json({
-//     message: USER_MESSAGE.CHANGED_PHONE_SUCCESS,
-//     authenticate
-//   })
-// }
+  res.json({
+    message: USER_MESSAGE.CHANGED_AVATAR_SUCCESS,
+    authenticate
+  })
+}
+
+export const setDefaultAvatarController = async (
+  req: Request<ParamsDictionary, any, ChangeAvatarRequestBody>,
+  res: Response
+) => {
+  const user = req.user as User
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  await UserServices.setDefaultAvatar(user)
+
+  res.json({
+    message: USER_MESSAGE.CHANGED_AVATAR_SUCCESS,
+    authenticate
+  })
+}

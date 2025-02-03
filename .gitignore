@@ -8,3 +8,5 @@ public/**
 !public/images/upload/
 !public/images/upload/vehicle
 !public/images/upload/vehicle/temporary
+!public/images/upload/avatar
+!public/images/upload/avatar/temporary
