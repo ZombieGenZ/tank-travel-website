@@ -44,8 +44,8 @@ export enum PaymentType {
 }
 
 export enum RevenueStatus {
-  SUCCESS,
   PENDING,
+  SUCCESS,
   FAILURE
 }
 
