@@ -51,6 +51,12 @@ export const registerValidator = validate(
               }
             }
 
+            const result = await databaseService.businessRegistration.findOne({ email: value })
+
+            if (result) {
+              throw new Error(BUSINESS_REGISTRATION_MESSAGE.EMAIL_IS_ALWAYS_EXISTENT)
+            }
+
             return true
           }
         }
@@ -74,12 +80,21 @@ export const registerValidator = validate(
           errorMessage: BUSINESS_REGISTRATION_MESSAGE.PHONE_IS_INVALID
         },
         custom: {
-          options: async (value) => {
-            const result = await UserServices.checkPhoneNumberExits(value)
+          options: async (value, { req }) => {
+            if (!req.body.have_account) {
+              const result = await UserServices.checkPhoneNumberExits(value)
+
+              if (result) {
+                throw new Error(BUSINESS_REGISTRATION_MESSAGE.PHONE_IS_ALWAYS_EXISTENT)
+              }
+            }
+
+            const result = await databaseService.businessRegistration.findOne({ phone: value })
 
             if (result) {
               throw new Error(BUSINESS_REGISTRATION_MESSAGE.PHONE_IS_ALWAYS_EXISTENT)
             }
+
             return true
           }
         }
