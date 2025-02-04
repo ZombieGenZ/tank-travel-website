@@ -75,7 +75,7 @@ class VehicleService {
 
     await databaseService.vehicles.deleteOne({ _id: new ObjectId(vehicle._id) })
 
-    await Promise.allSettled(promises)
+    await Promise.all(promises)
   }
 
   async getVehicle(payload: GetVehicleRequestBody, user: User) {

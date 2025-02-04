@@ -2,6 +2,7 @@ node_modules/
 dist/
 .env
 public/**
+data/**
 !public/images/
 !public/app/
 !public/app/**
@@ -12,3 +13,5 @@ public/**
 !public/images/upload/vehicle/temporary
 !public/images/upload/avatar
 !public/images/upload/avatar/temporary
+!public/images/upload/notification
+!public/images/upload/notification/temporary

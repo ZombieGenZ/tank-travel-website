@@ -25,5 +25,6 @@ declare module 'express' {
     evaluate?: Evaluate
     io?: SocketIOServer
     business_registration?: BusinessRegistration
+    notification_image?: ImageType[]
   }
 }

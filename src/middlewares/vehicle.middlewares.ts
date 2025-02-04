@@ -151,6 +151,14 @@ export const createValidator = (req: Request, res: Response, next: NextFunction)
     refresh_token
   }
 
+  if (!req.files || !Array.isArray(req.files) || req.files.length < 1) {
+    res.json({
+      message: VEHICLE_MESSGAE.IMAGE_IS_REQUIRED,
+      authenticate
+    })
+    return
+  }
+
   checkSchema(
     {
       vehicle_type: {
@@ -303,7 +311,7 @@ export const setupCreateImage = async (req: Request, res: Response, next: NextFu
       })
   )
 
-  await Promise.allSettled(movePromises)
+  await Promise.all(movePromises)
 
   const watermarkImagePath = path.join(__dirname, '../../public/images/system/watermark.png')
 
@@ -386,7 +394,7 @@ export const deleteTemporaryFile = async (files: any) => {
     )
   })
 
-  await Promise.allSettled(promises)
+  await Promise.all(promises)
 }
 
 export const updateValidator = async (req: Request, res: Response, next: NextFunction) => {

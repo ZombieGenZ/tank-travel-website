@@ -21,6 +21,7 @@ import busRouteApi from '~/routes/busRoute.routes'
 import orderApi from '~/routes/order.routes'
 import evaluateApi from '~/routes/evaluate.routes'
 import businessRegistrationApi from '~/routes/businessRegistration.routes'
+import notificationApi from '~/routes/notification.routes'
 
 // import test router
 import testApi from '~/routes/test.routes'
@@ -62,6 +63,7 @@ app.use('/api/bus-route', busRouteApi)
 app.use('/api/order', orderApi)
 app.use('/api/evaluate', evaluateApi)
 app.use('/api/business-registration', businessRegistrationApi)
+app.use('/api/notification', notificationApi)
 
 // test router
 app.use('/test', testApi)

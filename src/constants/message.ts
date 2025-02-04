@@ -122,7 +122,8 @@ export const VEHICLE_MESSGAE = {
   NO_MATCHING_RESULTS_FOUND: 'Không tìm thấy kết quả phù hợp',
   DECISION_IS_REQUIRED: 'Không được bỏ trống quyết định',
   DECISION_IS_MUST_BE_A_BOOLEAN: 'Quyết định phải là một giá trị đúng hoặc sai',
-  USER_NOT_FOUND: 'Không tìm thấy người dùng'
+  USER_NOT_FOUND: 'Không tìm thấy người dùng',
+  IMAGE_IS_REQUIRED: 'Phải gửi ít nhất 1 hình ảnh về phương tiện'
 } as const
 
 export const BUSROUTE_MESSAGE = {
@@ -252,4 +253,17 @@ export const BUSINESS_REGISTRATION_MESSAGE = {
   CURRENT_IS_MUST_BE_A_NUMBER: 'Số trang hiện tại phải là một số',
   CURRENT_IS_MUST_BE_GREATER_THAN_0: 'Số trang hiện tại phải lớn hơn 0',
   NO_MATCHING_RESULTS_FOUND: 'Không tìm thấy kết quả phù hợp'
+} as const
+
+export const NOTIFICATION_MESSAGE = {
+  IMAGE_IS_REQUIRED: 'Bạn phải tải lên ít nhất 1 tấm hình cho thông báo',
+  TITLE_IS_REQUIRED: 'Không được bỏ trống tiêu đề thông báo',
+  TITLE_MUST_BE_STRING: 'Tiêu đề thông báo phải là một chuổi ký tự',
+  TITLE_LENGTH_MUST_BE_FROM_5_TO_200: 'Tiêu đề thông báo phải có độ dài từ 5 đến 200 ký tự',
+  DESCRIPTION_IS_REQUIRED: 'Không được bỏ trống nội dung thông báo',
+  DESCRIPTION_MUST_BE_STRING: 'Nội dung thông báo phải là một chuổi ký tự',
+  DESCRIPTION_LENGTH_MUST_BE_FROM_5_TO_2000: 'Nội dung thông báo phải có độ dài từ 5 đến 2000 ký tự',
+  SET_NOTIFICATION_SUCCESS: 'Đặt thông báo thành công!',
+  REMOVE_NOTIFICATION_SUCCESS: 'Xóa thông báo thành công!',
+  NOTIFICATION_NOT_FOUND: 'Không có thông báo nào được tìm thấy'
 } as const
