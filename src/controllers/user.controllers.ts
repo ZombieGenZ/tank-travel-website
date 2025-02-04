@@ -13,7 +13,8 @@ import {
   SendEmailVerifyChangeEmailRequestBody,
   ChangeEmailRequestBody,
   ChangePhoneRequestBody,
-  ChangeAvatarRequestBody
+  ChangeAvatarRequestBody,
+  ChangePasswordTemporaryRequestBody
 } from '~/models/requests/user.requests'
 import User from '~/models/schemas/users.schemas'
 import UserServices from '~/services/user.services'
@@ -201,6 +202,20 @@ export const setDefaultAvatarController = async (
 
   res.json({
     message: USER_MESSAGE.CHANGED_AVATAR_SUCCESS,
+    authenticate
+  })
+}
+
+export const changePasswordTemporaryController = async (
+  req: Request<ParamsDictionary, any, ChangePasswordTemporaryRequestBody>,
+  res: Response
+) => {
+  const user = req.user as User
+
+  const authenticate = await UserServices.ChangePasswordTemporary(req.body, user)
+
+  res.json({
+    message: USER_MESSAGE.CHANGED_TEMPORARY_PASSWORD_SUCCESS,
     authenticate
   })
 }

@@ -75,7 +75,10 @@ export const USER_MESSAGE = {
   IMAGE_INVALID: 'File ảnh không hợp lệ',
   AVATAR_3X4_MUST_BE_IMAGE: 'Ảnh đại diện phải là một file ảnh',
   CHANGED_AVATAR_SUCCESS: 'Thay đổi ảnh đại diện thành công!',
-  USER_IS_TEMPORARY: 'Vui lòng đổi mật khẩu trước khi đăng nhập'
+  USER_IS_TEMPORARY: 'Vui lòng đổi mật khẩu trước khi đăng nhập',
+  CHANGED_TEMPORARY_PASSWORD_SUCCESS: 'Thay đổi mật khẩu tạm thời thành công!',
+  ACCOUNT_IS_NOT_A_CURRENT_ACCOUNT:
+    'Tài khoản này không phải là tài khoản được cấp chúng tôi cấp hoặc tài khoản đã được đổi mật khẩu lần đầu rồi'
 } as const
 
 export const AUTHENTICATION_MESSAGE = {

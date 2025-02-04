@@ -64,3 +64,10 @@ export interface ChangePhoneRequestBody {
 export interface ChangeAvatarRequestBody {
   refresh_token: string
 }
+
+export interface ChangePasswordTemporaryRequestBody {
+  email: string
+  password: string
+  new_password: string
+  comform_new_password: string
+}

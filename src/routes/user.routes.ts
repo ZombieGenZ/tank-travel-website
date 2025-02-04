@@ -13,7 +13,8 @@ import {
   changeEmailController,
   changePhoneController,
   changeAvatarController,
-  setDefaultAvatarController
+  setDefaultAvatarController,
+  changePasswordTemporaryController
 } from '~/controllers/user.controllers'
 import { authenticationValidator } from '~/middlewares/authentication.middlewares'
 import {
@@ -29,7 +30,8 @@ import {
   changeEmailValidator,
   changePhoneValidator,
   AuthenticationValidator,
-  image3x4Validator
+  image3x4Validator,
+  changePasswordTemporaryValidator
 } from '~/middlewares/user.middlewares'
 import { wrapRequestHandler } from '~/utils/handlers'
 import multer from 'multer'
@@ -266,5 +268,22 @@ router.put(
  * }
  */
 router.put('/set-default-avatar', authenticationValidator, wrapRequestHandler(setDefaultAvatarController))
+
+/*
+ * Description: Đổi mật khẩu cho lần đầu đăng nhập của tài khoản doanh nghiệp được cấp bởi quản trị viên
+ * Path: /api/users/change-password-temporary
+ * Method: PUT
+ * Body: {
+ *    email: string,
+ *    password: string,
+ *    new_password: string,
+ *    comform_new_password: string
+ * }
+ */
+router.put(
+  '/change-password-temporary',
+  changePasswordTemporaryValidator,
+  wrapRequestHandler(changePasswordTemporaryController)
+)
 
 export default router

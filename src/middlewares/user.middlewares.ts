@@ -1005,10 +1005,148 @@ export const image3x4Validator = async (req: Request, res: Response, next: NextF
   }
 }
 
-export const deleteTemporaryFile = async (file: any) => {
+const deleteTemporaryFile = async (file: any) => {
   try {
     fs.unlinkSync(file.path)
   } catch (err) {
     console.log()
   }
+}
+
+export const changePasswordTemporaryValidator = (req: Request, res: Response, next: NextFunction) => {
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  checkSchema(
+    {
+      email: {
+        notEmpty: {
+          errorMessage: USER_MESSAGE.EMAIL_IS_REQUIRED
+        },
+        trim: true,
+        isString: {
+          errorMessage: USER_MESSAGE.EMAIL_IS_MUST_BE_A_STRING
+        },
+        isEmail: {
+          errorMessage: USER_MESSAGE.EMAIL_IS_NOT_VALID
+        },
+        isLength: {
+          options: {
+            min: 5,
+            max: 100
+          },
+          errorMessage: USER_MESSAGE.EMAIL_LENGTH_MUST_BE_FROM_5_TO_100
+        },
+        custom: {
+          options: async (value, { req }) => {
+            const user = await databaseService.users.findOne({
+              email: value,
+              password: HashPassword(req.body.password)
+            })
+
+            if (user === null) {
+              throw new Error(USER_MESSAGE.INCORRECT_EMAIL_OR_PASSWORD)
+            }
+
+            if (user.user_type !== UserStatus.Verified) {
+              throw new Error(USER_MESSAGE.USER_IS_NOT_VERIFIED)
+            }
+
+            if (!user.temporary) {
+              throw new Error(USER_MESSAGE.ACCOUNT_IS_NOT_A_CURRENT_ACCOUNT)
+            }
+
+            ;(req as Request).user = user
+
+            return true
+          }
+        }
+      },
+      password: {
+        notEmpty: {
+          errorMessage: USER_MESSAGE.PASSWORD_IS_REQUIRED
+        },
+        isString: {
+          errorMessage: USER_MESSAGE.PASSWORD_MUST_BE_A_STRING
+        },
+        trim: true
+      },
+      new_password: {
+        notEmpty: {
+          errorMessage: USER_MESSAGE.NEW_PASSWORD_IS_REQUIRED
+        },
+        isString: {
+          errorMessage: USER_MESSAGE.NEW_PASSWORD_MUST_BE_A_STRING
+        },
+        trim: true,
+        isLength: {
+          options: {
+            min: 8,
+            max: 100
+          },
+          errorMessage: USER_MESSAGE.NEW_PASSOWRD_LENGTH_MUST_BE_FROM_8_TO_100
+        },
+        isStrongPassword: {
+          errorMessage: USER_MESSAGE.NEW_PASSOWRD_MUST_BE_STRONG
+        },
+        custom: {
+          options: async (value, { req }) => {
+            const newPassword = HashPassword(value)
+
+            if (newPassword === req.body.password) {
+              throw new Error(USER_MESSAGE.NEW_PASSWORD_MUST_BE_DIFFERENT_FROM_OLD_PASSWORD)
+            }
+
+            return true
+          }
+        }
+      },
+      comform_new_password: {
+        notEmpty: {
+          errorMessage: USER_MESSAGE.COMFIRM_NEW_PASSWORD_IS_REQUIRED
+        },
+        isString: {
+          errorMessage: USER_MESSAGE.COMFIRM_NEW_PASSWORD_MUST_BE_A_STRING
+        },
+        trim: true,
+        isLength: {
+          options: {
+            min: 8,
+            max: 100
+          },
+          errorMessage: USER_MESSAGE.COMFIRM_NEW_PASSWORD_LENGTH_MUST_BE_FROM_8_TO_100
+        },
+        isStrongPassword: {
+          errorMessage: USER_MESSAGE.COMFORM_NEW_PASSWORD_MUST_BE_STRONG
+        },
+        custom: {
+          options: async (value, { req }) => {
+            if (value !== req.body.new_password) {
+              throw new Error(USER_MESSAGE.COMFIRM_NEW_PASSWORD_MUST_BE_THE_SAME_AS_PASSWORD)
+            }
+
+            return true
+          }
+        }
+      }
+    },
+    ['body']
+  )
+    .run(req)
+    .then(() => {
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        return
+      }
+      next()
+      return
+    })
+    .catch((err) => {
+      res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ message: err, authenticate })
+      return
+    })
 }

@@ -378,7 +378,7 @@ export const setupCreateImage = async (req: Request, res: Response, next: NextFu
   }
 }
 
-export const deleteTemporaryFile = async (files: any) => {
+const deleteTemporaryFile = async (files: any) => {
   const promises = [] as Promise<void>[]
 
   files.forEach((file: any) => {

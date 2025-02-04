@@ -272,7 +272,7 @@ export const setupNotification = async (req: Request, res: Response, next: NextF
   }
 }
 
-export const deleteTemporaryFile = async (files: any) => {
+const deleteTemporaryFile = async (files: any) => {
   const promises = [] as Promise<void>[]
 
   files.forEach((file: any) => {
