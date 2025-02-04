@@ -9,6 +9,7 @@ import BillDetail from '~/models/schemas/billDetail.schemas'
 import Bill from '~/models/schemas/bill.schemas'
 import Profit from '~/models/schemas/profit.schemas'
 import Evaluate from '~/models/schemas/evaluate.schemas'
+import BusinessRegistration from '~/models/schemas/businessregistration.schemas'
 dotenv.config()
 
 const uri = `mongodb+srv://${process.env.DATABASE_USERNAME}:${process.env.DATABASE_PASSWORD}@datvexe.bxmnu.mongodb.net/?retryWrites=true&w=majority&appName=DatVeXe`
@@ -56,6 +57,9 @@ export class DatabaseService {
   }
   get evaluate(): Collection<Evaluate> {
     return this.db.collection(process.env.DATABASE_EVALUATE_COLLECTION as string)
+  }
+  get businessRegistration(): Collection<BusinessRegistration> {
+    return this.db.collection(process.env.DATABASE_BUSINESS_REGISTRATION_COLLECTION as string)
   }
 }
 

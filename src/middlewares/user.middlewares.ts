@@ -314,6 +314,19 @@ export const loginValidator = validate(
   )
 )
 
+export const checkTemporaryAccountValidator = (req: Request, res: Response, next: NextFunction) => {
+  const user = req.user as User
+
+  if (user.temporary) {
+    res.json({
+      message: USER_MESSAGE.USER_IS_TEMPORARY
+    })
+    return
+  }
+
+  next()
+}
+
 export const refreshTokenValidator = validate(
   checkSchema(
     {

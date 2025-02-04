@@ -3,9 +3,10 @@ import User from './models/schemas/users.schemas'
 import { TokenPayload } from '~/models/requests/user.requests'
 import Vehicle from '~/models/schemas/vehicle.chemas'
 import { ImageType } from '~/constants/image'
-import { BusRoute } from './models/schemas/busRoute.schemas'
-import { BillDetail } from '~/models/schemas/billDetail.schemas'
-import { Evaluate } from '~/models/schemas/evaluate.schemas'
+import BusRoute from './models/schemas/busRoute.schemas'
+import BillDetail from '~/models/schemas/billDetail.schemas'
+import Evaluate from '~/models/schemas/evaluate.schemas'
+import BusinessRegistration from '~/models/schemas/businessregistration.schemas'
 import { Server as SocketIOServer } from 'socket.io'
 
 declare module 'express' {
@@ -23,5 +24,6 @@ declare module 'express' {
     billDetail?: BillDetail
     evaluate?: Evaluate
     io?: SocketIOServer
+    business_registration?: BusinessRegistration
   }
 }

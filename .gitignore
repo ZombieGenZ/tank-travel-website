@@ -3,6 +3,8 @@ dist/
 .env
 public/**
 !public/images/
+!public/app/
+!public/app/**
 !public/images/system/
 !public/images/system/**
 !public/images/upload/

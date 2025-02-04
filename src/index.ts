@@ -1,7 +1,6 @@
 import express, { Request, Response } from 'express'
 import { createServer } from 'http'
 import { Server, Socket } from 'socket.io'
-import { db } from '~/config/firebase'
 import dotenv from 'dotenv'
 import path from 'path'
 import cors from 'cors'
@@ -12,11 +11,18 @@ import { defaultErrorHandler } from './middlewares/error.middlewares'
 dotenv.config()
 const port = process.env.APP_PORT || 3000
 
+// import download router
+import downloadApi from '~/routes/download.routes'
+
+// import api router
 import userApi from '~/routes/user.routes'
 import vehicleApi from '~/routes/vehicle.routes'
 import busRouteApi from '~/routes/busRoute.routes'
 import orderApi from '~/routes/order.routes'
 import evaluateApi from '~/routes/evaluate.routes'
+import businessRegistrationApi from '~/routes/businessRegistration.routes'
+
+// import test router
 import testApi from '~/routes/test.routes'
 
 const app = express()
@@ -28,6 +34,7 @@ const io = new Server(server, {
   }
 })
 
+// realtime middleware
 app.use((req, res, next) => {
   ;(req as any).io = io
   next()
@@ -46,19 +53,23 @@ app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Hello, World!' })
 })
 
-app.get('/test/vehicle/create', (req: Request, res: Response) => {
-  res.render('test/vehicle.create.ejs')
-})
+app.use('/download', downloadApi)
 
+// api router
 app.use('/api/users', userApi)
 app.use('/api/vehicle', vehicleApi)
 app.use('/api/bus-route', busRouteApi)
 app.use('/api/order', orderApi)
 app.use('/api/evaluate', evaluateApi)
+app.use('/api/business-registration', businessRegistrationApi)
+
+// test router
 app.use('/test', testApi)
 
+// default error handler
 app.use(defaultErrorHandler)
 
+// realtime logic
 io.on('connection', (socket: Socket) => {
   console.log(`\x1b[33mNgười dùng đã kết nối: \x1b[36m${socket.id}\x1b[0m`)
 

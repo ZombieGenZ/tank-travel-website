@@ -74,7 +74,8 @@ export const USER_MESSAGE = {
   IMAGE_MUST_BE_3x4_ASPECT_RATIO: 'Ảnh phải có tỷ lệ 3:4',
   IMAGE_INVALID: 'File ảnh không hợp lệ',
   AVATAR_3X4_MUST_BE_IMAGE: 'Ảnh đại diện phải là một file ảnh',
-  CHANGED_AVATAR_SUCCESS: 'Thay đổi ảnh đại diện thành công!'
+  CHANGED_AVATAR_SUCCESS: 'Thay đổi ảnh đại diện thành công!',
+  USER_IS_TEMPORARY: 'Vui lòng đổi mật khẩu trước khi đăng nhập'
 } as const
 
 export const AUTHENTICATION_MESSAGE = {
@@ -222,4 +223,33 @@ export const EVALUATE_MESSAGE = {
   EVALUATE_ID_IS_NOT_HAVE_FEEDBACK: 'Bạn chưa gửi phản hồi cho đánh giá này',
   UPDATE_EVALUATE_FEEDBACK_SUCCESS: 'Cập nhật phản hồi đánh giá thành công!',
   DELETE_EVALUATE_FEEDBACK_SUCCESS: 'Xóa phản hồi đánh giá thành công!'
+} as const
+
+export const BUSINESS_REGISTRATION_MESSAGE = {
+  NAME_IS_REQUIRED: 'Không được bỏ trống tên doanh nghiệp',
+  NAME_IS_MUST_BE_A_STRING: 'Tên doanh nghiệp phải là một chuỗi ký tự',
+  NAME_LENGTH_MUST_BE_FROM_1_TO_50: 'Tên doanh nghiệp phải có độ dài từ 1 đến 50 ký tự',
+  EMAIL_IS_REQUIRED: 'Không được bỏ trống email đăng ký doanh nghiệp',
+  EMAIL_IS_MUST_BE_A_STRING: 'Email đăng ký doanh nghiệp phải là một chuỗi ký tự',
+  EMAIL_LENGTH_MUST_BE_FROM_5_TO_100: 'Email đăng ký doanh nghiệp phải có độ dài từ 5 đến 100 ký tự',
+  EMAIL_IS_INVALID: 'Email đăng ký doanh nghiệp không đúng định dạng',
+  EMAIL_IS_ALWAYS_EXISTENT: 'Email đăng ký doanh nghiệp đã được sử dụng',
+  PHONE_IS_REQUIRED: 'Không được bỏ trống số điện thoại đăng ký doanh nghiệp',
+  PHONE_MUST_BE_A_STRING: 'Số điện thoại đăng ký doanh nghiệp phải là một chuỗi ký tự',
+  PHONE_LENGTH_MUST_BE_FROM_10_TO_11: 'Số điện thoại đăng ký doanh nghiệp phải có độ dài từ 10 đến 11 ký tự',
+  PHONE_IS_INVALID: 'Số điện thoại đăng ký doanh nghiệp không đúng định dạng',
+  PHONE_IS_ALWAYS_EXISTENT: 'Số điện thoại đăng ký doanh nghiệp đã được sử dụng',
+  HAVE_ACCOUNT_IS_REQUIRED: 'Không được bỏ trống thông tin có tài khoản hay không',
+  HAVE_ACCOUNT_MUST_BE_A_BOOLEAN: 'Thông tin có tài khoản hay không phải là một giá trị đúng hoặc sai',
+  REGISTER_SUCCESS: 'Đăng ký doanh nghiệp thành công!',
+  BUSINESS_REGISTRATION_ID_IS_REQUIRED: 'Không được bỏ trống Id đăng ký doanh nghiệp',
+  BUSINESS_REGISTRATION_ID_MUST_BE_A_STRING: 'Id đăng ký doanh nghiệp phải là một chuỗi ký tự',
+  BUSINESS_REGISTRATION_ID_IS_NOT_EXISTENT: 'Id đăng ký doanh nghiệp không tồn tại',
+  DECISION_IS_REQUIRED: 'Không được bỏ trống quyết định',
+  DECISION_MUST_BE_A_BOOLEAN: 'Quyết định phải là một giá trị đúng hoặc sai',
+  CENSOR_SUCCESS: 'Đã duyệt đăng ký doanh nghiệp thành công!',
+  CURRENT_IS_REQUIRED: 'Không được bỏ trống số trang hiện tại',
+  CURRENT_IS_MUST_BE_A_NUMBER: 'Số trang hiện tại phải là một số',
+  CURRENT_IS_MUST_BE_GREATER_THAN_0: 'Số trang hiện tại phải lớn hơn 0',
+  NO_MATCHING_RESULTS_FOUND: 'Không tìm thấy kết quả phù hợp'
 } as const

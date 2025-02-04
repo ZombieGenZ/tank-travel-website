@@ -18,6 +18,7 @@ import {
 import { authenticationValidator } from '~/middlewares/authentication.middlewares'
 import {
   registerValidator,
+  checkTemporaryAccountValidator,
   loginValidator,
   refreshTokenValidator,
   sendEmailVerifyValidator,
@@ -107,7 +108,7 @@ router.post('/register', registerValidator, wrapRequestHandler(registerControlle
  *    password: string
  * }
  */
-router.post('/login', loginValidator, wrapRequestHandler(loginController))
+router.post('/login', loginValidator, checkTemporaryAccountValidator, wrapRequestHandler(loginController))
 
 /*
  * Description: Đăng xuất khỏi một tài khoản hiện có trên CSDL

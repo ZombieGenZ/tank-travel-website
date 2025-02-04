@@ -14,6 +14,7 @@ interface UserType {
   permission?: UserPermission
   forgot_password_token?: string
   avatar?: ImageType
+  temporary?: boolean
   created_at?: Date
   updated_at?: Date
 }
@@ -30,6 +31,7 @@ export default class User {
   permission: UserPermission
   forgot_password_token: string
   avatar: ImageType
+  temporary: boolean
   created_at: Date
   updated_at: Date
   constructor(user: UserType) {
@@ -52,6 +54,7 @@ export default class User {
     this.permission = user.permission || UserPermission.CUSTOMER
     this.forgot_password_token = user.forgot_password_token || ''
     this.avatar = user.avatar || avatarImage
+    this.temporary = user.temporary || false
     this.created_at = user.created_at || date
     this.updated_at = user.updated_at || date
   }

@@ -3,6 +3,10 @@ import { db } from '~/config/firebase'
 import { io } from '../index'
 const router = express.Router()
 
+router.get('/vehicle/create', (req: Request, res: Response) => {
+  res.render('test/vehicle.create.ejs')
+})
+
 router.post('/chat', async (req: Request, res: Response) => {
   const room = '/test/go-chat'
   const { message } = req.body
