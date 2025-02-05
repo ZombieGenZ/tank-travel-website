@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express'
-import { db } from '~/config/firebase'
+import { db } from '~/services/firebase.services'
 import { io } from '../index'
 const router = express.Router()
 
@@ -25,6 +25,10 @@ router.get('/go-chat', async (req: Request, res: Response) => {
 
 router.get('/balance', async (req: Request, res: Response) => {
   res.render('test/test.balance.ejs', { host: process.env.APP_URL })
+})
+
+router.get('/revenue', async (req: Request, res: Response) => {
+  res.render('test/test.revenue.ejs', { host: process.env.APP_URL })
 })
 
 export default router

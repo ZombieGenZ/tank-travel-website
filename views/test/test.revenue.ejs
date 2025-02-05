@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test revenue realtime</title>
+</head>
+<body>
+  <h1 id="revenue">0</h1>
+
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script>
+    const socket = io(`<%= host %>`);
+
+    socket.emit("join-room", '679b24e8f1ffa30e718dd524');
+
+    socket.on("update-revenue", (data) => {
+      const balance = document.getElementById('revenue')
+      
+      if (data.type == '+') {
+        const num = Number(balance.textContent)
+
+        balance.textContent = num + data.value
+      }
+      else if (data.type == '-') {
+        const num = Number(balance.textContent)
+        
+        balance.textContent = num - data.value
+      }
+    });
+  </script>
+</body>
+</html>

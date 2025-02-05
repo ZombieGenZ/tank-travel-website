@@ -10,7 +10,7 @@ import Vehicle from '~/models/schemas/vehicle.chemas'
 import Bill from '~/models/schemas/bill.schemas'
 import Profit from '~/models/schemas/profit.schemas'
 import { ORDER_MESSAGE } from '~/constants/message'
-import { db } from '~/config/firebase'
+import { db } from '~/services/firebase.services'
 import { io } from '~/index'
 
 class OrderService {
@@ -149,6 +149,9 @@ class OrderService {
       </div>
     `
 
+    const balanceFirebaseRealtime = db.ref(`balance/${user._id}`).push()
+    const revenueFirebaseRealtime = db.ref(`revenue/${user._id}`).push()
+
     await Promise.all([
       databaseService.billDetail.insertMany(billDetails),
       databaseService.busRoute.updateOne(
@@ -193,19 +196,24 @@ class OrderService {
           },
           $currentDate: { last_update: true }
         }
-      )
+      ),
+      balanceFirebaseRealtime.set({
+        type: '-',
+        value: totalPrice
+      }),
+      io.to(user._id.toString()).emit('update-balance', {
+        type: '-',
+        value: totalPrice
+      }),
+      revenueFirebaseRealtime.set({
+        type: '+',
+        value: totalRevenue
+      }),
+      io.to(vehicle.user.toString()).emit('update-revenue', {
+        type: '+',
+        value: totalRevenue
+      })
     ])
-
-    const ref = db.ref(`balance/${user._id}`).push()
-    await ref.set({
-      type: '-',
-      value: totalPrice
-    })
-
-    io.to(user._id.toHexString()).emit('update-balance', {
-      type: '-',
-      value: totalPrice
-    })
   }
 
   async getOrderList(payload: GetOrderRequestBody, user: User) {
@@ -526,6 +534,9 @@ class OrderService {
     const totalPrice = bill.totalPrice - billDetail.price
     const totalQuantity = bill.quantity - 1
 
+    const balanceFirebaseRealtime = db.ref(`balance/${user._id}`).push()
+    const revenueFirebaseRealtime = db.ref(`revenue/${user._id}`).push()
+
     Promise.all([
       databaseService.billDetail.updateOne(
         {
@@ -592,19 +603,32 @@ class OrderService {
             balance: user.balance + refund
           }
         }
-      )
+      ),
+      balanceFirebaseRealtime.set({
+        type: '+',
+        value: refund
+      }),
+      io.to(user._id.toString()).emit('update-balance', {
+        type: '+',
+        value: refund
+      }),
+      revenueFirebaseRealtime.set({
+        type: '-',
+        value: oldRevenue
+      }),
+      io.to(authorVehicle._id.toString()).emit('update-revenue', {
+        type: '-',
+        value: oldRevenue
+      }),
+      revenueFirebaseRealtime.set({
+        type: '+',
+        value: newRevenue
+      }),
+      io.to(authorVehicle._id.toString()).emit('update-revenue', {
+        type: '+',
+        value: newRevenue
+      })
     ])
-
-    const ref = db.ref(`balance/${user._id}`).push()
-    await ref.set({
-      type: '+',
-      value: refund
-    })
-
-    io.to(user._id.toHexString()).emit('update-balance', {
-      type: '+',
-      value: refund
-    })
   }
 
   private getFormatDate(date: Date): string {
