@@ -23,4 +23,8 @@ router.get('/go-chat', async (req: Request, res: Response) => {
   res.render('test/test.chat.ejs', { host: process.env.APP_URL })
 })
 
+router.get('/balance', async (req: Request, res: Response) => {
+  res.render('test/test.balance.ejs', { host: process.env.APP_URL })
+})
+
 export default router

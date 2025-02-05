@@ -10,6 +10,8 @@ import Vehicle from '~/models/schemas/vehicle.chemas'
 import Bill from '~/models/schemas/bill.schemas'
 import Profit from '~/models/schemas/profit.schemas'
 import { ORDER_MESSAGE } from '~/constants/message'
+import { db } from '~/config/firebase'
+import { io } from '~/index'
 
 class OrderService {
   async order(payload: OrderRequestBody, user: User, busRoute: BusRoute) {
@@ -193,6 +195,17 @@ class OrderService {
         }
       )
     ])
+
+    const ref = db.ref(`balance/${user._id}`).push()
+    await ref.set({
+      type: '-',
+      value: totalPrice
+    })
+
+    io.to(user._id.toHexString()).emit('update-balance', {
+      type: '-',
+      value: totalPrice
+    })
   }
 
   async getOrderList(payload: GetOrderRequestBody, user: User) {
@@ -581,6 +594,17 @@ class OrderService {
         }
       )
     ])
+
+    const ref = db.ref(`balance/${user._id}`).push()
+    await ref.set({
+      type: '+',
+      value: refund
+    })
+
+    io.to(user._id.toHexString()).emit('update-balance', {
+      type: '+',
+      value: refund
+    })
   }
 
   private getFormatDate(date: Date): string {
