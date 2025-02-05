@@ -14,7 +14,8 @@ import {
   changePhoneController,
   changeAvatarController,
   setDefaultAvatarController,
-  changePasswordTemporaryController
+  changePasswordTemporaryController,
+  getUserInfomationController
 } from '~/controllers/user.controllers'
 import { authenticationValidator } from '~/middlewares/authentication.middlewares'
 import {
@@ -285,5 +286,18 @@ router.put(
   changePasswordTemporaryValidator,
   wrapRequestHandler(changePasswordTemporaryController)
 )
+
+/*
+ * Description: Lấy thông tin user đang đăng nhập
+ * Path: /api/users/get-user-infomation
+ * Method: GET
+ * headers: {
+ *    authorization: Bearer <token>
+ * },
+ * Body: {
+ *    refresh_token: string
+ * }
+ */
+router.get('/get-user-infomation', authenticationValidator, wrapRequestHandler(getUserInfomationController))
 
 export default router

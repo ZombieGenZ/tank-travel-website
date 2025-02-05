@@ -21,6 +21,7 @@ import UserServices from '~/services/user.services'
 import { ImageType } from '~/constants/image'
 import fs from 'fs'
 import path from 'path'
+import { omit } from 'lodash'
 
 export const sendEmailController = async (
   req: Request<ParamsDictionary, any, EmailVerifyRequestBody>,
@@ -218,4 +219,10 @@ export const changePasswordTemporaryController = async (
     message: USER_MESSAGE.CHANGED_TEMPORARY_PASSWORD_SUCCESS,
     authenticate
   })
+}
+
+export const getUserInfomationController = async (req: Request, res: Response) => {
+  const user = req.user as User
+
+  res.json({ user: omit(user, ['password', 'forgot_password_token']) })
 }

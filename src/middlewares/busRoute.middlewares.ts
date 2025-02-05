@@ -107,7 +107,7 @@ export const createValidator = (req: Request, res: Response, next: NextFunction)
           errorMessage: BUSROUTE_MESSAGE.DEPARTURE_TIME_MUST_BE_ISO8601
         },
         custom: {
-          options: (value, { req }) => {
+          options: (value) => {
             const date = new Date(value)
 
             if (date <= new Date()) {
@@ -608,6 +608,22 @@ export const findBusRouteValidator = (req: Request, res: Response, next: NextFun
           errorMessage: BUSROUTE_MESSAGE.KEYWORDS_IS_REQUIRED
         },
         trim: true
+      },
+      current: {
+        notEmpty: {
+          errorMessage: BUSROUTE_MESSAGE.CURRENT_IS_REQUIRED
+        },
+        isInt: {
+          errorMessage: BUSROUTE_MESSAGE.CURRENT_IS_MUST_BE_A_NUMBER
+        },
+        custom: {
+          options: (value) => {
+            if (value < 0) {
+              throw new Error(BUSROUTE_MESSAGE.CURRENT_IS_MUST_BE_GREATER_THAN_0)
+            }
+            return true
+          }
+        }
       }
     },
     ['body']
@@ -627,3 +643,84 @@ export const findBusRouteValidator = (req: Request, res: Response, next: NextFun
       return
     })
 }
+
+export const findBusRouteListValidator = validate(
+  checkSchema(
+    {
+      start_point: {
+        notEmpty: {
+          errorMessage: BUSROUTE_MESSAGE.START_POINT_IS_REQUIRED
+        },
+        trim: true,
+        isLength: {
+          options: {
+            min: 5,
+            max: 500
+          },
+          errorMessage: BUSROUTE_MESSAGE.START_POINT_LENGTH_MUST_BE_FROM_5_TO_500
+        }
+      },
+      end_point: {
+        notEmpty: {
+          errorMessage: BUSROUTE_MESSAGE.END_POINT_IS_REQUIRED
+        },
+        trim: true,
+        isLength: {
+          options: {
+            min: 5,
+            max: 500
+          },
+          errorMessage: BUSROUTE_MESSAGE.END_POINT_LENGTH_MUST_BE_FROM_5_TO_500
+        },
+        custom: {
+          options: (value, { req }) => {
+            if (value == req.body.start_point) {
+              throw new Error(BUSROUTE_MESSAGE.START_POINT_AND_END_POINT_MUST_BE_DIFFERENT)
+            }
+            return true
+          }
+        }
+      },
+      departure_time: {
+        notEmpty: {
+          errorMessage: BUSROUTE_MESSAGE.DEPARTURE_TIME_IS_REQUIRED
+        },
+        isISO8601: {
+          options: {
+            strict: true,
+            strictSeparator: true
+          },
+          errorMessage: BUSROUTE_MESSAGE.DEPARTURE_TIME_MUST_BE_ISO8601
+        },
+        custom: {
+          options: (value) => {
+            const date = new Date(value)
+
+            if (date <= new Date()) {
+              throw new Error(BUSROUTE_MESSAGE.DEPARTURE_TIME_MUST_BE_GREATER_THAN_NOW)
+            }
+
+            return true
+          }
+        }
+      },
+      current: {
+        notEmpty: {
+          errorMessage: BUSROUTE_MESSAGE.CURRENT_IS_REQUIRED
+        },
+        isInt: {
+          errorMessage: BUSROUTE_MESSAGE.CURRENT_IS_MUST_BE_A_NUMBER
+        },
+        custom: {
+          options: (value) => {
+            if (value < 0) {
+              throw new Error(BUSROUTE_MESSAGE.CURRENT_IS_MUST_BE_GREATER_THAN_0)
+            }
+            return true
+          }
+        }
+      }
+    },
+    ['body']
+  )
+)

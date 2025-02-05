@@ -36,3 +36,10 @@ export interface FindBusRouteRequestBody {
   current: number
   keywords: string
 }
+
+export interface FindBusRouteListRequestBody {
+  start_point: string
+  end_point: string
+  departure_time: Date
+  current: number
+}

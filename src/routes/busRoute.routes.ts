@@ -3,6 +3,7 @@ import {
   createController,
   deleteController,
   findBusRouteController,
+  findBusRouteListController,
   getBusRouteController,
   updateController
 } from '~/controllers/busRoute.controllers'
@@ -10,6 +11,7 @@ import { authenticationValidator, businessAuthenticationValidator } from '~/midd
 import {
   createValidator,
   deleteValidator,
+  findBusRouteListValidator,
   findBusRouteValidator,
   getBusRouteValidator,
   updateValidator
@@ -131,7 +133,17 @@ router.get(
   wrapRequestHandler(findBusRouteController)
 )
 
-// DOITAFTER: Làm chức năng lấy thông tin tuyến để load lên cho khách hàng
-// DOITAFTER: Làm chức năng tìm kiếm thông tin tuyến để load lên cho khách hàng
+/*
+ * Description: Tìm kiếm thông tin các tuyến đã có trên CSDL
+ * Path: /api/bus-route/find-bus-route-list
+ * Method: GET
+ * Body: {
+ *    start_point: string,
+ *    end_point: string,
+ *    departure_time: Date,
+ *    current: number
+ * }
+ */
+router.get('/find-bus-route-list', findBusRouteListValidator, wrapRequestHandler(findBusRouteListController))
 
 export default router

@@ -3,7 +3,8 @@ import {
   UpdateBusRouteRequestBody,
   DeleteBusRouteRequestBody,
   GetBusRouteRequestBody,
-  FindBusRouteRequestBody
+  FindBusRouteRequestBody,
+  FindBusRouteListRequestBody
 } from '~/models/requests/busRoute.requests'
 import databaseService from './database.services'
 import BusRoute from '~/models/schemas/busRoute.schemas'
@@ -11,6 +12,7 @@ import { ObjectId } from 'mongodb'
 import { UserPermission } from '~/constants/enum'
 import User from '~/models/schemas/users.schemas'
 import { BUSROUTE_MESSAGE } from '~/constants/message'
+import { createRegexPattern } from '~/utils/regex'
 
 class BusRouteService {
   async createBusRoute(payload: CreateBusRouteRequestBody) {
@@ -252,6 +254,62 @@ class BusRouteService {
           continued,
           busRoute
         }
+      }
+    }
+  }
+
+  async findBusRouteList(payload: FindBusRouteListRequestBody) {
+    const limit = Number(process.env.LOAD_QUANTITY_LIMIT as string)
+    const next = limit + 1
+
+    const searchDate = new Date(payload.departure_time)
+    const day = searchDate.getDate()
+    const month = searchDate.getMonth() + 1
+    const year = searchDate.getFullYear()
+
+    const searchQuery = {
+      start_point: {
+        $regex: createRegexPattern(payload.start_point),
+        $options: 'i'
+      },
+      end_point: {
+        $regex: createRegexPattern(payload.end_point),
+        $options: 'i'
+      },
+      quantity: { $gt: 0 },
+      $expr: {
+        $and: [
+          { $eq: [{ $toInt: { $substr: ['$departure_time', 8, 2] } }, day] },
+          { $eq: [{ $toInt: { $substr: ['$departure_time', 5, 2] } }, month] },
+          { $eq: [{ $toInt: { $substr: ['$departure_time', 0, 4] } }, year] }
+        ]
+      }
+    }
+    const result = await databaseService.busRoute
+      .find(searchQuery)
+      .sort({ created_at: -1 })
+      .skip(payload.current)
+      .limit(next)
+      .toArray()
+
+    const continued = result.length > limit
+
+    const busRoute = result.slice(0, limit)
+
+    const current = payload.current + busRoute.length
+
+    if (busRoute.length === 0) {
+      return {
+        message: BUSROUTE_MESSAGE.NO_MATCHING_RESULTS_FOUND,
+        current: payload.current,
+        continued: false,
+        vehicle: []
+      }
+    } else {
+      return {
+        current,
+        continued,
+        busRoute
       }
     }
   }

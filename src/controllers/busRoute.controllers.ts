@@ -4,6 +4,7 @@ import { BUSROUTE_MESSAGE } from '~/constants/message'
 import {
   CreateBusRouteRequestBody,
   DeleteBusRouteRequestBody,
+  FindBusRouteListRequestBody,
   FindBusRouteRequestBody,
   GetBusRouteRequestBody,
   UpdateBusRouteRequestBody
@@ -100,5 +101,16 @@ export const findBusRouteController = async (
   res.json({
     result,
     authenticate
+  })
+}
+
+export const findBusRouteListController = async (
+  req: Request<ParamsDictionary, any, FindBusRouteListRequestBody>,
+  res: Response
+) => {
+  const result = await BusRouteService.findBusRouteList(req.body)
+
+  res.json({
+    result
   })
 }

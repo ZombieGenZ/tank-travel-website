@@ -2,8 +2,6 @@ import { Request, Response } from 'express'
 import path from 'path'
 
 export const downloadAppController = async (req: Request, res: Response) => {
-  // đường dẩn đến tệp tin cần tải xuống
-  const filePath = path.join(__dirname, '../../public/app/app.txt')
   res.send(`
     <!DOCTYPE html>
     <html lang="en">

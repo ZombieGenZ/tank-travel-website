@@ -13,7 +13,6 @@ import { checkSchema, validationResult } from 'express-validator'
 import { promisify } from 'util'
 import path from 'path'
 import { ImageType } from '~/constants/image'
-import { forEach } from 'lodash'
 
 export const authenticateNotificationValidator = async (req: Request, res: Response, next: NextFunction) => {
   const { authorization } = req.headers
