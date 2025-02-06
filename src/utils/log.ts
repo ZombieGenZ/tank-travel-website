@@ -12,9 +12,11 @@ export const writeWarnLog = async (log_message: string) => {
 
 export const writeErrorLog = async (log_message: string) => {
   const date = new Date()
-  const errorMsg = `[${date} ERROR] ${log_message} | <@&${process.env.DISCORD_DEVOP_ROLE_ID}>`
   await Promise.all([
     LogService.newLog(LogTypeEnum.ERROR, log_message),
-    sendMessageToDiscord(process.env.DISCORD_ERROR_LOG_CHANNEL_ID as string, errorMsg)
+    sendMessageToDiscord(
+      process.env.DISCORD_ERROR_LOG_CHANNEL_ID as string,
+      `[${date} ERRPR] ${log_message} | <@&${process.env.DISCORD_DEVOP_ROLE_ID}>`
+    )
   ])
 }

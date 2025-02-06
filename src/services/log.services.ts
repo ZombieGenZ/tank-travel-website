@@ -12,18 +12,19 @@ class LogService {
       databaseService.log.insertOne(
         new Log({
           log_type,
-          content: log_message
+          content: log_message,
+          time: created_at || new Date()
         })
       ),
       logFirebaseRealtime.set({
         log_type,
         content: log_message,
-        time: new Date()
+        time: created_at || new Date()
       }),
-      io.to('log').emit('update-log', {
+      io.to('log').emit('new-log', {
         log_type,
         content: log_message,
-        time: new Date()
+        time: created_at || new Date()
       })
     ])
   }

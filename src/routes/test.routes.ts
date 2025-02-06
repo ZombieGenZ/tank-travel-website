@@ -31,4 +31,8 @@ router.get('/revenue', async (req: Request, res: Response) => {
   res.render('test/test.revenue.ejs', { host: process.env.APP_URL })
 })
 
+router.get('/log', async (req: Request, res: Response) => {
+  res.render('test/test.log.ejs', { host: process.env.APP_URL })
+})
+
 export default router

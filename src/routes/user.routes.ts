@@ -37,12 +37,21 @@ import {
 import { wrapRequestHandler } from '~/utils/handlers'
 import multer from 'multer'
 import path from 'path'
+import fse from 'fs-extra'
 
 const router = express.Router()
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, `public/images/upload/avatar/temporary`)
+    const uploadPath = 'public/images/upload/avatar/temporary'
+    fse
+      .ensureDir(uploadPath)
+      .then(() => {
+        cb(null, uploadPath)
+      })
+      .catch((err) => {
+        cb(err, uploadPath)
+      })
   },
   filename: (req, file, cb) => {
     const fileName = path.basename(file.originalname, path.extname(file.originalname))

@@ -55,6 +55,7 @@ app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Hello, World!' })
 })
 
+// download router
 app.use('/download', downloadApi)
 
 // api router
@@ -77,6 +78,33 @@ io.on('connection', (socket: Socket) => {
   console.log(`\x1b[33mNgười dùng đã kết nối: \x1b[36m${socket.id}\x1b[0m`)
 
   socket.on('join-room', (room: string) => {
+    // các room để nhận phản hồi realtime:
+    //
+    // room: <user_id>
+    // sự kiện: update-balance
+    // mô tả: cập nhật thông tin số dư của người dùng
+    // dử liệu: type, value
+    // type: loại phàn hồi (gồm 2 loại '+' và '-')
+    // value: giá trị của phản hồi
+    //
+    // sự kiện: update-revenue
+    // mô tả: cập nhật thông tin doanh thu của doanh nghiệp/quản trị viên
+    // dử liệu: type, value
+    // type: loại phàn hồi (gồm 2 loại '+' và '-')
+    // value: giá trị của phản hồi
+    //
+    // room: log
+    // sự kiện: new-log
+    // mô tả: cập nhật các thông báo về log mới nhất
+    // dử liệu: type, value
+    // log_type: loại phàn hồi
+    // gồm 3 loại:
+    // 0: loại thông báo thông tin
+    // 1: loại thông báo cảnh báo
+    // 2: loại thông báo lỗi
+    // content: tin nhắn của hệ thống
+    // time: thời gian thông báo được diển ra
+
     socket.join(room)
     console.log(`\x1b[33mNgười dùng \x1b[36m${socket.id}\x1b[33m đã tham gia phòng: \x1b[36m${room}\x1b[0m`)
   })

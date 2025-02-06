@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test log realtime</title>
+  <style>
+    .info {
+      color: black;
+    }
+    .warn {
+      color: yellow;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <div id="log"></div>
+
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script>
+    const socket = io(`<%= host %>`);
+
+    socket.emit("join-room", 'log');
+
+    socket.on("new-log", (data) => {
+      const log = document.getElementById('log')
+      
+      if (data.log_type == 0) {
+        log.innerHTML += `<p class="info">[${data.time} INFO] ${data.content}</p>`
+      } else if (data.log_type == 1) {
+        log.innerHTML += `<p class="warn">[${data.time} WARN] ${data.content}</p>`
+      } else if (data.log_type == 2) {
+        log.innerHTML += `<p class="error">[${data.time} ERROR] ${data.content}</p>`
+      }
+    });
+  </script>
+</body>
+</html>
