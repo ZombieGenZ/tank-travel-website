@@ -25,6 +25,7 @@ import notificationApi from '~/routes/notification.routes'
 
 // import test router
 import testApi from '~/routes/test.routes'
+import { startBot, stopBot } from './utils/discord'
 
 const app = express()
 const server = createServer(app)
@@ -85,11 +86,19 @@ io.on('connection', (socket: Socket) => {
   })
 })
 
-server.listen(port, () => {
+server.listen(port, async () => {
   console.log()
   console.log(`\x1b[33mMáy chủ đang chạy trên port \x1b[36m${port}\x1b[0m`)
   console.log(`\x1b[33mTruy cập tại: \x1b[36m${process.env.APP_URL}/\x1b[0m`)
   console.log()
+  await startBot()
+})
+
+process.on('SIGINT', async () => {
+  console.log()
+  console.log(`\x1b[33mMáy chủ đã ngừng hoạt động\x1b[0m`)
+  console.log()
+  await stopBot()
 })
 
 export { io }

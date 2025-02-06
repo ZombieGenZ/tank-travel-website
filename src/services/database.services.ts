@@ -10,6 +10,7 @@ import Bill from '~/models/schemas/bill.schemas'
 import Profit from '~/models/schemas/profit.schemas'
 import Evaluate from '~/models/schemas/evaluate.schemas'
 import BusinessRegistration from '~/models/schemas/businessregistration.schemas'
+import Log from '~/models/schemas/log.schemas'
 dotenv.config()
 
 const uri = `mongodb+srv://${process.env.DATABASE_USERNAME}:${process.env.DATABASE_PASSWORD}@datvexe.bxmnu.mongodb.net/?retryWrites=true&w=majority&appName=DatVeXe`
@@ -60,6 +61,9 @@ export class DatabaseService {
   }
   get businessRegistration(): Collection<BusinessRegistration> {
     return this.db.collection(process.env.DATABASE_BUSINESS_REGISTRATION_COLLECTION as string)
+  }
+  get log(): Collection<Log> {
+    return this.db.collection(process.env.DATABASE_LOG_COLLECTION as string)
   }
 }
 
