@@ -2,11 +2,11 @@ import { LogTypeEnum } from '~/constants/enum'
 import databaseService from './database.services'
 import Log from '~/models/schemas/log.schemas'
 import { db } from './firebase.services'
-import { io } from '~/index'
+import { io, runningTime } from '~/index'
 
 class LogService {
   async newLog(log_type: LogTypeEnum, log_message: string, created_at?: Date) {
-    const logFirebaseRealtime = db.ref(`log`).push()
+    const logFirebaseRealtime = db.ref(`log/${runningTime}`).push()
     const date = new Date()
 
     await Promise.all([

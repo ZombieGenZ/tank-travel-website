@@ -7,6 +7,7 @@ import cors from 'cors'
 import bodyParser from 'body-parser'
 import databaseService from './services/database.services'
 import { defaultErrorHandler } from './middlewares/error.middlewares'
+import { formatDate } from '~/utils/date'
 
 dotenv.config()
 const port = process.env.APP_PORT || 3000
@@ -29,6 +30,7 @@ import { startBot, stopBot } from './utils/discord'
 
 const app = express()
 const server = createServer(app)
+let runningTime: string
 const io = new Server(server, {
   cors: {
     origin: '*',
@@ -120,6 +122,7 @@ server.listen(port, async () => {
   console.log(`\x1b[33mTruy cập tại: \x1b[36m${process.env.APP_URL}/\x1b[0m`)
   console.log()
   await startBot()
+  runningTime = formatDate(new Date())
 })
 
 process.on('SIGINT', async () => {
@@ -129,4 +132,4 @@ process.on('SIGINT', async () => {
   await stopBot()
 })
 
-export { io }
+export { io, runningTime }
