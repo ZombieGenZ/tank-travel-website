@@ -32,7 +32,8 @@ import {
   changePhoneValidator,
   AuthenticationValidator,
   image3x4Validator,
-  changePasswordTemporaryValidator
+  changePasswordTemporaryValidator,
+  loginManageValidator
 } from '~/middlewares/user.middlewares'
 import { wrapRequestHandler } from '~/utils/handlers'
 import multer from 'multer'
@@ -308,5 +309,16 @@ router.put(
  * }
  */
 router.get('/get-user-infomation', authenticationValidator, wrapRequestHandler(getUserInfomationController))
+
+/*
+ * Description: Đăng nhập vào một tài khoản có thể sử dụng chức năng quản lý hiện có trên CSDL
+ * Path: /api/users/login-manage
+ * Method: POST
+ * Body: {
+ *    email: string,
+ *    password: string
+ * }
+ */
+router.post('/login-manage', loginManageValidator, checkTemporaryAccountValidator, wrapRequestHandler(loginController))
 
 export default router

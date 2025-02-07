@@ -89,7 +89,8 @@ export const USER_MESSAGE = {
   CHANGED_TEMPORARY_PASSWORD_SUCCESS: 'Thay đổi mật khẩu tạm thời thành công!',
   CHANGED_TEMPORARY_PASSWORD_FAILURE: 'Thay đổi mật khẩu tạm thời thất bại',
   ACCOUNT_IS_NOT_A_CURRENT_ACCOUNT:
-    'Tài khoản này không phải là tài khoản được cấp chúng tôi cấp hoặc tài khoản đã được đổi mật khẩu lần đầu rồi'
+    'Tài khoản này không phải là tài khoản được cấp chúng tôi cấp hoặc tài khoản đã được đổi mật khẩu lần đầu rồi',
+  NOT_PERMISSION_TODO_THIS: 'BẠN LÀ USER? CÚT'
 } as const
 
 export const AUTHENTICATION_MESSAGE = {

@@ -1150,3 +1150,63 @@ export const changePasswordTemporaryValidator = (req: Request, res: Response, ne
       return
     })
 }
+
+export const loginManageValidator = validate(
+  checkSchema(
+    {
+      email: {
+        notEmpty: {
+          errorMessage: USER_MESSAGE.EMAIL_IS_REQUIRED
+        },
+        trim: true,
+        isString: {
+          errorMessage: USER_MESSAGE.EMAIL_IS_MUST_BE_A_STRING
+        },
+        isEmail: {
+          errorMessage: USER_MESSAGE.EMAIL_IS_NOT_VALID
+        },
+        isLength: {
+          options: {
+            min: 5,
+            max: 100
+          },
+          errorMessage: USER_MESSAGE.EMAIL_LENGTH_MUST_BE_FROM_5_TO_100
+        },
+        custom: {
+          options: async (value, { req }) => {
+            const user = await databaseService.users.findOne({
+              email: value,
+              password: HashPassword(req.body.password)
+            })
+
+            if (user === null) {
+              throw new Error(USER_MESSAGE.INCORRECT_EMAIL_OR_PASSWORD)
+            }
+
+            if (user.user_type !== UserStatus.Verified) {
+              throw new Error(USER_MESSAGE.USER_IS_NOT_VERIFIED)
+            }
+
+            if (user.permission == 0) {
+              throw new Error(USER_MESSAGE.NOT_PERMISSION_TODO_THIS)
+            }
+
+            ;(req as Request).user = user
+
+            return true
+          }
+        }
+      },
+      password: {
+        notEmpty: {
+          errorMessage: USER_MESSAGE.PASSWORD_IS_REQUIRED
+        },
+        isString: {
+          errorMessage: USER_MESSAGE.PASSWORD_MUST_BE_A_STRING
+        },
+        trim: true
+      }
+    },
+    ['body']
+  )
+)

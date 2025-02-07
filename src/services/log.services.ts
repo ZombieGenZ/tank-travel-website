@@ -7,24 +7,25 @@ import { io } from '~/index'
 class LogService {
   async newLog(log_type: LogTypeEnum, log_message: string, created_at?: Date) {
     const logFirebaseRealtime = db.ref(`log`).push()
+    const date = new Date()
 
     await Promise.all([
       databaseService.log.insertOne(
         new Log({
           log_type,
           content: log_message,
-          time: created_at || new Date()
+          time: created_at || date
         })
       ),
       logFirebaseRealtime.set({
         log_type,
         content: log_message,
-        time: created_at || new Date()
+        time: created_at || date
       }),
       io.to('log').emit('new-log', {
         log_type,
         content: log_message,
-        time: created_at || new Date()
+        time: created_at || date
       })
     ])
   }
