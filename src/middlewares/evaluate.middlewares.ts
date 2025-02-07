@@ -304,6 +304,31 @@ export const getEvaluateValidator = (req: Request, res: Response, next: NextFunc
 
   checkSchema(
     {
+      evaluate_id: {
+        notEmpty: {
+          errorMessage: EVALUATE_MESSAGE.EVALUATE_ID_IS_REQUIRED
+        },
+        trim: true,
+        isString: {
+          errorMessage: EVALUATE_MESSAGE.EVALUATE_ID_IS_MUST_BE_A_STRING
+        },
+        isMongoId: {
+          errorMessage: EVALUATE_MESSAGE.EVALUATE_ID_IS_INVALID
+        },
+        custom: {
+          options: async (value, { req }) => {
+            const evaluate = await databaseService.evaluate.findOne({ _id: new ObjectId(value) })
+
+            if (evaluate === null) {
+              throw new Error(EVALUATE_MESSAGE.EVALUATE_ID_IS_NOT_EXIST)
+            }
+
+            ;(req as Request).evaluate = evaluate
+
+            return true
+          }
+        }
+      },
       current: {
         notEmpty: {
           errorMessage: EVALUATE_MESSAGE.CURRENT_IS_REQUIRED

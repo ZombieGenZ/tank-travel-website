@@ -185,13 +185,13 @@ export const findBusRouteListController = async (
   try {
     const result = await BusRouteService.findBusRouteList(req.body)
 
-    await writeInfoLog(`Thực hiện lấy danh sách các tuyến thành công (IP: ${ip}])`)
+    await writeInfoLog(`Thực hiện tìm kiếm danh sách các tuyến thành công (IP: ${ip}])`)
 
     res.json({
       result
     })
   } catch (err) {
-    await writeErrorLog(`Thực hiện lấy danh sách các tuyến thất bại (IP: ${ip}]) | Error: ${err}`)
+    await writeErrorLog(`Thực hiện tìm kiếm danh sách các tuyến thất bại (IP: ${ip}]) | Error: ${err}`)
 
     res.json({
       message: BUSROUTE_MESSAGE.GET_BUS_ROUTE_FAILED
