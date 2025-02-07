@@ -305,6 +305,9 @@ export const NOTIFICATION_MESSAGE = {
   DESCRIPTION_MUST_BE_STRING: 'Nội dung thông báo phải là một chuổi ký tự',
   DESCRIPTION_LENGTH_MUST_BE_FROM_5_TO_2000: 'Nội dung thông báo phải có độ dài từ 5 đến 2000 ký tự',
   SET_NOTIFICATION_SUCCESS: 'Đặt thông báo thành công!',
+  SET_NOTIFICATION_FAILED: 'Đặt thông báo thất bại',
   REMOVE_NOTIFICATION_SUCCESS: 'Xóa thông báo thành công!',
-  NOTIFICATION_NOT_FOUND: 'Không có thông báo nào được tìm thấy'
+  REMOVE_NOTIFICATION_FAILED: 'Xóa thông báo thất bại',
+  NOTIFICATION_NOT_FOUND: 'Không có thông báo nào được tìm thấy',
+  GET_NOTIFICATION_FAILED: 'Lấy thông báo thất bại'
 } as const
