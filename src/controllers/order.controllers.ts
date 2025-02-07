@@ -11,12 +11,14 @@ import {
 import BusRoute from '~/models/schemas/busRoute.schemas'
 import User from '~/models/schemas/users.schemas'
 import OrderService from '~/services/order.services'
+import { writeInfoLog, writeErrorLog } from '~/utils/log'
 
 export const orderController = async (
   req: Request<ParamsDictionary, any, OrderRequestBody>,
   res: Response,
   next: NextFunction
 ) => {
+  const ip = req.ip
   const user = req.user as User
   const busRoute = req.bus_route as BusRoute
   const { access_token, refresh_token } = req
@@ -25,18 +27,34 @@ export const orderController = async (
     refresh_token
   }
 
-  await OrderService.order(req.body, user, busRoute)
+  try {
+    await OrderService.order(req.body, user, busRoute)
 
-  res.json({
-    message: ORDER_MESSAGE.ORDER_SUCCESS,
-    authenticate
-  })
+    await writeInfoLog(
+      `Thực hiện tạo đơn hàng cho tuyến ${req.body.bus_route_id} thành công (User: ${user._id}) (IP: ${ip}])`
+    )
+
+    res.json({
+      message: ORDER_MESSAGE.ORDER_SUCCESS,
+      authenticate
+    })
+  } catch (err) {
+    await writeErrorLog(
+      `Thực hiện tạo đơn hàng cho tuyến ${req.body.bus_route_id} thất bại (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`
+    )
+
+    res.json({
+      messgae: ORDER_MESSAGE.ORDER_FAILURE,
+      authenticate
+    })
+  }
 }
 
 export const getOrderListController = async (
   req: Request<ParamsDictionary, any, GetOrderRequestBody>,
   res: Response
 ) => {
+  const ip = req.ip
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -44,18 +62,32 @@ export const getOrderListController = async (
     refresh_token
   }
 
-  const result = await OrderService.getOrderList(req.body, user)
+  try {
+    const result = await OrderService.getOrderList(req.body, user)
 
-  res.json({
-    result,
-    authenticate
-  })
+    await writeInfoLog(`Thực hiện lấy danh sách các đơn hàng đã đặt thành công (User: ${user._id}) (IP: ${ip}])`)
+
+    res.json({
+      result,
+      authenticate
+    })
+  } catch (err) {
+    await writeErrorLog(
+      `Thực hiện lấy danh sách các đơn hàng đã đặt thất bại (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`
+    )
+
+    res.json({
+      messgae: ORDER_MESSAGE.GET_ORDER_FAILED,
+      authenticate
+    })
+  }
 }
 
 export const getOrderDetailListController = async (
   req: Request<ParamsDictionary, any, GetOrderDetailRequestBody>,
   res: Response
 ) => {
+  const ip = req.ip
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -63,15 +95,29 @@ export const getOrderDetailListController = async (
     refresh_token
   }
 
-  const result = await OrderService.getOrderDetailList(req.body, user)
+  try {
+    const result = await OrderService.getOrderDetailList(req.body, user)
 
-  res.json({
-    result,
-    authenticate
-  })
+    await writeInfoLog(`Thực hiện lấy chi tiết đơn hàng đã đặt thành công (User: ${user._id}) (IP: ${ip}])`)
+
+    res.json({
+      result,
+      authenticate
+    })
+  } catch (err) {
+    await writeErrorLog(
+      `Thực hiện lấy chi tiết đơn hàng đã đặt thất bại (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`
+    )
+
+    res.json({
+      messgae: ORDER_MESSAGE.GET_ORDER_DETAIL_FAILED,
+      authenticate
+    })
+  }
 }
 
 export const getOrderController = async (req: Request<ParamsDictionary, any, GetOrderRequestBody>, res: Response) => {
+  const ip = req.ip
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -79,18 +125,30 @@ export const getOrderController = async (req: Request<ParamsDictionary, any, Get
     refresh_token
   }
 
-  const result = await OrderService.getOrderList(req.body, user)
+  try {
+    const result = await OrderService.getOrder(req.body, user)
 
-  res.json({
-    result,
-    authenticate
-  })
+    await writeInfoLog(`Thực hiện lấy thông tin đơn hàng thành công (User: ${user._id}) (IP: ${ip}])`)
+
+    res.json({
+      result,
+      authenticate
+    })
+  } catch (err) {
+    await writeErrorLog(`Thực hiện lấy thông tin đơn hàng thất bại (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`)
+
+    res.json({
+      messgae: ORDER_MESSAGE.GET_ORDER_DETAIL_FAILED,
+      authenticate
+    })
+  }
 }
 
 export const cancelTicketController = async (
   req: Request<ParamsDictionary, any, CancelTicketRequestBody>,
   res: Response
 ) => {
+  const ip = req.ip
   const user = req.user as User
   const billDetail = req.billDetail as BillDetail
 
@@ -100,10 +158,23 @@ export const cancelTicketController = async (
     refresh_token
   }
 
-  await OrderService.cancelTicketDetail(user, billDetail)
+  try {
+    await OrderService.cancelTicketDetail(user, billDetail)
 
-  res.json({
-    message: ORDER_MESSAGE.CANCELED_TICKET_SUCCESS,
-    authenticate
-  })
+    await writeInfoLog(`Thực hiện hũy đơn hàng ${billDetail._id} thành công (User: ${user._id}) (IP: ${ip}])`)
+
+    res.json({
+      message: ORDER_MESSAGE.CANCELED_TICKET_SUCCESS,
+      authenticate
+    })
+  } catch (err) {
+    await writeErrorLog(
+      `Thực hiện hũy đơn hàng ${billDetail._id} thất bại (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`
+    )
+
+    res.json({
+      messgae: ORDER_MESSAGE.CANCELED_TICKET_FAILURE,
+      authenticate
+    })
+  }
 }

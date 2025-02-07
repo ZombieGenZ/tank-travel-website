@@ -206,6 +206,7 @@ export const ORDER_MESSAGE = {
   QUANTITY_MUST_BE_LESS_THAN_REMAINING_QUANTITY: 'Số lượng vé của tuyến không đủ',
   BALANCE_NOT_ENOUGH: 'Số dư của bạn không đủ để thực hiện giao dịch này',
   ORDER_SUCCESS: 'Đặt vé thành công!',
+  ORDER_FAILURE: 'Đặt vé thất bại',
   CURRENT_IS_REQUIRED: 'Số trang hiện tại là bắt buộc',
   CURRENT_IS_MUST_BE_A_NUMBER: 'Số trang hiện tại phải là một số',
   CURRENT_IS_MUST_BE_GREATER_THAN_0: 'Số trang hiện tại phải lớn hơn 0',
@@ -219,7 +220,10 @@ export const ORDER_MESSAGE = {
   TICKET_ID_IS_MUST_BE_A_STRING: 'Id vé xe phải là một chuỗi ký tự',
   TICKET_ID_IS_MUST_BE_A_MONGO_ID: 'Id vé xe không đúng định dạng',
   TICKET_ID_IS_NOT_EXIST: 'Id vé xe không tồn tại',
-  CANCELED_TICKET_SUCCESS: 'Đã hủy vé thành công'
+  CANCELED_TICKET_SUCCESS: 'Đã hủy vé thành công',
+  GET_ORDER_FAILED: 'Lấy thông tin đơn hàng thất bại',
+  GET_ORDER_DETAIL_FAILED: 'Lấy thông tin chi tiết đơn hàng thất bại',
+  CANCELED_TICKET_FAILURE: 'Đã hủy vé thất bại'
 } as const
 
 export const EVALUATE_MESSAGE = {
