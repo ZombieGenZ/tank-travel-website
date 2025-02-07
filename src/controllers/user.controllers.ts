@@ -299,14 +299,13 @@ export const changePhoneController = async (
 ) => {
   const ip = req.ip as string
   const user = req.user as User
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
 
   try {
-    const { access_token, refresh_token } = req
-    const authenticate = {
-      access_token,
-      refresh_token
-    }
-
     await UserServices.changePhone(req.body, user)
 
     await writeInfoLog(`Thực hiện thay đổi số điện thoại cho tài khoản ${user._id} thành công (IP: ${ip}])`)
@@ -321,7 +320,8 @@ export const changePhoneController = async (
     )
 
     res.json({
-      message: USER_MESSAGE.CHANGED_PHONE_FAILURE
+      message: USER_MESSAGE.CHANGED_PHONE_FAILURE,
+      authenticate
     })
   }
 }
@@ -332,14 +332,14 @@ export const changeAvatarController = async (
 ) => {
   const ip = req.ip as string
   const user = req.user as User
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
 
   try {
     const avatar = req.avatar as ImageType
-    const { access_token, refresh_token } = req
-    const authenticate = {
-      access_token,
-      refresh_token
-    }
 
     await UserServices.changeAvatar(user, avatar)
 
@@ -353,7 +353,8 @@ export const changeAvatarController = async (
     await writeErrorLog(`Thực hiện thay đổi ảnh đại diện cho tài khoản ${user._id} thất bại (IP: ${ip}]) Error: ${err}`)
 
     res.json({
-      message: USER_MESSAGE.CHANGED_AVATAR_FAILURE
+      message: USER_MESSAGE.CHANGED_AVATAR_FAILURE,
+      authenticate
     })
   }
 }
@@ -364,14 +365,13 @@ export const setDefaultAvatarController = async (
 ) => {
   const ip = req.ip as string
   const user = req.user as User
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
 
   try {
-    const { access_token, refresh_token } = req
-    const authenticate = {
-      access_token,
-      refresh_token
-    }
-
     await UserServices.setDefaultAvatar(user)
 
     await writeInfoLog(`Thực hiện thay đổi ảnh đại diện về mặc định cho tài khoản ${user._id} thành công (IP: ${ip}])`)
@@ -386,7 +386,8 @@ export const setDefaultAvatarController = async (
     )
 
     res.json({
-      message: USER_MESSAGE.CHANGED_AVATAR_FAILURE
+      message: USER_MESSAGE.CHANGED_AVATAR_FAILURE,
+      authenticate
     })
   }
 }

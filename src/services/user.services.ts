@@ -19,7 +19,6 @@ import { ObjectId } from 'mongodb'
 import { sendMail } from '~/utils/mail'
 import EmailVerifyCode from '~/models/schemas/emailverifycode.schemas'
 import { ImageType } from '~/constants/image'
-import { writeErrorLog, writeInfoLog } from '~/utils/log'
 
 class UserService {
   async checkEmailExits(email: string) {

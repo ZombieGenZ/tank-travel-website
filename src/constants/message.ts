@@ -123,12 +123,16 @@ export const VEHICLE_MESSGAE = {
   ONLY_UPLOAD_UP_TO_30_IMAGES: 'Bạn chỉ được tải lên tối đa 30 hình ảnh',
   UPLOAD_FAILED: 'Tải lên thất bại',
   CREATE_VEHICLE_SUCCESS: 'Tạo phương tiện thành công!',
+  CREATE_VEHICLE_FAILURE: 'Tạo phương tiện thất bại',
   VEHICLE_ID_IS_REQUIRED: 'Không được bỏ trống id phương tiện',
   VEHICLE_ID_IS_MUST_BE_A_STRING: 'Id phương tiện phải là một chuỗi ký tự',
   VEHICLE_ID_IS_MUST_BE_A_ID: 'Id phương tiện không đúng định dạn',
   VEHICLE_ID_IS_NOT_EXIST: 'Id phương tiện không tồn tại hoặc bạn không có quyền làm điều này',
   DELETE_VEHICLE_SUCCESS: 'Xóa phương tiện thành công!',
+  DELETE_VEHICLE_FAILURE: 'Xóa phương tiện thất bại',
+  GET_VEHICLE_FAILURE: 'Lấy thông tin phương tiện thất bại',
   UPDATE_VEHICLE_SUCCESS: 'Cập nhật phương tiện thành công!',
+  UPDATE_VEHICLE_FAILURE: 'Cập nhật phương tiện thất bại',
   CURRENT_IS_REQUIRED: 'Không được bỏ trống số trang hiện tại',
   CURRENT_IS_MUST_BE_A_NUMBER: 'Số trang hiện tại phải là một số',
   CURRENT_IS_MUST_BE_GREATER_THAN_0: 'Số trang hiện tại phải lớn hơn 0',
@@ -137,7 +141,11 @@ export const VEHICLE_MESSGAE = {
   DECISION_IS_REQUIRED: 'Không được bỏ trống quyết định',
   DECISION_IS_MUST_BE_A_BOOLEAN: 'Quyết định phải là một giá trị đúng hoặc sai',
   USER_NOT_FOUND: 'Không tìm thấy người dùng',
-  IMAGE_IS_REQUIRED: 'Phải gửi ít nhất 1 hình ảnh về phương tiện'
+  IMAGE_IS_REQUIRED: 'Phải gửi ít nhất 1 hình ảnh về phương tiện',
+  CENSOR_VEHICLE_SUCCESS: 'Duyệt phương tiện thành công!',
+  CENSOR_VEHICLE_FAILURE: 'Duyệt phương tiện thất bại',
+  GET_VEHICLE_LIST_FAILURE: 'Lấy danh sách phương tiện thất bại',
+  FIND_VEHICLE_FAILURE: 'Tìm kiếm thông tin phương tiện thất bại'
 } as const
 
 export const BUSROUTE_MESSAGE = {

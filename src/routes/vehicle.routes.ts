@@ -31,10 +31,19 @@ import {
   administratorAuthenticationValidator
 } from '~/middlewares/authentication.middlewares'
 import { wrapRequestHandler } from '~/utils/handlers'
+import fse from 'fs-extra'
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, `public/images/upload/vehicle/temporary`)
+    const uploadPath = 'public/images/upload/vehicle/temporary'
+    fse
+      .ensureDir(uploadPath)
+      .then(() => {
+        cb(null, uploadPath)
+      })
+      .catch((err) => {
+        cb(err, uploadPath)
+      })
   },
   filename: (req, file, cb) => {
     const fileName = path.basename(file.originalname, path.extname(file.originalname))
