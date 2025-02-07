@@ -11,65 +11,114 @@ import {
 } from '~/models/requests/busRoute.requests'
 import User from '~/models/schemas/users.schemas'
 import BusRouteService from '~/services/busRoute.services'
+import { writeInfoLog, writeErrorLog } from '~/utils/log'
 
 export const createController = async (
   req: Request<ParamsDictionary, any, CreateBusRouteRequestBody>,
   res: Response
 ) => {
+  const ip = req.ip
+  const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
     access_token,
     refresh_token
   }
 
-  await BusRouteService.createBusRoute(req.body)
+  try {
+    await BusRouteService.createBusRoute(req.body)
 
-  res.json({
-    message: BUSROUTE_MESSAGE.CREATE_BUS_ROUTE_SUCCESS,
-    authenticate
-  })
+    await writeInfoLog(`Thực hiện thêm thông tin tuyến thành công (User: ${user._id}) (IP: ${ip}])`)
+
+    res.json({
+      message: BUSROUTE_MESSAGE.CREATE_BUS_ROUTE_SUCCESS,
+      authenticate
+    })
+  } catch (err) {
+    await writeErrorLog(`Thực hiện thêm thông tin tuyến thất bại (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`)
+
+    res.json({
+      message: BUSROUTE_MESSAGE.CREATE_BUS_ROUTE_FAILURE,
+      authenticate
+    })
+  }
 }
 
 export const updateController = async (
   req: Request<ParamsDictionary, any, UpdateBusRouteRequestBody>,
   res: Response
 ) => {
+  const ip = req.ip
+  const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
     access_token,
     refresh_token
   }
 
-  await BusRouteService.updateBusRoute(req.body)
+  try {
+    await BusRouteService.updateBusRoute(req.body)
 
-  res.json({
-    message: BUSROUTE_MESSAGE.UPDATE_BUS_ROUTE_SUCCESS,
-    authenticate
-  })
+    await writeInfoLog(
+      `Thực hiện cập nhật thông tin tuyến ${req.body.bus_route_id} thành công (User: ${user._id}) (IP: ${ip}])`
+    )
+
+    res.json({
+      message: BUSROUTE_MESSAGE.UPDATE_BUS_ROUTE_SUCCESS,
+      authenticate
+    })
+  } catch (err) {
+    await writeErrorLog(
+      `Thực hiện cập nhật thông tin tuyến ${req.body.bus_route_id} thất bại (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`
+    )
+
+    res.json({
+      message: BUSROUTE_MESSAGE.UPDATE_BUS_ROUTE_FAILURE,
+      authenticate
+    })
+  }
 }
 
 export const deleteController = async (
   req: Request<ParamsDictionary, any, DeleteBusRouteRequestBody>,
   res: Response
 ) => {
+  const ip = req.ip
+  const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
     access_token,
     refresh_token
   }
 
-  await BusRouteService.deleteBusRoute(req.body)
+  try {
+    await BusRouteService.deleteBusRoute(req.body)
 
-  res.json({
-    message: BUSROUTE_MESSAGE.DELETE_BUS_ROUTE_SUCCESS,
-    authenticate
-  })
+    await writeInfoLog(
+      `Thực hiện xóa thông tin tuyến ${req.body.bus_route_id} thành công (User: ${user._id}) (IP: ${ip}])`
+    )
+
+    res.json({
+      message: BUSROUTE_MESSAGE.DELETE_BUS_ROUTE_SUCCESS,
+      authenticate
+    })
+  } catch (err) {
+    await writeErrorLog(
+      `Thực hiện xóa thông tin tuyến ${req.body.bus_route_id} thất bại (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`
+    )
+
+    res.json({
+      message: BUSROUTE_MESSAGE.DELETE_BUS_ROUTE_FAILURE,
+      authenticate
+    })
+  }
 }
 
 export const getBusRouteController = async (
   req: Request<ParamsDictionary, any, GetBusRouteRequestBody>,
   res: Response
 ) => {
+  const ip = req.ip
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -77,18 +126,30 @@ export const getBusRouteController = async (
     refresh_token
   }
 
-  const result = await BusRouteService.getBusRoute(req.body, user)
+  try {
+    const result = await BusRouteService.getBusRoute(req.body, user)
 
-  res.json({
-    result,
-    authenticate
-  })
+    await writeInfoLog(`Thực hiện lấy thông tin tuyến thành công (User: ${user._id}) (IP: ${ip}])`)
+
+    res.json({
+      result,
+      authenticate
+    })
+  } catch (err) {
+    await writeErrorLog(`Thực hiện lấy thông tin tuyến thất bại (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`)
+
+    res.json({
+      message: BUSROUTE_MESSAGE.GET_BUS_ROUTE_FAILED,
+      authenticate
+    })
+  }
 }
 
 export const findBusRouteController = async (
   req: Request<ParamsDictionary, any, FindBusRouteRequestBody>,
   res: Response
 ) => {
+  const ip = req.ip
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -96,21 +157,44 @@ export const findBusRouteController = async (
     refresh_token
   }
 
-  const result = await BusRouteService.findBusRoute(req.body, user)
+  try {
+    const result = await BusRouteService.findBusRoute(req.body, user)
 
-  res.json({
-    result,
-    authenticate
-  })
+    await writeInfoLog(`Thực hiện tìm kiếm thông tin tuyến thành công (User: ${user._id}) (IP: ${ip}])`)
+
+    res.json({
+      result,
+      authenticate
+    })
+  } catch (err) {
+    await writeErrorLog(`Thực hiện tìm kiếm thông tin tuyến thất bại (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`)
+
+    res.json({
+      message: BUSROUTE_MESSAGE.FIND_BUS_ROUTE_FAILED,
+      authenticate
+    })
+  }
 }
 
 export const findBusRouteListController = async (
   req: Request<ParamsDictionary, any, FindBusRouteListRequestBody>,
   res: Response
 ) => {
-  const result = await BusRouteService.findBusRouteList(req.body)
+  const ip = req.ip
 
-  res.json({
-    result
-  })
+  try {
+    const result = await BusRouteService.findBusRouteList(req.body)
+
+    await writeInfoLog(`Thực hiện lấy danh sách các tuyến thành công (IP: ${ip}])`)
+
+    res.json({
+      result
+    })
+  } catch (err) {
+    await writeErrorLog(`Thực hiện lấy danh sách các tuyến thất bại (IP: ${ip}]) | Error: ${err}`)
+
+    res.json({
+      message: BUSROUTE_MESSAGE.GET_BUS_ROUTE_FAILED
+    })
+  }
 }

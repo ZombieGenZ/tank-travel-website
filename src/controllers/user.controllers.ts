@@ -20,7 +20,7 @@ import User from '~/models/schemas/users.schemas'
 import UserServices from '~/services/user.services'
 import { ImageType } from '~/constants/image'
 import { omit } from 'lodash'
-import { writeErrorLog, writeInfoLog } from '~/utils/log'
+import { writeInfoLog, writeErrorLog } from '~/utils/log'
 
 export const sendEmailController = async (
   req: Request<ParamsDictionary, any, EmailVerifyRequestBody>,

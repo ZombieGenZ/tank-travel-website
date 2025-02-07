@@ -427,10 +427,15 @@ export const updateValidator = (req: Request, res: Response, next: NextFunction)
               throw new Error(BUSROUTE_MESSAGE.QUANTITY_MUST_BE_GREATER_THAN_0)
             }
 
+            const busRoute = await databaseService.busRoute.findOne({ _id: new ObjectId(req.body.bus_route_id) })
             const vehicle = await databaseService.vehicles.findOne({ _id: new ObjectId(req.body.vehicle_id) })
 
             if (vehicle === null) {
               throw new Error(VEHICLE_MESSGAE.VEHICLE_ID_IS_NOT_EXIST)
+            }
+
+            if (value + busRoute?.sold > vehicle.seats) {
+              throw new Error(BUSROUTE_MESSAGE.QUANTITY_MUST_BE_LESS_THAN_OR_EQUAL_TO_VEHICLE_SEATS)
             }
 
             if (value > vehicle.seats) {

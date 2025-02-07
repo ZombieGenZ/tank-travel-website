@@ -167,12 +167,15 @@ export const BUSROUTE_MESSAGE = {
   QUANTITY_MUST_BE_GREATER_THAN_0: 'Số lượng vé phải lớn hơn 0',
   QUANTITY_MUST_BE_LESS_THAN_OR_EQUAL_TO_VEHICLE_SEATS: 'Số lượng vé phải nhỏ hơn hoặc bằng số ghế của phương tiện',
   CREATE_BUS_ROUTE_SUCCESS: 'Thêm tuyến thành công!',
+  CREATE_BUS_ROUTE_FAILURE: 'Thêm tuyến thất bại',
   BUS_ROUTE_ID_IS_REQUIRED: 'Không được bỏ trống id tuyến xe',
   BUS_ROUTE_ID_IS_MUST_BE_A_STRING: 'Id tuyến xe phải là một chuỗi ký tự',
   BUS_ROUTE_ID_IS_MUST_BE_A_ID: 'Id tuyến xe không đúng định dạng',
   BUS_ROUTE_ID_IS_NOT_EXIST: 'Id tuyến xe không tồn tại hoặc bạn không có quyền làm điều này',
   UPDATE_BUS_ROUTE_SUCCESS: 'Cập nhật tuyến xe thành công!',
+  UPDATE_BUS_ROUTE_FAILURE: 'Cập nhật tuyến xe thất bại',
   DELETE_BUS_ROUTE_SUCCESS: 'Xóa tuyến xe thành công!',
+  DELETE_BUS_ROUTE_FAILURE: 'Xóa tuyến xe thất bại',
   CURRENT_IS_REQUIRED: 'Không được bỏ trống số trang hiện tại',
   CURRENT_IS_MUST_BE_A_NUMBER: 'Số trang hiện tại phải là một số',
   CURRENT_IS_MUST_BE_GREATER_THAN_0: 'Số trang hiện tại phải lớn hơn 0',
@@ -180,7 +183,9 @@ export const BUSROUTE_MESSAGE = {
   KEYWORDS_IS_REQUIRED: 'Không được bỏ trống từ khóa',
   DEPARTURE_TIME_MUST_BE_GREATER_THAN_NOW: 'Thời gian khởi hành phải lớn hơn thời gian hiện tại',
   ARRIVAL_TIME_MUST_BE_GREATER_THAN_NOW: 'Thời gian đến dự kiến phải lớn hơn thời gian hiện tại',
-  PRICE_MUST_BE_LESS_THAN_100000000: 'Giá vé phải nhỏ hơn 100,000,000 vnđ'
+  PRICE_MUST_BE_LESS_THAN_100000000: 'Giá vé phải nhỏ hơn 100,000,000 vnđ',
+  GET_BUS_ROUTE_FAILED: 'Lấy thông tin tuyến thất bại',
+  FIND_BUS_ROUTE_FAILED: 'Tìm kiếm tuyến thất bại'
 } as const
 
 export const ORDER_MESSAGE = {

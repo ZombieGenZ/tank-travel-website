@@ -15,7 +15,7 @@ import User from '~/models/schemas/users.schemas'
 import Vehicle from '~/models/schemas/vehicle.chemas'
 import { ImageType } from '~/constants/image'
 import VehicleService from '~/services/vehicle.services'
-import { writeErrorLog, writeInfoLog } from '~/utils/log'
+import { writeInfoLog, writeErrorLog } from '~/utils/log'
 
 export const getVehicleType = async (req: Request<ParamsDictionary, any, GetVehicleInfoRequestBody>, res: Response) => {
   const ip = req.ip
