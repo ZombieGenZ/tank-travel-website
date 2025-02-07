@@ -287,10 +287,13 @@ export const BUSINESS_REGISTRATION_MESSAGE = {
   DECISION_IS_REQUIRED: 'Không được bỏ trống quyết định',
   DECISION_MUST_BE_A_BOOLEAN: 'Quyết định phải là một giá trị đúng hoặc sai',
   CENSOR_SUCCESS: 'Đã duyệt đăng ký doanh nghiệp thành công!',
+  CENSOR_FAILED: 'Duyệt đăng ký doanh nghiệp thất bại',
   CURRENT_IS_REQUIRED: 'Không được bỏ trống số trang hiện tại',
   CURRENT_IS_MUST_BE_A_NUMBER: 'Số trang hiện tại phải là một số',
   CURRENT_IS_MUST_BE_GREATER_THAN_0: 'Số trang hiện tại phải lớn hơn 0',
-  NO_MATCHING_RESULTS_FOUND: 'Không tìm thấy kết quả phù hợp'
+  NO_MATCHING_RESULTS_FOUND: 'Không tìm thấy kết quả phù hợp',
+  REGISTER_FAILED: 'Đăng ký doanh nghiệp thất bại',
+  GET_BUSINESS_REGISTRATION__FAILED: 'Lấy thông tin đăng ký doanh nghiệp thấ bại'
 } as const
 
 export const NOTIFICATION_MESSAGE = {
