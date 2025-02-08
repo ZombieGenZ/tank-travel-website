@@ -30,7 +30,7 @@ class EvaluateService {
           vehicle: vehicle._id
         })
       ),
-      NotificationPrivateService.createNotification(user._id, notificationMessage)
+      NotificationPrivateService.createNotification(vehicle.user, notificationMessage)
     ])
   }
 

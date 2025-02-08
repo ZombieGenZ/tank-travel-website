@@ -16,6 +16,7 @@ import Bill from '~/models/schemas/bill.schemas'
 import Profit from '~/models/schemas/profit.schemas'
 import Vehicle from '~/models/schemas/vehicle.chemas'
 import NotificationPrivateService from './notificationPrivate.services'
+import { formatDateNotSecond } from '~/utils/date'
 
 class BusRouteService {
   async createBusRoute(payload: CreateBusRouteRequestBody) {
@@ -60,14 +61,14 @@ class BusRouteService {
     const totalRefundObject: ITotalRefundObject[] = []
     let totalPrice = 0
 
-    if (busRoute.arrival_time < new Date()) {
-      const bills = await databaseService.bill.find({ busRoute: busRoute._id }).toArray()
+    const bills = await databaseService.bill.find({ bus_route: busRoute._id }).toArray()
 
-      bills.forEach(async (bill: Bill) => {
+    for (const bill of bills) {
+      if (new Date(busRoute.arrival_time) > new Date()) {
         const date = new Date(bill.booking_time)
         const time = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
 
-        const existingRefundItem = totalRefundObject.find((item) => item.user_id === bill.user)
+        const existingRefundItem = totalRefundObject.find((item) => item.user_id.equals(bill.user))
         if (existingRefundItem) {
           existingRefundItem.totalBalance += bill.totalPrice
         } else {
@@ -79,100 +80,55 @@ class BusRouteService {
 
         const existingProfitItem = totalProfitObject.find((item) => item.time === time)
         if (existingProfitItem) {
-          existingProfitItem.totalRevenue += (totalPrice / 100) * Number(process.env.REVENUE_TAX as string)
+          existingProfitItem.totalRevenue += (bill.totalPrice / 100) * Number(process.env.REVENUE_TAX as string)
         } else {
           totalProfitObject.push({
             time: time,
-            totalRevenue: (totalPrice / 100) * Number(process.env.REVENUE_TAX as string)
+            totalRevenue: (bill.totalPrice / 100) * Number(process.env.REVENUE_TAX as string)
           })
         }
+      }
 
-        totalPrice += bill.totalPrice
+      totalPrice += bill.totalPrice
 
-        const refundMessage = `+${bill.totalPrice} đ hoàn tiền chuyến đi ${busRoute.start_point} - ${busRoute.end_point} vào lúc ${busRoute.departure_time}`
+      const refundMessage = `+${bill.totalPrice.toLocaleString('vi-VN')} đ hoàn tiền chuyến đi ${busRoute.start_point} - ${busRoute.end_point} vào lúc ${formatDateNotSecond(busRoute.departure_time)}`
 
-        await Promise.all([
-          await databaseService.bill.deleteOne({ _id: bill._id }),
-          await databaseService.billDetail.deleteMany({ bill: bill._id })
-        ])
-      })
-    } else {
-      const bills = await databaseService.bill.find({ busRoute: busRoute._id }).toArray()
-
-      bills.forEach(async (bill: Bill) => {
-        const refundMessage = `+${bill.totalPrice} đ hoàn tiền chuyến đi ${busRoute.start_point} - ${busRoute.end_point} vào lúc ${busRoute.departure_time}`
-
-        await Promise.all([
-          NotificationPrivateService.createNotification(bill.user, refundMessage),
-          databaseService.bill.deleteOne({ _id: bill._id }),
-          databaseService.billDetail.deleteMany({ bill: bill._id })
-        ])
-      })
+      await Promise.all([
+        NotificationPrivateService.createNotification(bill.user, refundMessage),
+        databaseService.bill.deleteOne({ _id: bill._id }),
+        databaseService.billDetail.deleteMany({ bill: bill._id })
+      ])
     }
 
-    const promisesProfit = [] as Promise<void>[]
-
-    totalProfitObject.forEach(async (item) => {
-      promisesProfit.push(
-        new Promise((resolve, reject) => {
-          const handleProfit = async () => {
-            try {
-              const profit = (await databaseService.profit.findOne({ time: item.time })) as Profit
-
-              await databaseService.profit.updateOne(
-                {
-                  time: item.time
-                },
-                {
-                  $set: {
-                    revenue: profit.revenue - item.totalRevenue
-                  },
-                  $currentDate: {
-                    last_update: true
-                  }
-                }
-              )
-
-              resolve()
-            } catch (error) {
-              reject(error)
+    const profitPromises = totalProfitObject.map(async (item) => {
+      const profit = (await databaseService.profit.findOne({ time: item.time })) as Profit
+      if (profit) {
+        await databaseService.profit.updateOne(
+          { time: item.time },
+          {
+            $set: {
+              revenue: profit.revenue - item.totalRevenue
+            },
+            $currentDate: {
+              last_update: true
             }
           }
-
-          handleProfit()
-        })
-      )
+        )
+      }
     })
 
-    const promisesBalance = [] as Promise<void>[]
-
-    totalRefundObject.forEach(async (item) => {
-      promisesBalance.push(
-        new Promise((resolve, reject) => {
-          const handleProfit = async () => {
-            try {
-              const user = (await databaseService.users.findOne({ _id: item.user_id })) as User
-
-              await databaseService.users.updateOne(
-                {
-                  _id: item.user_id
-                },
-                {
-                  $set: {
-                    balance: user.balance + item.totalBalance
-                  }
-                }
-              )
-
-              resolve()
-            } catch (error) {
-              reject(error)
+    const balancePromises = totalRefundObject.map(async (item) => {
+      const user = (await databaseService.users.findOne({ _id: item.user_id })) as User
+      if (user) {
+        await databaseService.users.updateOne(
+          { _id: item.user_id },
+          {
+            $set: {
+              balance: user.balance + item.totalBalance
             }
           }
-
-          handleProfit()
-        })
-      )
+        )
+      }
     })
 
     const vehicle = (await databaseService.vehicles.findOne({ _id: busRoute.vehicle })) as Vehicle
@@ -182,6 +138,9 @@ class BusRouteService {
     const revenueMessage = `-${totalRevenue} đ do tuyến ${busRoute.start_point} - ${busRoute.end_point} đã bị hủy`
 
     await Promise.all([
+      ...profitPromises,
+      ...balancePromises,
+      databaseService.busRoute.deleteOne({ _id: busRoute._id }),
       databaseService.users.updateOne(
         {
           _id: vehicle.user
@@ -193,8 +152,6 @@ class BusRouteService {
         }
       ),
       databaseService.vehicles.deleteOne({ _id: new ObjectId(vehicle._id) }),
-      Promise.all(promisesProfit),
-      Promise.all(promisesBalance),
       NotificationPrivateService.createNotification(vehicle.user, revenueMessage)
     ])
   }

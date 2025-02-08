@@ -1010,8 +1010,7 @@ export const image3x4Validator = async (req: Request, res: Response, next: NextF
     next()
   } catch (error) {
     deleteTemporaryFile(req.file)
-    console.log(error)
-    res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ error: 'error', authenticate })
+    res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ error, authenticate })
   }
 }
 
@@ -1019,7 +1018,7 @@ const deleteTemporaryFile = async (file: any) => {
   try {
     fs.unlinkSync(file.path)
   } catch (err) {
-    console.log()
+    return
   }
 }
 

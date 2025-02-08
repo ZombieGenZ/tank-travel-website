@@ -23,9 +23,9 @@
   <script>
     const socket = io(`<%= host %>`);
 
-    socket.emit("join-room", 'log');
+    socket.emit("connect-admin-realtime", 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjdhNzQ2OGM1ZjFhNTY3MzVhNWE3OGE4IiwidG9rZW5fdHlwZSI6MSwiaWF0IjoxNzM5MDE2NTI0LCJleHAiOjE3NDY3OTI1MjR9.62h0fQ3IAocD7W6hbFaOtMdItus1bfuD9pAJoaPfChU');
 
-    socket.on("new-log", (data) => {
+    socket.on("new-system-log", (data) => {
       const log = document.getElementById('log')
       
       if (data.log_type == 0) {

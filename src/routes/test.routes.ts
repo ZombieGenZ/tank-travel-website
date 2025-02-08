@@ -35,4 +35,8 @@ router.get('/log', async (req: Request, res: Response) => {
   res.render('test/test.log.ejs', { host: process.env.APP_URL })
 })
 
+router.get('/notificaton', async (req: Request, res: Response) => {
+  res.render('test/test.notificaton.ejs', { host: process.env.APP_URL })
+})
+
 export default router

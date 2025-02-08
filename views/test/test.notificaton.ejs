@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Test revenue realtime</title>
+  <title>Test notificaton realtime</title>
 </head>
 <body>
-  <h1 id="revenue">0</h1>
+  <h1 id="notificaton"></h1>
 
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   <script>
@@ -14,19 +14,10 @@
 
     socket.emit("connect-user-realtime", 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjdhNzQ2OGM1ZjFhNTY3MzVhNWE3OGE4IiwidG9rZW5fdHlwZSI6MSwiaWF0IjoxNzM5MDE2NTI0LCJleHAiOjE3NDY3OTI1MjR9.62h0fQ3IAocD7W6hbFaOtMdItus1bfuD9pAJoaPfChU');
 
-    socket.on("update-revenue", (data) => {
-      const balance = document.getElementById('revenue')
+    socket.on("new-private-notificaton", (data) => {
+      const notificaton = document.getElementById('notificaton')
       
-      if (data.type == '+') {
-        const num = Number(balance.textContent)
-
-        balance.textContent = num + data.value
-      }
-      else if (data.type == '-') {
-        const num = Number(balance.textContent)
-        
-        balance.textContent = num - data.value
-      }
+      notificaton.innerHTML += `<p>[${data.sender}] ${data.message}</p>`
     });
   </script>
 </body>

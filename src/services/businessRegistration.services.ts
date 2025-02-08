@@ -146,7 +146,6 @@ class BusinessRegistrationService {
     }
 
     const password = generateRandomPassword()
-    console.log(password)
 
     const email_account_subject = `Thông Tin Đăng Nhập Tài Khoản ${process.env.TRADEMARK_NAME}`
     const email_account_html = `

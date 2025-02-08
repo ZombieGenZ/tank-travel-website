@@ -35,7 +35,7 @@ import testApi from '~/routes/test.routes'
 
 const app = express()
 const server = createServer(app)
-let runningTime: string
+const runningTime = formatDateFull(new Date())
 const io = new Server(server, {
   cors: {
     origin: '*',
@@ -99,7 +99,7 @@ io.on('connection', (socket: Socket) => {
           // sự kiện:
           // update-balance: cập nhật số dư của người dùng
           // update-revenue: cập nhật doanh thu của doanh nghiệp/quản trị viên
-          // new-notificaton: cập nhật thông báo mới cho người dùng
+          // new-private-notificaton: cập nhật thông báo mới cho người dùng
           //
           // mô tả chi tiết sự kiện:
           // sự kiện: update-balance
@@ -176,7 +176,6 @@ server.listen(port, async () => {
   console.log(`\x1b[33mTruy cập tại: \x1b[36m${process.env.APP_URL}/\x1b[0m`)
   console.log()
   await startBot()
-  runningTime = formatDateFull(new Date())
 })
 
 process.on('SIGINT', async () => {

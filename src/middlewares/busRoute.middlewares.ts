@@ -4,6 +4,7 @@ import { ObjectId } from 'mongodb'
 import { UserPermission, VehicleStatus } from '~/constants/enum'
 import HTTPSTATUS from '~/constants/httpStatus'
 import { BUSROUTE_MESSAGE, VEHICLE_MESSGAE } from '~/constants/message'
+import BusRoute from '~/models/schemas/busRoute.schemas'
 import User from '~/models/schemas/users.schemas'
 import databaseService from '~/services/database.services'
 import { validate } from '~/utils/validation'
@@ -496,9 +497,11 @@ export const deleteValidator = (req: Request, res: Response, next: NextFunction)
                 throw new Error(BUSROUTE_MESSAGE.BUS_ROUTE_ID_IS_NOT_EXIST)
               }
 
+              ;(req as Request).bus_route = bus_route
+
               return true
             } else {
-              const result = await databaseService.busRoute
+              const bus_route = await databaseService.busRoute
                 .aggregate([
                   {
                     $match: { _id: new ObjectId(value) }
@@ -524,14 +527,13 @@ export const deleteValidator = (req: Request, res: Response, next: NextFunction)
                   }
                 ])
                 .toArray()
-
-              const bus_route = result[0]
+                .then((bus_route) => bus_route[0] as BusRoute)
 
               if (bus_route === null || bus_route === undefined) {
                 throw new Error(BUSROUTE_MESSAGE.BUS_ROUTE_ID_IS_NOT_EXIST)
               }
 
-              ;(req as Request).body.bus_route = bus_route
+              ;(req as Request).bus_route = bus_route
 
               return true
             }

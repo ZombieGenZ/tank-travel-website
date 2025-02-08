@@ -46,9 +46,6 @@ export const createValidator = async (req: Request, res: Response, next: NextFun
                   }
                 },
                 {
-                  $limit: 1
-                },
-                {
                   $lookup: {
                     from: process.env.DATABASE_BUS_ROUTE_COLLECTION,
                     localField: 'bus_route',
