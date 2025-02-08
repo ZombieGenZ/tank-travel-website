@@ -531,6 +531,8 @@ export const deleteValidator = (req: Request, res: Response, next: NextFunction)
                 throw new Error(BUSROUTE_MESSAGE.BUS_ROUTE_ID_IS_NOT_EXIST)
               }
 
+              ;(req as Request).body.bus_route = bus_route
+
               return true
             }
           }

@@ -19,7 +19,6 @@ import User from '~/models/schemas/users.schemas'
 import NotificationPrivateService from './notificationPrivate.services'
 import BusRoute from '~/models/schemas/busRoute.schemas'
 import Bill from '~/models/schemas/bill.schemas'
-import { forEach } from 'lodash'
 import Profit from '~/models/schemas/profit.schemas'
 
 class VehicleService {
@@ -130,9 +129,6 @@ class VehicleService {
         const bills = await databaseService.bill.find({ busRoute: busRoute._id }).toArray()
 
         bills.forEach(async (bill: Bill) => {
-          await databaseService.bill.deleteOne({ _id: bill._id })
-          await databaseService.billDetail.deleteMany({ bill: bill._id })
-
           await Promise.all([
             await databaseService.bill.deleteOne({ _id: bill._id }),
             await databaseService.billDetail.deleteMany({ bill: bill._id })

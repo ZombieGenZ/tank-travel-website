@@ -9,6 +9,7 @@ import {
   GetBusRouteRequestBody,
   UpdateBusRouteRequestBody
 } from '~/models/requests/busRoute.requests'
+import BusRoute from '~/models/schemas/busRoute.schemas'
 import User from '~/models/schemas/users.schemas'
 import BusRouteService from '~/services/busRoute.services'
 import { writeInfoLog, writeErrorLog } from '~/utils/log'
@@ -84,6 +85,7 @@ export const deleteController = async (
   res: Response
 ) => {
   const ip = req.ip
+  const busRoute = req.bus_route as BusRoute
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -92,7 +94,7 @@ export const deleteController = async (
   }
 
   try {
-    await BusRouteService.deleteBusRoute(req.body)
+    await BusRouteService.deleteBusRoute(busRoute)
 
     await writeInfoLog(
       `Thực hiện xóa thông tin tuyến ${req.body.bus_route_id} thành công (User: ${user._id}) (IP: ${ip}])`

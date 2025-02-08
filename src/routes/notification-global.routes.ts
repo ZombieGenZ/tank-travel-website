@@ -2,16 +2,16 @@ import express from 'express'
 import multer from 'multer'
 import path from 'path'
 import {
-  setNotificationController,
-  removeNotificationController,
-  getNotificationController
+  setNotificationGlobalController,
+  removeNotificationGlobalController,
+  getNotificationGlobalController
 } from '~/controllers/notification-global.controllers'
 import { administratorAuthenticationValidator, authenticationValidator } from '~/middlewares/authentication.middlewares'
 import {
-  authenticateNotificationValidator,
+  authenticateNotificationGlobalValidator,
   permissionValidator,
-  setNotificationValidator,
-  setupNotification
+  setNotificationGlobalValidator,
+  setupNotificationGlobal
 } from '~/middlewares/notification-global.middlewares'
 import { wrapRequestHandler } from '~/utils/handlers'
 import fse from 'fs-extra'
@@ -71,11 +71,11 @@ const upload = multer({
 router.put(
   '/set-notification',
   upload.array('image', 50),
-  authenticateNotificationValidator,
+  authenticateNotificationGlobalValidator,
   permissionValidator,
-  setNotificationValidator,
-  setupNotification,
-  wrapRequestHandler(setNotificationController)
+  setNotificationGlobalValidator,
+  setupNotificationGlobal,
+  wrapRequestHandler(setNotificationGlobalController)
 )
 
 /*
@@ -93,7 +93,7 @@ router.delete(
   '/remove-notification',
   authenticationValidator,
   administratorAuthenticationValidator,
-  wrapRequestHandler(removeNotificationController)
+  wrapRequestHandler(removeNotificationGlobalController)
 )
 
 /*
@@ -101,6 +101,6 @@ router.delete(
  * Path: /api/notification-global/get-notification
  * Method: GET
  */
-router.get('/get-notification', wrapRequestHandler(getNotificationController))
+router.get('/get-notification', wrapRequestHandler(getNotificationGlobalController))
 
 export default router

@@ -9,7 +9,7 @@ import { ImageType } from '~/constants/image'
 import { NOTIFICATION_MESSAGE } from '~/constants/message'
 import { writeInfoLog, writeErrorLog } from '~/utils/log'
 
-export const setNotificationController = async (
+export const setNotificationGlobalController = async (
   req: Request<ParamsDictionary, any, SetNotificationRequestBody>,
   res: Response
 ) => {
@@ -52,7 +52,7 @@ export const setNotificationController = async (
   }
 }
 
-export const removeNotificationController = async (req: Request, res: Response) => {
+export const removeNotificationGlobalController = async (req: Request, res: Response) => {
   const ip = req.ip
   const user = req.user as User
   const { access_token, refresh_token } = req
@@ -82,7 +82,7 @@ export const removeNotificationController = async (req: Request, res: Response) 
   }
 }
 
-export const getNotificationController = async (req: Request, res: Response) => {
+export const getNotificationGlobalController = async (req: Request, res: Response) => {
   const ip = req.ip
 
   try {

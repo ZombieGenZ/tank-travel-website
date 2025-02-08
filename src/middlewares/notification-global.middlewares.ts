@@ -14,7 +14,7 @@ import { promisify } from 'util'
 import path from 'path'
 import { ImageType } from '~/constants/image'
 
-export const authenticateNotificationValidator = async (req: Request, res: Response, next: NextFunction) => {
+export const authenticateNotificationGlobalValidator = async (req: Request, res: Response, next: NextFunction) => {
   const { authorization } = req.headers
   const { refresh_token } = req.body
 
@@ -144,7 +144,7 @@ export const permissionValidator = async (req: Request, res: Response, next: Nex
   })
 }
 
-export const setNotificationValidator = async (req: Request, res: Response, next: NextFunction) => {
+export const setNotificationGlobalValidator = async (req: Request, res: Response, next: NextFunction) => {
   const { access_token, refresh_token } = req
   const authenticate = {
     access_token,
@@ -214,7 +214,7 @@ export const setNotificationValidator = async (req: Request, res: Response, next
     })
 }
 
-export const setupNotification = async (req: Request, res: Response, next: NextFunction) => {
+export const setupNotificationGlobal = async (req: Request, res: Response, next: NextFunction) => {
   const directoryPath = path.join(__dirname, '../../public/images/upload/notification')
   const readdir = promisify(fs.readdir)
   const stat = promisify(fs.stat)
