@@ -17,6 +17,10 @@ import { ErrorWithStatus } from '~/models/errors'
 import HTTPSTATUS from '~/constants/httpStatus'
 import User from '~/models/schemas/users.schemas'
 import NotificationPrivateService from './notificationPrivate.services'
+import BusRoute from '~/models/schemas/busRoute.schemas'
+import Bill from '~/models/schemas/bill.schemas'
+import { forEach } from 'lodash'
+import Profit from '~/models/schemas/profit.schemas'
 
 class VehicleService {
   async createVehicle(payload: CreateVehicleRequestBody, user: User, preview: ImageType[]) {
@@ -59,10 +63,10 @@ class VehicleService {
   }
 
   async deleteVehicle(vehicle: Vehicle) {
-    const promises = [] as Promise<void>[]
+    const promisesPreview = [] as Promise<void>[]
 
     vehicle.preview.forEach(async (file) => {
-      promises.push(
+      promisesPreview.push(
         new Promise((resolve, reject) => {
           try {
             fs.unlinkSync(file.path)
@@ -74,11 +78,156 @@ class VehicleService {
       )
     })
 
-    // DOITAFTER Làm thêm chức năng hoàn tiền nếu vé đã được đặt mà xóa phương tiện
+    interface ITotalProfitObject {
+      time: string
+      totalRevenue: number
+    }
+    interface ITotalRefundObject {
+      user_id: ObjectId
+      totalBalance: number
+    }
+    const totalProfitObject: ITotalProfitObject[] = []
+    const totalRefundObject: ITotalRefundObject[] = []
+    let totalPrice = 0
+    const busRoutes = await databaseService.busRoute.find({ vehicle: vehicle._id }).toArray()
 
-    await databaseService.vehicles.deleteOne({ _id: new ObjectId(vehicle._id) })
+    busRoutes.forEach(async (busRoute: BusRoute) => {
+      if (busRoute.arrival_time < new Date()) {
+        const bills = await databaseService.bill.find({ busRoute: busRoute._id }).toArray()
 
-    await Promise.all(promises)
+        bills.forEach(async (bill: Bill) => {
+          const date = new Date(bill.booking_time)
+          const time = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
+
+          const existingRefundItem = totalRefundObject.find((item) => item.user_id === bill.user)
+          if (existingRefundItem) {
+            existingRefundItem.totalBalance += bill.totalPrice
+          } else {
+            totalRefundObject.push({
+              user_id: bill.user,
+              totalBalance: bill.totalPrice
+            })
+          }
+
+          const existingProfitItem = totalProfitObject.find((item) => item.time === time)
+          if (existingProfitItem) {
+            existingProfitItem.totalRevenue += (totalPrice / 100) * Number(process.env.REVENUE_TAX as string)
+          } else {
+            totalProfitObject.push({
+              time: time,
+              totalRevenue: (totalPrice / 100) * Number(process.env.REVENUE_TAX as string)
+            })
+          }
+
+          totalPrice += bill.totalPrice
+
+          await Promise.all([
+            await databaseService.bill.deleteOne({ _id: bill._id }),
+            await databaseService.billDetail.deleteMany({ bill: bill._id })
+          ])
+        })
+      } else {
+        const bills = await databaseService.bill.find({ busRoute: busRoute._id }).toArray()
+
+        bills.forEach(async (bill: Bill) => {
+          await databaseService.bill.deleteOne({ _id: bill._id })
+          await databaseService.billDetail.deleteMany({ bill: bill._id })
+
+          await Promise.all([
+            await databaseService.bill.deleteOne({ _id: bill._id }),
+            await databaseService.billDetail.deleteMany({ bill: bill._id })
+          ])
+        })
+      }
+
+      await databaseService.busRoute.deleteOne({ _id: busRoute._id })
+    })
+
+    const promisesProfit = [] as Promise<void>[]
+
+    totalProfitObject.forEach(async (item) => {
+      promisesProfit.push(
+        new Promise((resolve, reject) => {
+          const handleProfit = async () => {
+            try {
+              const profit = (await databaseService.profit.findOne({ time: item.time })) as Profit
+
+              await databaseService.profit.updateOne(
+                {
+                  time: item.time
+                },
+                {
+                  $set: {
+                    revenue: profit.revenue - item.totalRevenue
+                  },
+                  $currentDate: {
+                    last_update: true
+                  }
+                }
+              )
+
+              resolve()
+            } catch (error) {
+              reject(error)
+            }
+          }
+
+          handleProfit()
+        })
+      )
+    })
+
+    const promisesBalance = [] as Promise<void>[]
+
+    totalRefundObject.forEach(async (item) => {
+      promisesBalance.push(
+        new Promise((resolve, reject) => {
+          const handleProfit = async () => {
+            try {
+              const user = (await databaseService.users.findOne({ _id: item.user_id })) as User
+
+              await databaseService.users.updateOne(
+                {
+                  _id: item.user_id
+                },
+                {
+                  $set: {
+                    balance: user.balance + item.totalBalance
+                  }
+                }
+              )
+
+              resolve()
+            } catch (error) {
+              reject(error)
+            }
+          }
+
+          handleProfit()
+        })
+      )
+    })
+
+    const authorVehicle = (await databaseService.users.findOne({ _id: vehicle.user })) as User
+    const totalProfit = (totalPrice / 100) * Number(process.env.REVENUE_TAX as string)
+    const totalRevenue = totalPrice - totalProfit
+
+    await Promise.all([
+      databaseService.users.updateOne(
+        {
+          _id: vehicle.user
+        },
+        {
+          $set: {
+            revenue: authorVehicle.revenue - totalRevenue
+          }
+        }
+      ),
+      databaseService.vehicles.deleteOne({ _id: new ObjectId(vehicle._id) }),
+      Promise.all(promisesPreview),
+      Promise.all(promisesProfit),
+      Promise.all(promisesBalance)
+    ])
   }
 
   async getVehicle(payload: GetVehicleRequestBody, user: User) {
