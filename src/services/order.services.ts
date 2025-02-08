@@ -12,6 +12,8 @@ import Profit from '~/models/schemas/profit.schemas'
 import { ORDER_MESSAGE } from '~/constants/message'
 import { db } from '~/services/firebase.services'
 import { io } from '~/index'
+import NotificationPrivateService from './notificationPrivate.services'
+import { formatDateNotSecond } from '~/utils/date'
 
 class OrderService {
   async order(payload: OrderRequestBody, user: User, busRoute: BusRoute) {
@@ -94,7 +96,7 @@ class OrderService {
                   </tr>
                   <tr>
                       <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Thời gian khởi hành</th>
-                      <td style="border: 1px solid #ddd; padding: 10px; text-align: left;">${this.getFormatDate(busRoute.departure_time)}</td>
+                      <td style="border: 1px solid #ddd; padding: 10px; text-align: left;">${formatDateNotSecond(busRoute.departure_time)}</td>
                   </tr>
                   <tr>
                       <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Nơi đến</th>
@@ -102,11 +104,11 @@ class OrderService {
                   </tr>
                   <tr>
                       <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Thời gian đến dự kiến</th>
-                      <td style="border: 1px solid #ddd; padding: 10px; text-align: left;">${this.getFormatDate(busRoute.arrival_time)}</td>
+                      <td style="border: 1px solid #ddd; padding: 10px; text-align: left;">${formatDateNotSecond(busRoute.arrival_time)}</td>
                   </tr>
                   <tr>
                       <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Thời gian đặt vé</th>
-                      <td style="border: 1px solid #ddd; padding: 10px; text-align: left;">${this.getFormatDate(date)}</td>
+                      <td style="border: 1px solid #ddd; padding: 10px; text-align: left;">${formatDateNotSecond(date)}</td>
                   </tr>
               </table>
               <p><strong>Quy định trên xe:</strong></p>
@@ -127,7 +129,7 @@ class OrderService {
               <table style="margin-top: 20px; border-collapse: collapse; width: 100%;">
                   <tr>
                       <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Thời gian đặt</th>
-                      <td style="border: 1px solid #ddd; padding: 10px; text-align: left;">${this.getFormatDate(date)}</td>
+                      <td style="border: 1px solid #ddd; padding: 10px; text-align: left;">${formatDateNotSecond(date)}</td>
                   </tr>
                   <tr>
                       <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Tuyến</th>
@@ -139,10 +141,10 @@ class OrderService {
                   </tr>
                   <tr>
                       <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Giá vé</th>
-                      <td style="border: 1px solid #ddd; padding: 10px; text-align: left;">${busRoute.price.toLocaleString('vi-VN')} vnđ</td>
+                      <td style="border: 1px solid #ddd; padding: 10px; text-align: left;">${busRoute.price.toLocaleString('vi-VN')} đ</td>
                   </tr>
               </table>
-              <p style="margin-top: 20px;">Tổng tiền: <strong>${totalPrice.toLocaleString('vi-VN')} vnđ</strong></p>
+              <p style="margin-top: 20px;">Tổng tiền: <strong>${totalPrice.toLocaleString('vi-VN')} đ</strong></p>
               <p>Cảm ơn bạn đã sử dụng dịch vụ của <strong>${process.env.TRADEMARK_NAME}</strong>. Chúc bạn có một chuyến đi an toàn và thuận lợi!</p>
               <p style="margin-top: 20px; text-align: center; font-size: 14px; color: #555;">Hotline hỗ trợ: <a href="tel:${process.env.SUPPORT_PHONE}">${process.env.SUPPORT_PHONE_DISPLAY}</a> | Website: <a href="${process.env.APP_URL}">${process.env.APP_URL_DISPLAY}</a></p>
           </div>
@@ -151,6 +153,9 @@ class OrderService {
 
     const balanceFirebaseRealtime = db.ref(`balance/${user._id}`).push()
     const revenueFirebaseRealtime = db.ref(`revenue/${user._id}`).push()
+
+    const notificationMessageCustomer = `-${totalPrice.toLocaleString('vi-VN')} đ cho vé xe ${busRoute.start_point} - ${busRoute.end_point}`
+    const notificationMessageBusiness = `+${totalRevenue.toLocaleString('vi-VN')} đ cho vé xe ${busRoute.start_point} - ${busRoute.end_point}`
 
     await Promise.all([
       databaseService.billDetail.insertMany(billDetails),
@@ -212,7 +217,9 @@ class OrderService {
       io.to(vehicle.user.toString()).emit('update-revenue', {
         type: '+',
         value: totalRevenue
-      })
+      }),
+      NotificationPrivateService.createNotification(user._id, notificationMessageCustomer),
+      NotificationPrivateService.createNotification(authorVehicle._id, notificationMessageBusiness)
     ])
   }
 
@@ -537,6 +544,10 @@ class OrderService {
     const balanceFirebaseRealtime = db.ref(`balance/${user._id}`).push()
     const revenueFirebaseRealtime = db.ref(`revenue/${user._id}`).push()
 
+    const notificationMessageCustomer = `-${refund.toLocaleString('vi-VN')} đ hoàn tiền cho vé xe ${busRoute.start_point} - ${busRoute.end_point}`
+    const notificationMessageBusiness1 = `+${oldRevenue.toLocaleString('vi-VN')} đ khách hũy vé xe ${busRoute.start_point} - ${busRoute.end_point}`
+    const notificationMessageBusiness2 = `+${newRevenue.toLocaleString('vi-VN')} đ khách hũy vé xe ${busRoute.start_point} - ${busRoute.end_point}`
+
     Promise.all([
       databaseService.billDetail.updateOne(
         {
@@ -627,19 +638,11 @@ class OrderService {
       io.to(authorVehicle._id.toString()).emit('update-revenue', {
         type: '+',
         value: newRevenue
-      })
+      }),
+      NotificationPrivateService.createNotification(user._id, notificationMessageCustomer),
+      NotificationPrivateService.createNotification(authorVehicle._id, notificationMessageBusiness1),
+      NotificationPrivateService.createNotification(authorVehicle._id, notificationMessageBusiness2)
     ])
-  }
-
-  private getFormatDate(date: Date): string {
-    const formatDate = new Date(date)
-    const minute = String(formatDate.getMinutes()).padStart(2, '0')
-    const hour = String(formatDate.getHours()).padStart(2, '0')
-    const day = String(formatDate.getDate()).padStart(2, '0')
-    const month = String(formatDate.getMonth() + 1).padStart(2, '0')
-    const year = formatDate.getFullYear()
-
-    return `${hour}:${minute} ${day}/${month}/${year}`
   }
 }
 

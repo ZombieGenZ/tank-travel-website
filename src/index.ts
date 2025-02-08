@@ -7,7 +7,7 @@ import cors from 'cors'
 import bodyParser from 'body-parser'
 import databaseService from './services/database.services'
 import { defaultErrorHandler } from './middlewares/error.middlewares'
-import { formatDate } from '~/utils/date'
+import { formatDateFull } from '~/utils/date'
 
 dotenv.config()
 const port = process.env.APP_PORT || 3000
@@ -22,7 +22,7 @@ import busRouteApi from '~/routes/busRoute.routes'
 import orderApi from '~/routes/order.routes'
 import evaluateApi from '~/routes/evaluate.routes'
 import businessRegistrationApi from '~/routes/businessRegistration.routes'
-import notificationApi from '~/routes/notification.routes'
+import notificationGlobalApi from '~/routes/notification-global.routes'
 
 // import test router
 import testApi from '~/routes/test.routes'
@@ -67,7 +67,7 @@ app.use('/api/bus-route', busRouteApi)
 app.use('/api/order', orderApi)
 app.use('/api/evaluate', evaluateApi)
 app.use('/api/business-registration', businessRegistrationApi)
-app.use('/api/notification', notificationApi)
+app.use('/api/notification-global', notificationGlobalApi)
 
 // test router
 app.use('/test', testApi)
@@ -122,7 +122,7 @@ server.listen(port, async () => {
   console.log(`\x1b[33mTruy cập tại: \x1b[36m${process.env.APP_URL}/\x1b[0m`)
   console.log()
   await startBot()
-  runningTime = formatDate(new Date())
+  runningTime = formatDateFull(new Date())
 })
 
 process.on('SIGINT', async () => {

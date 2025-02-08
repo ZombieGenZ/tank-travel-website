@@ -54,3 +54,8 @@ export enum LogTypeEnum {
   WARN,
   ERROR
 }
+
+export enum NotificationStatus {
+  SENT,
+  DELETED
+}

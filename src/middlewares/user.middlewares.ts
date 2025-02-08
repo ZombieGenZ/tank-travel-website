@@ -290,8 +290,18 @@ export const loginValidator = validate(
               throw new Error(USER_MESSAGE.INCORRECT_EMAIL_OR_PASSWORD)
             }
 
-            if (user.user_type !== UserStatus.Verified) {
+            if (user.user_type === UserStatus.UnVerified) {
               throw new Error(USER_MESSAGE.USER_IS_NOT_VERIFIED)
+            }
+
+            if (user.temporary) {
+              throw new Error(USER_MESSAGE.USER_IS_TEMPORARY)
+            }
+
+            if (user.penalty !== null) {
+              throw new Error(
+                `Tài khoản của bạn đã bị khóa ${typeof user.penalty.expired_at === 'string' ? 'vĩnh viễn' : `đến ${user.penalty.expired_at}`} vì ${user.penalty.reason}`
+              )
             }
 
             ;(req as Request).user = user
@@ -1183,8 +1193,18 @@ export const loginManageValidator = validate(
               throw new Error(USER_MESSAGE.INCORRECT_EMAIL_OR_PASSWORD)
             }
 
-            if (user.user_type !== UserStatus.Verified) {
+            if (user.user_type === UserStatus.UnVerified) {
               throw new Error(USER_MESSAGE.USER_IS_NOT_VERIFIED)
+            }
+
+            if (user.temporary) {
+              throw new Error(USER_MESSAGE.USER_IS_TEMPORARY)
+            }
+
+            if (user.penalty !== null) {
+              throw new Error(
+                `Tài khoản của bạn đã bị khóa ${typeof user.penalty.expired_at === 'string' ? 'vĩnh viễn' : `đến ${user.penalty.expired_at}`} vì ${user.penalty.reason}`
+              )
             }
 
             if (user.permission == 0) {

@@ -5,14 +5,14 @@ import {
   setNotificationController,
   removeNotificationController,
   getNotificationController
-} from '~/controllers/notification.controllers'
+} from '~/controllers/notification-global.controllers'
 import { administratorAuthenticationValidator, authenticationValidator } from '~/middlewares/authentication.middlewares'
 import {
   authenticateNotificationValidator,
   permissionValidator,
   setNotificationValidator,
   setupNotification
-} from '~/middlewares/notification.middlewares'
+} from '~/middlewares/notification-global.middlewares'
 import { wrapRequestHandler } from '~/utils/handlers'
 import fse from 'fs-extra'
 
@@ -56,7 +56,7 @@ const upload = multer({
 
 /*
  * Description: Tạo thông báo mới
- * Path: /api/notification/set-notification
+ * Path: /api/notification-global/set-notification
  * Method: PUT
  * headers: {
  *    authorization: Bearer <token>
@@ -80,7 +80,7 @@ router.put(
 
 /*
  * Description: Xóa thông báo
- * Path: /api/notification/remove-notification
+ * Path: /api/notification-global/remove-notification
  * Method: DELETE
  * headers: {
  *    authorization: Bearer <token>
@@ -98,7 +98,7 @@ router.delete(
 
 /*
  * Description: Tạo thông báo mới
- * Path: /api/notification/get-notification
+ * Path: /api/notification-global/get-notification
  * Method: GET
  */
 router.get('/get-notification', wrapRequestHandler(getNotificationController))

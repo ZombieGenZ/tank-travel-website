@@ -19,6 +19,8 @@ import { ObjectId } from 'mongodb'
 import { sendMail } from '~/utils/mail'
 import EmailVerifyCode from '~/models/schemas/emailverifycode.schemas'
 import { ImageType } from '~/constants/image'
+import NotificationPrivateService from './notificationPrivate.services'
+import { formatDateFull2 } from '~/utils/date'
 
 class UserService {
   async checkEmailExits(email: string) {
@@ -143,16 +145,20 @@ class UserService {
       </div>
     `
 
+    const result = await databaseService.users.insertOne(
+      new User({
+        ...payload,
+        password: HashPassword(payload.password),
+        user_type: UserStatus.Verified
+      })
+    )
+
+    const notificationMessage = `${payload.display_name} ơi, chào mừng bạn đến với gia đình ${process.env.TRADEMARK_NAME}! Chúng tôi rất vui khi bạn đã chọn chúng tôi làm người bạn đồng hành cho những chuyến đi của mình. Hãy cùng nhau tạo nên những kỷ niệm đáng nhớ nhé!`
+
     await Promise.all([
-      await databaseService.users.insertOne(
-        new User({
-          ...payload,
-          password: HashPassword(payload.password),
-          user_type: UserStatus.Verified
-        })
-      ),
       databaseService.emailVerifyCodes.deleteOne({ email: payload.email }),
-      sendMail(payload.email, email_verify_subject, email_verify_html)
+      sendMail(payload.email, email_verify_subject, email_verify_html),
+      NotificationPrivateService.createNotification(result.insertedId, notificationMessage)
     ])
   }
 
@@ -315,7 +321,7 @@ class UserService {
                   </p>
                   
                   <p style="color: #333333; font-size: 16px; line-height: 1.6;">
-                      Chúng tôi xin thông báo rằng mật khẩu tài khoản ${process.env.TRADEMARK_NAME} của quý khách đã được đặt lại thành công vào lúc <strong>${this.getFormatDate(date)}</strong>.
+                      Chúng tôi xin thông báo rằng mật khẩu tài khoản ${process.env.TRADEMARK_NAME} của quý khách đã được đặt lại thành công vào lúc <strong>${formatDateFull2(date)}</strong>.
                   </p>
 
                   <p style="color: #333333; font-size: 16px; line-height: 1.6;">
@@ -386,7 +392,7 @@ class UserService {
                   </p>
                   
                   <p style="color: #333333; font-size: 16px; line-height: 1.6;">
-                      Chúng tôi xin thông báo rằng mật khẩu tài khoản ${process.env.TRADEMARK_NAME} của quý khách đã được đặt lại thành công vào lúc <strong>${this.getFormatDate(date)}</strong>.
+                      Chúng tôi xin thông báo rằng mật khẩu tài khoản ${process.env.TRADEMARK_NAME} của quý khách đã được đặt lại thành công vào lúc <strong>${formatDateFull2(date)}</strong>.
                   </p>
 
                   <p style="color: #333333; font-size: 16px; line-height: 1.6;">
@@ -707,18 +713,6 @@ class UserService {
       access_token,
       refresh_token
     }
-  }
-
-  private getFormatDate(date: Date): string {
-    const formatDate = new Date(date)
-    const second = String(formatDate.getSeconds()).padStart(2, '0')
-    const minute = String(formatDate.getMinutes()).padStart(2, '0')
-    const hour = String(formatDate.getHours()).padStart(2, '0')
-    const day = String(formatDate.getDate()).padStart(2, '0')
-    const month = String(formatDate.getMonth() + 1).padStart(2, '0')
-    const year = formatDate.getFullYear()
-
-    return `${hour}:${minute}:${second} ${day}/${month}/${year}`
   }
 }
 

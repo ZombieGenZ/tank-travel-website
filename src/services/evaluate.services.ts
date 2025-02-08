@@ -14,17 +14,24 @@ import Vehicle from '~/models/schemas/vehicle.chemas'
 import { ObjectId } from 'mongodb'
 import { UserPermission } from '~/constants/enum'
 import { EVALUATE_MESSAGE } from '~/constants/message'
+import NotificationPrivateService from './notificationPrivate.services'
 
 class EvaluateService {
   async CreateEvaluate(payload: CreateEvaluateRequestBody, user: User, vehicle: Vehicle) {
-    await databaseService.evaluate.insertOne(
-      new Evaluate({
-        ...payload,
-        star: payload.rating,
-        user: user._id,
-        vehicle: vehicle._id
-      })
-    )
+    const authorVehicle = (await databaseService.users.findOne({ _id: vehicle.user })) as User
+    const notificationMessage = `Xin chào ${authorVehicle.display_name}! TANK-Travel xin thông báo rằng bạn đã nhận được một đánh giá mới. Đừng quên xem đánh giá này để hiểu rõ hơn về trải nghiệm của khách hàng.`
+
+    await Promise.all([
+      databaseService.evaluate.insertOne(
+        new Evaluate({
+          ...payload,
+          star: payload.rating,
+          user: user._id,
+          vehicle: vehicle._id
+        })
+      ),
+      NotificationPrivateService.createNotification(user._id, notificationMessage)
+    ])
   }
 
   async UpdateEvaluate(payload: UpdateEvaluateRequestBody, evaluate: Evaluate) {
@@ -131,22 +138,28 @@ class EvaluateService {
   }
 
   async CreateFeedback(payload: CreateFeedbackRequestBody, user: User, evaluate: Evaluate) {
-    await databaseService.evaluate.updateOne(
-      {
-        _id: evaluate._id
-      },
-      {
-        $set: {
-          feedback: {
-            user: user._id,
-            content: payload.content
-          }
+    const customer = (await databaseService.users.findOne({ _id: evaluate.user })) as User
+    const notificationMessage = `Chào ${customer?.display_name}! Doanh nghiệp ${user.display_name} đã phản hồi đánh giá của bạn. Hãy xem phản hồi này để biết thêm thông tin chi tiết nhé!`
+
+    await Promise.all([
+      databaseService.evaluate.updateOne(
+        {
+          _id: evaluate._id
         },
-        $currentDate: {
-          updated_at: true
+        {
+          $set: {
+            feedback: {
+              user: user._id,
+              content: payload.content
+            }
+          },
+          $currentDate: {
+            updated_at: true
+          }
         }
-      }
-    )
+      ),
+      NotificationPrivateService.createNotification(customer._id, notificationMessage)
+    ])
   }
 
   async UpdateFeedback(payload: UpdateFeedbackRequestBody, user: User, evaluate: Evaluate) {

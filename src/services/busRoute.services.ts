@@ -45,6 +45,8 @@ class BusRouteService {
   }
 
   async deleteBusRoute(payload: DeleteBusRouteRequestBody) {
+    // DOITAFTER Làm thêm chức năng hoàn tiền nếu vé đã được đặt mà xóa phương tiện
+
     await databaseService.busRoute.deleteOne({
       _id: new ObjectId(payload.bus_route_id)
     })

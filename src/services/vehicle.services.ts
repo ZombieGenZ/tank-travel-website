@@ -16,6 +16,7 @@ import { sendMail } from '~/utils/mail'
 import { ErrorWithStatus } from '~/models/errors'
 import HTTPSTATUS from '~/constants/httpStatus'
 import User from '~/models/schemas/users.schemas'
+import NotificationPrivateService from './notificationPrivate.services'
 
 class VehicleService {
   async createVehicle(payload: CreateVehicleRequestBody, user: User, preview: ImageType[]) {
@@ -72,6 +73,8 @@ class VehicleService {
         })
       )
     })
+
+    // DOITAFTER Làm thêm chức năng hoàn tiền nếu vé đã được đặt mà xóa phương tiện
 
     await databaseService.vehicles.deleteOne({ _id: new ObjectId(vehicle._id) })
 
@@ -254,10 +257,20 @@ class VehicleService {
   }
 
   async censorVehicle(payload: CensorVehicleRequestBody, vehicle: Vehicle) {
+    const user = await databaseService.users.findOne({ _id: vehicle.user })
+
+    if (user === null) {
+      throw new ErrorWithStatus({
+        message: VEHICLE_MESSGAE.USER_NOT_FOUND,
+        status: HTTPSTATUS.NOT_FOUND
+      })
+    }
+
     const decision = payload.decision
     let status: VehicleStatus
     let email_subject: string
     let email_html: string
+    let notificationMessage: string
     if (decision) {
       status = VehicleStatus.ACCEPTED
       email_subject = `Thông báo phê duyệt phương tiện - ${process.env.TRADEMARK_NAME}`
@@ -296,6 +309,7 @@ class VehicleService {
           </div>
       </div>
       `
+      notificationMessage = `Chào ${user.display_name}! Chúng tôi rất vui mừng thông báo rằng phương tiện của bạn đã được ${process.env.TRADEMARK_NAME} kiểm duyệt và chấp thuận thành công. Giờ đây, bạn đã có thể bắt đầu hành trình kết nối với hàng ngàn khách hàng tiềm năng trên khắp cả nước.`
     } else {
       status = VehicleStatus.DENIED
       email_subject = `Thông báo từ chối phương tiện - ${process.env.TRADEMARK_NAME}`
@@ -337,15 +351,8 @@ class VehicleService {
             </div>
         </div>
       `
-    }
 
-    const user = await databaseService.users.findOne({ _id: vehicle.user })
-
-    if (user === null) {
-      throw new ErrorWithStatus({
-        message: VEHICLE_MESSGAE.USER_NOT_FOUND,
-        status: HTTPSTATUS.NOT_FOUND
-      })
+      notificationMessage = `Chào ${user.display_name}! Cảm ơn bạn đã tin tưởng và lựa chọn ${process.env.TRADEMARK_NAME}. Tuy nhiên, sau quá trình xem xét, chúng tôi rất tiếc phải thông báo rằng phương tiện của bạn chưa đạt yêu cầu để tham gia vào nền tảng của chúng tôi.`
     }
 
     await Promise.all([
@@ -358,7 +365,8 @@ class VehicleService {
           $currentDate: { updated_at: true }
         }
       ),
-      sendMail(user.email, email_subject, email_html)
+      sendMail(user.email, email_subject, email_html),
+      NotificationPrivateService.createNotification(user._id, notificationMessage)
     ])
   }
 
