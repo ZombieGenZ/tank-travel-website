@@ -8,6 +8,12 @@ import bodyParser from 'body-parser'
 import databaseService from './services/database.services'
 import { defaultErrorHandler } from './middlewares/error.middlewares'
 import { formatDateFull } from '~/utils/date'
+import { startBot, stopBot } from './utils/discord'
+import { TokenPayload } from './models/requests/user.requests'
+import { verifyToken } from './utils/jwt'
+import { ObjectId } from 'mongodb'
+import { writeInfoLog } from './utils/log'
+import { UserPermission } from './constants/enum'
 
 dotenv.config()
 const port = process.env.APP_PORT || 3000
@@ -26,7 +32,6 @@ import notificationGlobalApi from '~/routes/notification-global.routes'
 
 // import test router
 import testApi from '~/routes/test.routes'
-import { startBot, stopBot } from './utils/discord'
 
 const app = express()
 const server = createServer(app)
@@ -77,42 +82,91 @@ app.use(defaultErrorHandler)
 
 // realtime logic
 io.on('connection', (socket: Socket) => {
-  console.log(`\x1b[33mNgười dùng đã kết nối: \x1b[36m${socket.id}\x1b[0m`)
+  console.log(`\x1b[33mNgười dùng \x1b[36m${socket.id}\x1b[33m đã kết nối đến máy chủ ${port}\x1b[0m`)
 
-  socket.on('join-room', (room: string) => {
-    // các room để nhận phản hồi realtime:
-    //
-    // room: <user_id>
-    // sự kiện: update-balance
-    // mô tả: cập nhật thông tin số dư của người dùng
-    // dử liệu: type, value
-    // type: loại phàn hồi (gồm 2 loại '+' và '-')
-    // value: giá trị của phản hồi
-    //
-    // sự kiện: update-revenue
-    // mô tả: cập nhật thông tin doanh thu của doanh nghiệp/quản trị viên
-    // dử liệu: type, value
-    // type: loại phàn hồi (gồm 2 loại '+' và '-')
-    // value: giá trị của phản hồi
-    //
-    // room: log
-    // sự kiện: new-log
-    // mô tả: cập nhật các thông báo về log mới nhất
-    // dử liệu: type, value
-    // log_type: loại phàn hồi
-    // gồm 3 loại:
-    // 0: loại thông báo thông tin
-    // 1: loại thông báo cảnh báo
-    // 2: loại thông báo lỗi
-    // content: tin nhắn của hệ thống
-    // time: thời gian thông báo được diển ra
+  socket.on('connect-user-realtime', async (refresh_token: string) => {
+    if (refresh_token !== null && refresh_token !== undefined && refresh_token.trim() !== '') {
+      try {
+        const decoded_refresh_token = (await verifyToken({
+          token: refresh_token,
+          publicKey: process.env.SECURITY_JWT_SECRET_REFRESH_TOKEN as string
+        })) as TokenPayload
 
-    socket.join(room)
-    console.log(`\x1b[33mNgười dùng \x1b[36m${socket.id}\x1b[33m đã tham gia phòng: \x1b[36m${room}\x1b[0m`)
+        const user = await databaseService.users.findOne({ _id: new ObjectId(decoded_refresh_token.user_id) })
+
+        if (user !== null && user !== undefined) {
+          // Phòng: user-<user_id>
+          // sự kiện:
+          // update-balance: cập nhật số dư của người dùng
+          // update-revenue: cập nhật doanh thu của doanh nghiệp/quản trị viên
+          // new-notificaton: cập nhật thông báo mới cho người dùng
+          //
+          // mô tả chi tiết sự kiện:
+          // sự kiện: update-balance
+          // mô tả: cập nhật thông tin số dư của người dùng
+          // dử liệu: type, value
+          // type: loại phàn hồi (gồm 2 loại '+' và '-')
+          // value: giá trị của phản hồi
+          //
+          // sự kiện: update-revenue
+          // mô tả: cập nhật thông tin doanh thu của doanh nghiệp/quản trị viên
+          // dử liệu: type, value
+          // type: loại phàn hồi (gồm 2 loại '+' và '-')
+          // value: giá trị của phản hồi
+          //
+          // sự kiện: new-private-notificaton
+          // mô tả: cập nhật thông báo mới cho người dùng
+          // dử liệu: sender, message
+          // sender: là người gửi thông báo
+          // message: tin nhắn được gửi tới
+
+          socket.join(`user-${user._id}`)
+          await writeInfoLog(`Người dùng ${user._id} (SocketID: ${socket.id}) đã kết nối đến phòng user-${user._id}`)
+          console.log(
+            `\x1b[33mNgười dùng \x1b[36m${socket.id}\x1b[33m đã kết nối đến phòng \x1b[36muser-${user._id}\x1b[0m`
+          )
+        }
+      } catch {
+        console.log()
+      }
+    }
+  })
+
+  socket.on('connect-admin-realtime', async (refresh_token: string) => {
+    if (refresh_token !== null && refresh_token !== undefined && refresh_token.trim() !== '') {
+      try {
+        const decoded_refresh_token = (await verifyToken({
+          token: refresh_token,
+          publicKey: process.env.SECURITY_JWT_SECRET_REFRESH_TOKEN as string
+        })) as TokenPayload
+
+        const user = await databaseService.users.findOne({ _id: new ObjectId(decoded_refresh_token.user_id) })
+
+        if (user !== null && user !== undefined && user.permission === UserPermission.ADMINISTRATOR) {
+          // Phòng: system-log
+          // sự kiện:
+          // new-system-log: cập nhật thông báo về hệ thống cho quản trị viên
+          //
+          // mô tả chi tiết sự kiện:
+          // sự kiện: new-system-log
+          // mô tả: cập nhật thông báo về hệ thống cho quản trị viên
+          // dử liệu: log_type, content, time
+          // log_type: loại log (gồm 1 loại 'info', 2 loại 'warning', 3 loại 'error')
+          // content: tin nhắn của log
+          // time: thời gian của log
+
+          socket.join(`system-log`)
+          await writeInfoLog(`Quản trị viên ${user._id} (SocketID: ${socket.id}) đã kết nối đến phòng system-log`)
+          console.log(`\x1b[33mNgười dùng \x1b[36m${socket.id}\x1b[33m đã kết nối đến phòng \x1b[36msystem-log\x1b[0m`)
+        }
+      } catch {
+        console.log()
+      }
+    }
   })
 
   socket.on('disconnect', () => {
-    console.log(`\x1b[33mNgười dùng đã ngắt kết nối: \x1b[36m${socket.id}\x1b[0m`)
+    console.log(`\x1b[33mNgười dùng \x1b[36m${socket.id}\x1b[33m đã ngắt kết nối đến máy chủ\x1b[0m`)
   })
 })
 

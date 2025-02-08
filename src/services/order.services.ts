@@ -206,7 +206,7 @@ class OrderService {
         type: '-',
         value: totalPrice
       }),
-      io.to(user._id.toString()).emit('update-balance', {
+      io.to(`user-${user._id}`).emit('update-balance', {
         type: '-',
         value: totalPrice
       }),
@@ -214,7 +214,7 @@ class OrderService {
         type: '+',
         value: totalRevenue
       }),
-      io.to(vehicle.user.toString()).emit('update-revenue', {
+      io.to(`user-${vehicle.user}`).emit('update-revenue', {
         type: '+',
         value: totalRevenue
       }),
@@ -619,7 +619,7 @@ class OrderService {
         type: '+',
         value: refund
       }),
-      io.to(user._id.toString()).emit('update-balance', {
+      io.to(`user-${user._id}`).emit('update-balance', {
         type: '+',
         value: refund
       }),
@@ -627,7 +627,7 @@ class OrderService {
         type: '-',
         value: oldRevenue
       }),
-      io.to(authorVehicle._id.toString()).emit('update-revenue', {
+      io.to(`user-${authorVehicle._id}`).emit('update-revenue', {
         type: '-',
         value: oldRevenue
       }),
@@ -635,7 +635,7 @@ class OrderService {
         type: '+',
         value: newRevenue
       }),
-      io.to(authorVehicle._id.toString()).emit('update-revenue', {
+      io.to(`user-${authorVehicle._id}`).emit('update-revenue', {
         type: '+',
         value: newRevenue
       }),

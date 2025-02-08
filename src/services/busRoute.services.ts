@@ -15,6 +15,7 @@ import { createRegexPattern } from '~/utils/regex'
 import Bill from '~/models/schemas/bill.schemas'
 import Profit from '~/models/schemas/profit.schemas'
 import Vehicle from '~/models/schemas/vehicle.chemas'
+import NotificationPrivateService from './notificationPrivate.services'
 
 class BusRouteService {
   async createBusRoute(payload: CreateBusRouteRequestBody) {
@@ -47,8 +48,6 @@ class BusRouteService {
   }
 
   async deleteBusRoute(busRoute: BusRoute) {
-    // DOITAFTER Làm thêm chức năng hoàn tiền nếu vé đã được đặt mà xóa phương tiện
-
     interface ITotalProfitObject {
       time: string
       totalRevenue: number
@@ -90,6 +89,8 @@ class BusRouteService {
 
         totalPrice += bill.totalPrice
 
+        const refundMessage = `+${bill.totalPrice} đ hoàn tiền chuyến đi ${busRoute.start_point} - ${busRoute.end_point} vào lúc ${busRoute.departure_time}`
+
         await Promise.all([
           await databaseService.bill.deleteOne({ _id: bill._id }),
           await databaseService.billDetail.deleteMany({ bill: bill._id })
@@ -99,9 +100,12 @@ class BusRouteService {
       const bills = await databaseService.bill.find({ busRoute: busRoute._id }).toArray()
 
       bills.forEach(async (bill: Bill) => {
+        const refundMessage = `+${bill.totalPrice} đ hoàn tiền chuyến đi ${busRoute.start_point} - ${busRoute.end_point} vào lúc ${busRoute.departure_time}`
+
         await Promise.all([
-          await databaseService.bill.deleteOne({ _id: bill._id }),
-          await databaseService.billDetail.deleteMany({ bill: bill._id })
+          NotificationPrivateService.createNotification(bill.user, refundMessage),
+          databaseService.bill.deleteOne({ _id: bill._id }),
+          databaseService.billDetail.deleteMany({ bill: bill._id })
         ])
       })
     }
@@ -175,6 +179,7 @@ class BusRouteService {
     const authorVehicle = (await databaseService.users.findOne({ _id: vehicle.user })) as User
     const totalProfit = (totalPrice / 100) * Number(process.env.REVENUE_TAX as string)
     const totalRevenue = totalPrice - totalProfit
+    const revenueMessage = `-${totalRevenue} đ do tuyến ${busRoute.start_point} - ${busRoute.end_point} đã bị hủy`
 
     await Promise.all([
       databaseService.users.updateOne(
@@ -189,7 +194,8 @@ class BusRouteService {
       ),
       databaseService.vehicles.deleteOne({ _id: new ObjectId(vehicle._id) }),
       Promise.all(promisesProfit),
-      Promise.all(promisesBalance)
+      Promise.all(promisesBalance),
+      NotificationPrivateService.createNotification(vehicle.user, revenueMessage)
     ])
   }
 

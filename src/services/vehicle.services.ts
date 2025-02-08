@@ -20,6 +20,7 @@ import NotificationPrivateService from './notificationPrivate.services'
 import BusRoute from '~/models/schemas/busRoute.schemas'
 import Bill from '~/models/schemas/bill.schemas'
 import Profit from '~/models/schemas/profit.schemas'
+import { formatDateNotSecond } from '~/utils/date'
 
 class VehicleService {
   async createVehicle(payload: CreateVehicleRequestBody, user: User, preview: ImageType[]) {
@@ -120,18 +121,24 @@ class VehicleService {
 
           totalPrice += bill.totalPrice
 
+          const refundMessage = `+${bill.totalPrice.toLocaleString('vi-VN')} đ hoàn tiền chuyến đi ${busRoute.start_point} - ${busRoute.end_point} vào lúc ${formatDateNotSecond(busRoute.departure_time)}`
+
           await Promise.all([
-            await databaseService.bill.deleteOne({ _id: bill._id }),
-            await databaseService.billDetail.deleteMany({ bill: bill._id })
+            NotificationPrivateService.createNotification(bill.user, refundMessage),
+            databaseService.bill.deleteOne({ _id: bill._id }),
+            databaseService.billDetail.deleteMany({ bill: bill._id })
           ])
         })
       } else {
         const bills = await databaseService.bill.find({ busRoute: busRoute._id }).toArray()
 
         bills.forEach(async (bill: Bill) => {
+          const refundMessage = `+${bill.totalPrice.toLocaleString('vi-VN')} đ hoàn tiền chuyến đi ${busRoute.start_point} - ${busRoute.end_point} vào lúc ${formatDateNotSecond(busRoute.departure_time)}`
+
           await Promise.all([
-            await databaseService.bill.deleteOne({ _id: bill._id }),
-            await databaseService.billDetail.deleteMany({ bill: bill._id })
+            NotificationPrivateService.createNotification(bill.user, refundMessage),
+            databaseService.bill.deleteOne({ _id: bill._id }),
+            databaseService.billDetail.deleteMany({ bill: bill._id })
           ])
         })
       }
@@ -208,6 +215,8 @@ class VehicleService {
     const totalProfit = (totalPrice / 100) * Number(process.env.REVENUE_TAX as string)
     const totalRevenue = totalPrice - totalProfit
 
+    const revenueMessage = `-${totalRevenue} đ do phương tiện ${vehicle.license_plate} đã bị hủy`
+
     await Promise.all([
       databaseService.users.updateOne(
         {
@@ -222,7 +231,8 @@ class VehicleService {
       databaseService.vehicles.deleteOne({ _id: new ObjectId(vehicle._id) }),
       Promise.all(promisesPreview),
       Promise.all(promisesProfit),
-      Promise.all(promisesBalance)
+      Promise.all(promisesBalance),
+      NotificationPrivateService.createNotification(vehicle.user, revenueMessage)
     ])
   }
 

@@ -23,7 +23,7 @@ class NotificationPrivateService {
         sender: sender ? sender.display_name : 'Hệ thống',
         message
       }),
-      io.to(receiver_id.toString()).emit('new-notificaton', {
+      io.to(`user-${receiver_id}`).emit('new-private-notificaton', {
         sender: sender ? sender.display_name : 'Hệ thống',
         message
       })

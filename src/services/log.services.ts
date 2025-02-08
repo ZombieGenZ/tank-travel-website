@@ -22,7 +22,7 @@ class LogService {
         content: log_message,
         time: created_at || date
       }),
-      io.to('log').emit('new-log', {
+      io.to('system-log').emit('new-system-log', {
         log_type,
         content: log_message,
         time: created_at || date
