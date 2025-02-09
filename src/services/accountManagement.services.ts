@@ -8,6 +8,7 @@ import { ACCOUNT_MANAGEMENT_MESSAGE } from '~/constants/message'
 import { ObjectId } from 'mongodb'
 import { createRegexPattern } from '~/utils/regex'
 import User from '~/models/schemas/users.schemas'
+import NotificationPrivateService from './notificationPrivate.services'
 
 class AccountmManagementService {
   async getAccount(payload: GetAccountRequestBody) {
@@ -151,6 +152,10 @@ class AccountmManagementService {
       ),
       databaseService.refreshToken.deleteMany({ user_id: new ObjectId(user_id) })
     ])
+  }
+
+  async sendNotification(user_id: string, message: string, user: User) {
+    await NotificationPrivateService.createNotification(new ObjectId(user_id), message, user)
   }
 }
 

@@ -20,3 +20,9 @@ export interface UnBanAccountRequestBody {
   refresh_token: string
   user_id: string
 }
+
+export interface SendNotificationRequestBody {
+  refresh_token: string
+  user_id: string
+  message: string
+}

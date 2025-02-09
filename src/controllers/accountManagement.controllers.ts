@@ -4,7 +4,8 @@ import {
   GetAccountRequestBody,
   FindAccountRequestBody,
   BanAccountRequestBody,
-  UnBanAccountRequestBody
+  UnBanAccountRequestBody,
+  SendNotificationRequestBody
 } from '~/models/requests/accountManagement.requests'
 import User from '~/models/schemas/users.schemas'
 import { writeInfoLog, writeErrorLog } from '~/utils/log'
@@ -101,7 +102,9 @@ export const banAccountController = async (
       authenticate
     })
   } catch (err) {
-    await writeErrorLog(`Thực hiện khóa tài khoản ${req.body.user_id} (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`)
+    await writeErrorLog(
+      `Thực hiện khóa tài khoản ${req.body.user_id} thất bại (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`
+    )
 
     res.json({
       messgae: ACCOUNT_MANAGEMENT_MESSAGE.BAN_ACCOUNT_FAILURE,
@@ -132,10 +135,47 @@ export const unBanAccountController = async (
       authenticate
     })
   } catch (err) {
-    await writeErrorLog(`Thực hiện khóa tài khoản ${req.body.user_id} (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`)
+    await writeErrorLog(
+      `Thực hiện khóa tài khoản ${req.body.user_id} thất bại (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`
+    )
 
     res.json({
       messgae: ACCOUNT_MANAGEMENT_MESSAGE.UNBAN_ACCOUNT_FAILURE,
+      authenticate
+    })
+  }
+}
+
+export const sendNotificationController = async (
+  req: Request<ParamsDictionary, any, SendNotificationRequestBody>,
+  res: Response
+) => {
+  const ip = req.ip
+  const user = req.user as User
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  try {
+    await AccountmManagementService.sendNotification(req.body.user_id, req.body.message, user)
+
+    await writeInfoLog(
+      `Thực hiện gửi thông báo cho tài khoản ${req.body.user_id} thành công (User: ${user._id}) (IP: ${ip}])`
+    )
+
+    res.json({
+      message: ACCOUNT_MANAGEMENT_MESSAGE.SEND_NOTIFICATIONS_SUCCESS,
+      authenticate
+    })
+  } catch (err) {
+    await writeErrorLog(
+      `Thực hiện gửi thông báo cho tài khoản ${req.body.user_id} thất bại (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`
+    )
+
+    res.json({
+      messgae: ACCOUNT_MANAGEMENT_MESSAGE.SEND_NOTIFICATIONS_FAILURE,
       authenticate
     })
   }

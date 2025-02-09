@@ -217,8 +217,72 @@ export const unBanAccountValidator = (req: Request, res: Response, next: NextFun
               throw new Error(ACCOUNT_MANAGEMENT_MESSAGE.USER_ID_IS_NOT_BANNED)
             }
 
-            return
+            return true
           }
+        }
+      }
+    },
+    ['body']
+  )
+    .run(req)
+    .then(() => {
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        return
+      }
+      next()
+      return
+    })
+    .catch((err) => {
+      res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ message: err, authenticate })
+      return
+    })
+}
+
+export const sendNotificationValidator = (req: Request, res: Response, next: NextFunction) => {
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  checkSchema(
+    {
+      user_id: {
+        notEmpty: {
+          errorMessage: ACCOUNT_MANAGEMENT_MESSAGE.USER_ID_IS_REQUIRED
+        },
+        trim: true,
+        isMongoId: {
+          errorMessage: ACCOUNT_MANAGEMENT_MESSAGE.USER_ID_IS_INVALID
+        },
+        custom: {
+          options: async (value) => {
+            const user = await databaseService.users.findOne({ _id: new ObjectId(value) })
+
+            if (user === null) {
+              throw new Error(ACCOUNT_MANAGEMENT_MESSAGE.USER_ID_IS_NOT_EXIST)
+            }
+
+            return true
+          }
+        }
+      },
+      message: {
+        notEmpty: {
+          errorMessage: ACCOUNT_MANAGEMENT_MESSAGE.MESSAGE_IS_REQUIRED
+        },
+        trim: true,
+        isString: {
+          errorMessage: ACCOUNT_MANAGEMENT_MESSAGE.MESSAGE_IS_MUST_BE_A_STRING
+        },
+        isLength: {
+          options: {
+            min: 1,
+            max: 500
+          },
+          errorMessage: ACCOUNT_MANAGEMENT_MESSAGE.MESSAGE_IS_MUST_BE_BETWEEN_1_AND_500_CHARACTERS
         }
       }
     },

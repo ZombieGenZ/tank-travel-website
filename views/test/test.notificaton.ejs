@@ -12,7 +12,7 @@
   <script>
     const socket = io(`<%= host %>`);
 
-    socket.emit("connect-user-realtime", 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjdhNzQ2OGM1ZjFhNTY3MzVhNWE3OGE4IiwidG9rZW5fdHlwZSI6MSwiaWF0IjoxNzM5MDE2NTI0LCJleHAiOjE3NDY3OTI1MjR9.62h0fQ3IAocD7W6hbFaOtMdItus1bfuD9pAJoaPfChU');
+    socket.emit("connect-user-realtime", 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjdhNzRjMjQ1NWU1MmFkMDgxMmJmNTUyIiwidG9rZW5fdHlwZSI6MSwiaWF0IjoxNzM5MDk3NTM1LCJleHAiOjE3NDY4NzM1MzV9.rMjxBMq3FfE7WQVLydRvUwWoHxTB8eBVGZ2aUqhnk78');
 
     socket.on("new-private-notificaton", (data) => {
       const notificaton = document.getElementById('notificaton')

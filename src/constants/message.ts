@@ -335,5 +335,10 @@ export const ACCOUNT_MANAGEMENT_MESSAGE = {
   USER_ID_IS_ALREADY_BANNED: 'Người dùng đã bị khóa tài khoản rồi',
   USER_ID_IS_NOT_BANNED: 'Người dùng chưa bị khóa tài khoản',
   UNBAN_ACCOUNT_SUCCESS: 'Mở khóa tài khoản thành công!',
-  UNBAN_ACCOUNT_FAILURE: 'Mở khóa tài khoản thất bại'
+  UNBAN_ACCOUNT_FAILURE: 'Mở khóa tài khoản thất bại',
+  MESSAGE_IS_REQUIRED: 'Không được bỏ trống tin nhắn',
+  MESSAGE_IS_MUST_BE_A_STRING: 'Tin nhắn phải là một chuỗi ký tự',
+  MESSAGE_IS_MUST_BE_BETWEEN_1_AND_500_CHARACTERS: 'Tin nhắn phải có độ dài từ 1 đến 500 ký tự',
+  SEND_NOTIFICATIONS_SUCCESS: 'Gửi thông báo thành công!',
+  SEND_NOTIFICATIONS_FAILURE: 'Gửi thông báo thất bại'
 } as const

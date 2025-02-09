@@ -84,7 +84,7 @@ app.use(defaultErrorHandler)
 
 // realtime logic
 io.on('connection', (socket: Socket) => {
-  console.log(`\x1b[33mNgười dùng \x1b[36m${socket.id}\x1b[33m đã kết nối đến máy chủ ${port}\x1b[0m`)
+  console.log(`\x1b[33mNgười dùng \x1b[36m${socket.id}\x1b[33m đã kết nối đến máy chủ \x1b[36m${port}\x1b[0m`)
 
   socket.on('connect-user-realtime', async (refresh_token: string) => {
     if (refresh_token !== null && refresh_token !== undefined && refresh_token.trim() !== '') {
@@ -168,7 +168,7 @@ io.on('connection', (socket: Socket) => {
   })
 
   socket.on('disconnect', () => {
-    console.log(`\x1b[33mNgười dùng \x1b[36m${socket.id}\x1b[33m đã ngắt kết nối đến máy chủ\x1b[0m`)
+    console.log(`\x1b[33mNgười dùng \x1b[36m${socket.id}\x1b[33m đã ngắt kết nối đến máy chủ \x1b[36m${port}\x1b[0m`)
   })
 })
 
@@ -185,6 +185,7 @@ process.on('SIGINT', async () => {
   console.log(`\x1b[33mMáy chủ đã ngừng hoạt động\x1b[0m`)
   console.log()
   await stopBot()
+  console.log()
   process.exit(0)
 })
 
