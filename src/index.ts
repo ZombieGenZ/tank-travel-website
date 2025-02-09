@@ -136,6 +136,81 @@ io.on('connection', (socket: Socket) => {
     }
   })
 
+  socket.on('connect-statistics-realtime', async (refresh_token: string) => {
+    if (refresh_token !== null && refresh_token !== undefined && refresh_token.trim() !== '') {
+      try {
+        const decoded_refresh_token = (await verifyToken({
+          token: refresh_token,
+          publicKey: process.env.SECURITY_JWT_SECRET_REFRESH_TOKEN as string
+        })) as TokenPayload
+
+        const user = await databaseService.users.findOne({ _id: new ObjectId(decoded_refresh_token.user_id) })
+
+        if (
+          user !== null &&
+          user !== undefined &&
+          (user.permission === UserPermission.BUSINESS || user.permission === UserPermission.ADMINISTRATOR)
+        ) {
+          // Phòng: statistics-<user_id>
+          // sự kiện:
+          // update-statistics-revenue: cập nhật thống kê doanh thu cho doanh nghiệp
+          // update-statistics-order: cập nhật thống kê số lượng bán ra cho doanh nghiệp
+          //
+          // mô tả chi tiết sự kiện:
+          // sự kiện: update-statistics-revenue
+          // mô tả: cập nhật thống kê doanh thu cho doanh nghiệp
+          // dử liệu: type, value
+          // type: loại phàn hồi (gồm 2 loại '+' và '-')
+          // value: giá trị của phản hồi
+          //
+          // sự kiện: update-statistics-order
+          // mô tả: cập nhật thống kê số lượng bán ra cho doanh nghiệp
+          // dử liệu: type, value
+          // type: loại phàn hồi (gồm 2 loại '+' và '-')
+          // value: giá trị của phản hồi
+          //
+          // Phòng: statistics-global
+          // sự kiện:
+          // update-statistics-revenue-global: cập nhật thống kê doanh thu của toàn hệ thống
+          // update-statistics-order-globa;: cập nhật thống kê số lượng bán ra của toàn hệ thống
+          //
+          // mô tả chi tiết sự kiện:
+          // sự kiện: update-statistics-revenue-global
+          // mô tả: cập nhật thống kê doanh thu của toàn hệ thống
+          // dử liệu: type, value
+          // type: loại phàn hồi (gồm 2 loại '+' và '-')
+          // value: giá trị của phản hồi
+          //
+          // sự kiện: update-statistics-order-global
+          // mô tả: cập nhật thống kê số lượng bán ra của toàn hệ thống
+          // dử liệu: type, value
+          // type: loại phàn hồi (gồm 2 loại '+' và '-')
+          // value: giá trị của phản hồi
+
+          socket.join(`statistics-${user._id}`)
+          await writeInfoLog(
+            `Doanh nghiệp/Quản trị viên ${user._id} (SocketID: ${socket.id}) đã kết nối đến phòng statistics-${user._id}`
+          )
+          console.log(
+            `\x1b[33mNgười dùng \x1b[36m${socket.id}\x1b[33m đã kết nối đến phòng \x1b[36mstatistics-${user._id}\x1b[0m`
+          )
+
+          if (user.permission === UserPermission.ADMINISTRATOR) {
+            socket.join(`statistics-global`)
+            await writeInfoLog(
+              `Quản trị viên ${user._id} (SocketID: ${socket.id}) đã kết nối đến phòng statistics-global`
+            )
+            console.log(
+              `\x1b[33mNgười dùng \x1b[36m${socket.id}\x1b[33m đã kết nối đến phòng \x1b[36mstatistics-global\x1b[0m`
+            )
+          }
+        }
+      } catch {
+        console.log()
+      }
+    }
+  })
+
   socket.on('connect-admin-realtime', async (refresh_token: string) => {
     if (refresh_token !== null && refresh_token !== undefined && refresh_token.trim() !== '') {
       try {

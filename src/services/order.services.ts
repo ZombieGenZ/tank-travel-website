@@ -151,8 +151,11 @@ class OrderService {
       </div>
     `
 
-    const balanceFirebaseRealtime = db.ref(`balance/${user._id}`).push()
-    const revenueFirebaseRealtime = db.ref(`revenue/${user._id}`).push()
+    const balanceFirebaseRealtime = db.ref(`statistics/balance/${user._id}`).push()
+    const revenueFirebaseRealtime = db.ref(`statistics/revenue/${user._id}`).push()
+
+    const revenueStatisticseFirebaseRealtime = db.ref(`revenue-statistics/${user._id}`).push()
+    const orderStatisticseFirebaseRealtime = db.ref(`order-statistics/${user._id}`).push()
 
     const notificationMessageCustomer = `-${totalPrice.toLocaleString('vi-VN')} đ thanh toán mua ${payload.quantity} vé xe ${busRoute.start_point} - ${busRoute.end_point}`
     const notificationMessageBusiness = `+${totalRevenue.toLocaleString('vi-VN')} đ khách hàng thanh toán mua ${payload.quantity} vé xe ${busRoute.start_point} - ${busRoute.end_point}`
@@ -219,7 +222,31 @@ class OrderService {
         value: totalRevenue
       }),
       NotificationPrivateService.createNotification(user._id, notificationMessageCustomer),
-      NotificationPrivateService.createNotification(authorVehicle._id, notificationMessageBusiness)
+      NotificationPrivateService.createNotification(authorVehicle._id, notificationMessageBusiness),
+      revenueStatisticseFirebaseRealtime.set({
+        type: '+',
+        value: totalRevenue
+      }),
+      io.to(`statistics-${vehicle.user}`).emit('update-statistics-revenue', {
+        type: '+',
+        value: totalRevenue
+      }),
+      io.to(`statistics-global`).emit('update-statistics-revenue-global', {
+        type: '+',
+        value: totalRevenue
+      }),
+      orderStatisticseFirebaseRealtime.set({
+        type: '+',
+        value: payload.quantity
+      }),
+      io.to(`statistics-${vehicle.user}`).emit('update-statistics-order', {
+        type: '+',
+        value: payload.quantity
+      }),
+      io.to(`statistics-global`).emit('update-statistics-order-global', {
+        type: '+',
+        value: payload.quantity
+      })
     ])
   }
 
@@ -547,6 +574,8 @@ class OrderService {
     const notificationMessageCustomer = `+${refund.toLocaleString('vi-VN')} đ hoàn tiền cho vé xe ${busRoute.start_point} - ${busRoute.end_point}`
     const notificationMessageBusiness1 = `-${oldRevenue.toLocaleString('vi-VN')} đ khách hũy vé xe ${busRoute.start_point} - ${busRoute.end_point}`
     const notificationMessageBusiness2 = `+${newRevenue.toLocaleString('vi-VN')} đ khách hũy vé xe ${busRoute.start_point} - ${busRoute.end_point}`
+    const revenueStatisticseFirebaseRealtime = db.ref(`revenue-statistics/${user._id}`).push()
+    const orderStatisticseFirebaseRealtime = db.ref(`order-statistics/${user._id}`).push()
 
     Promise.all([
       databaseService.billDetail.updateOne(
@@ -641,7 +670,43 @@ class OrderService {
       }),
       NotificationPrivateService.createNotification(user._id, notificationMessageCustomer),
       NotificationPrivateService.createNotification(authorVehicle._id, notificationMessageBusiness1),
-      NotificationPrivateService.createNotification(authorVehicle._id, notificationMessageBusiness2)
+      NotificationPrivateService.createNotification(authorVehicle._id, notificationMessageBusiness2),
+      revenueStatisticseFirebaseRealtime.set({
+        type: '-',
+        value: oldRevenue
+      }),
+      io.to(`statistics-${authorVehicle._id}`).emit('update-statistics-revenue', {
+        type: '-',
+        value: oldRevenue
+      }),
+      io.to(`statistics-global`).emit('update-statistics-revenue-global', {
+        type: '-',
+        value: oldRevenue
+      }),
+      revenueStatisticseFirebaseRealtime.set({
+        type: '+',
+        value: newRevenue
+      }),
+      io.to(`statistics-${authorVehicle._id}`).emit('update-statistics-revenue', {
+        type: '+',
+        value: newRevenue
+      }),
+      io.to(`statistics-global`).emit('update-statistics-revenue-global', {
+        type: '+',
+        value: newRevenue
+      }),
+      orderStatisticseFirebaseRealtime.set({
+        type: '-',
+        value: 1
+      }),
+      io.to(`statistics-${authorVehicle._id}`).emit('update-statistics-order', {
+        type: '-',
+        value: 1
+      }),
+      io.to(`statistics-global`).emit('update-statistics-order-global', {
+        type: '-',
+        value: 1
+      })
     ])
   }
 }
