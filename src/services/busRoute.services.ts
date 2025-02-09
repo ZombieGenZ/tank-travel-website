@@ -8,7 +8,7 @@ import {
 import databaseService from './database.services'
 import BusRoute from '~/models/schemas/busRoute.schemas'
 import { ObjectId } from 'mongodb'
-import { UserPermission } from '~/constants/enum'
+import { UserPermission, VehicleStatus } from '~/constants/enum'
 import User from '~/models/schemas/users.schemas'
 import { BUSROUTE_MESSAGE } from '~/constants/message'
 import { createRegexPattern } from '~/utils/regex'
@@ -392,10 +392,37 @@ class BusRouteService {
       }
     }
     const result = await databaseService.busRoute
-      .find(searchQuery)
-      .sort({ created_at: -1 })
-      .skip(payload.current)
-      .limit(next)
+      .aggregate([
+        {
+          $match: searchQuery
+        },
+        {
+          $lookup: {
+            from: process.env.DATABASE_VEHICLE_COLLECTION,
+            localField: 'vehicle',
+            foreignField: '_id',
+            as: 'vehicle'
+          }
+        },
+        {
+          $unwind: '$vehicle'
+        },
+        {
+          $match: {
+            'vehicle.status': VehicleStatus.ACCEPTED,
+            'vehicle.vehicle_type': payload.vehicle_type.toString()
+          }
+        },
+        {
+          $sort: { created_at: -1 }
+        },
+        {
+          $skip: payload.current
+        },
+        {
+          $limit: next
+        }
+      ])
       .toArray()
 
     const continued = result.length > limit

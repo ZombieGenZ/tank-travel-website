@@ -61,7 +61,8 @@ export const orderValidator = (req: Request, res: Response, next: NextFunction) 
                 },
                 {
                   $match: {
-                    'vehicle_info.user': { $ne: user._id }
+                    'vehicle_info.user': { $ne: user._id },
+                    'vehicle_info.status': 1
                   }
                 },
                 {

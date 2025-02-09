@@ -19,6 +19,7 @@ import UsersServices from '~/services/user.services'
 import fs from 'fs'
 import { ImageType } from '~/constants/image'
 import path from 'path'
+import { formatDateFull2 } from '~/utils/date'
 
 export const sendEmailVerifyValidator = validate(
   checkSchema({
@@ -300,7 +301,7 @@ export const loginValidator = validate(
 
             if (user.penalty !== null) {
               throw new Error(
-                `Tài khoản của bạn đã bị khóa ${typeof user.penalty.expired_at === 'string' ? 'vĩnh viễn' : `đến ${user.penalty.expired_at}`} vì ${user.penalty.reason}`
+                `Tài khoản của bạn đã bị khóa vì lý do ${user.penalty.reason} và sẽ mở khóa vào ${formatDateFull2(user.penalty.expired_at)}`
               )
             }
 
@@ -1202,7 +1203,7 @@ export const loginManageValidator = validate(
 
             if (user.penalty !== null) {
               throw new Error(
-                `Tài khoản của bạn đã bị khóa ${typeof user.penalty.expired_at === 'string' ? 'vĩnh viễn' : `đến ${user.penalty.expired_at}`} vì ${user.penalty.reason}`
+                `Tài khoản của bạn đã bị khóa vì lý do ${user.penalty.reason} và sẽ mở khóa vào ${formatDateFull2(user.penalty.expired_at)}`
               )
             }
 

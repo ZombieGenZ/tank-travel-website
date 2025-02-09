@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import { checkSchema, validationResult } from 'express-validator'
 import { ObjectId } from 'mongodb'
-import { UserPermission, VehicleStatus } from '~/constants/enum'
+import { UserPermission, VehicleStatus, VehicleTypeEnum } from '~/constants/enum'
 import HTTPSTATUS from '~/constants/httpStatus'
 import { BUSROUTE_MESSAGE, VEHICLE_MESSGAE } from '~/constants/message'
 import BusRoute from '~/models/schemas/busRoute.schemas'
@@ -656,6 +656,22 @@ export const findBusRouteValidator = (req: Request, res: Response, next: NextFun
 export const findBusRouteListValidator = validate(
   checkSchema(
     {
+      vehicle_type: {
+        notEmpty: {
+          errorMessage: VEHICLE_MESSGAE.VEHICLE_TYPE_IS_REQUIRED
+        },
+        isInt: {
+          errorMessage: VEHICLE_MESSGAE.VEHICLE_TYPE_MUST_BE_A_NUMBER
+        },
+        custom: {
+          options: (value) => {
+            if (value in VehicleTypeEnum) {
+              return true
+            }
+            throw new Error(VEHICLE_MESSGAE.VEHICLE_TYPE_IS_INVALID)
+          }
+        }
+      },
       start_point: {
         notEmpty: {
           errorMessage: BUSROUTE_MESSAGE.START_POINT_IS_REQUIRED

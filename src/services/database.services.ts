@@ -16,7 +16,7 @@ dotenv.config()
 
 const uri = `mongodb+srv://${process.env.DATABASE_USERNAME}:${process.env.DATABASE_PASSWORD}@datvexe.bxmnu.mongodb.net/?retryWrites=true&w=majority&appName=DatVeXe`
 
-export class DatabaseService {
+class DatabaseService {
   private client: MongoClient
   private db: Db
   constructor() {

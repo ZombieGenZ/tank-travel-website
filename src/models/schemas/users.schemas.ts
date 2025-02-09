@@ -18,7 +18,7 @@ interface UserType {
   penalty?: {
     created_by: ObjectId
     reason: string
-    expired_at: Date | 'forever'
+    expired_at: Date
   } | null
   created_at?: Date
   updated_at?: Date
@@ -40,7 +40,7 @@ export default class User {
   penalty: {
     created_by: ObjectId
     reason: string
-    expired_at: Date | 'forever'
+    expired_at: Date
   } | null
   created_at: Date
   updated_at: Date

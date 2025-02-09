@@ -206,7 +206,9 @@ export const findVehicleController = async (
   try {
     const result = await VehicleService.findVehicle(req.body, user)
 
-    await writeInfoLog(`Thực hiện tìm kiếm thông tin phương tiện thành công (User: ${user._id}) (IP: ${ip}])`)
+    await writeInfoLog(
+      `Thực hiện tìm kiếm thông tin phương tiện thành công (Keyword: ${req.body.keywords}) (User: ${user._id}) (IP: ${ip}])`
+    )
 
     res.json({
       result,
@@ -214,7 +216,7 @@ export const findVehicleController = async (
     })
   } catch (err) {
     await writeErrorLog(
-      `Thực hiện tìm kiếm thông tin phương tiện thất bại (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`
+      `Thực hiện tìm kiếm thông tin phương tiện thất bại (Keyword: ${req.body.keywords}) (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`
     )
 
     res.json({

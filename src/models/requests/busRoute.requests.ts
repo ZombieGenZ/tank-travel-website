@@ -38,6 +38,7 @@ export interface FindBusRouteRequestBody {
 }
 
 export interface FindBusRouteListRequestBody {
+  vehicle_type: number
   start_point: string
   end_point: string
   departure_time: Date

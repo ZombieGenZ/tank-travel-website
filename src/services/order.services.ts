@@ -154,8 +154,8 @@ class OrderService {
     const balanceFirebaseRealtime = db.ref(`balance/${user._id}`).push()
     const revenueFirebaseRealtime = db.ref(`revenue/${user._id}`).push()
 
-    const notificationMessageCustomer = `-${totalPrice.toLocaleString('vi-VN')} đ cho vé xe ${busRoute.start_point} - ${busRoute.end_point}`
-    const notificationMessageBusiness = `+${totalRevenue.toLocaleString('vi-VN')} đ cho vé xe ${busRoute.start_point} - ${busRoute.end_point}`
+    const notificationMessageCustomer = `-${totalPrice.toLocaleString('vi-VN')} đ thanh toán mua ${payload.quantity} vé xe ${busRoute.start_point} - ${busRoute.end_point}`
+    const notificationMessageBusiness = `+${totalRevenue.toLocaleString('vi-VN')} đ khách hàng thanh toán mua ${payload.quantity} vé xe ${busRoute.start_point} - ${busRoute.end_point}`
 
     await Promise.all([
       databaseService.billDetail.insertMany(billDetails),

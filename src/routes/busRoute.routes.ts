@@ -138,6 +138,7 @@ router.get(
  * Path: /api/bus-route/find-bus-route-list
  * Method: GET
  * Body: {
+ *    vehicle_type: number,
  *    start_point: string,
  *    end_point: string,
  *    departure_time: Date,

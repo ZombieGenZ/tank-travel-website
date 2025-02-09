@@ -312,3 +312,24 @@ export const NOTIFICATION_MESSAGE = {
   NOTIFICATION_NOT_FOUND: 'Không có thông báo nào được tìm thấy',
   GET_NOTIFICATION_FAILED: 'Lấy thông báo thất bại'
 } as const
+
+export const ACCOUNT_MANAGEMENT_MESSAGE = {
+  CURRENT_IS_REQUIRED: 'Không được bỏ trống số trang hiện tại',
+  CURRENT_IS_MUST_BE_A_NUMBER: 'Số trang hiện tại phải là một số',
+  CURRENT_IS_MUST_BE_GREATER_THAN_0: 'Số trang hiện tại phải lớn hơn 0',
+  GET_ACCOUNT_FAILURE: 'Lấy danh sách thông tin tài khoản thất bại',
+  NO_MATCHING_RESULTS_FOUND: 'Không tìm thấy kết quả phù hợp',
+  KEYWORDS_IS_REQUIRED: 'Không được bỏ trống từ khóa tìm kiếm',
+  FIND_ACCOUNT_FAILURE: 'Tìm kiếm thông tin tài khoản thất bại',
+  USER_ID_IS_REQUIRED: 'Không được bỏ trống id tài khoản',
+  USER_ID_IS_INVALID: 'Id tài khoản không hợp lệ',
+  USER_ID_IS_NOT_EXIST: 'Id tài khoản không tồn tại',
+  REASON_IS_REQUIRED: 'Không được bỏ trống lý do khóa tài khoản',
+  REASON_IS_MUST_BE_A_STRING: 'Lý do khóa tài khoản phải là một chuỗi ký tự',
+  REASON_IS_MUST_BE_BETWEEN_1_AND_500_CHARACTERS: 'Lý do phải có độ dài từ 1 đến 500 ký tự',
+  EXPIRED_AT_IS_REQUIRED: 'Không được bỏ trống thời gian mở lại tài khoản',
+  EXPIRED_AT_IS_MUST_BE_A_VALID_DATE: 'Thời gian mở lại tài khoản phải là một ngày hợp lệ',
+  EXPIRED_AT_IS_MUST_BE_GREATER_THAN_CURRENT_DATE: 'Thời gian mở lại tài khoản phải lớn hơn ngày hiện tại',
+  BAN_ACCOUNT_SUCCESS: 'Khóa tài khoản thành công!',
+  BAN_ACCOUNT_FAILURE: 'Khóa tài khoản thất bại'
+} as const

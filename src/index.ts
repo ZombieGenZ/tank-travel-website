@@ -29,6 +29,7 @@ import orderApi from '~/routes/order.routes'
 import evaluateApi from '~/routes/evaluate.routes'
 import businessRegistrationApi from '~/routes/businessRegistration.routes'
 import notificationGlobalApi from '~/routes/notification-global.routes'
+import accountManagementApi from '~/routes/accountManagement.routes'
 
 // import test router
 import testApi from '~/routes/test.routes'
@@ -73,6 +74,7 @@ app.use('/api/order', orderApi)
 app.use('/api/evaluate', evaluateApi)
 app.use('/api/business-registration', businessRegistrationApi)
 app.use('/api/notification-global', notificationGlobalApi)
+app.use('/api/account-management', accountManagementApi)
 
 // test router
 app.use('/test', testApi)
@@ -171,11 +173,11 @@ io.on('connection', (socket: Socket) => {
 })
 
 server.listen(port, async () => {
+  await startBot()
   console.log()
   console.log(`\x1b[33mMáy chủ đang chạy trên port \x1b[36m${port}\x1b[0m`)
   console.log(`\x1b[33mTruy cập tại: \x1b[36m${process.env.APP_URL}/\x1b[0m`)
   console.log()
-  await startBot()
 })
 
 process.on('SIGINT', async () => {
@@ -183,6 +185,7 @@ process.on('SIGINT', async () => {
   console.log(`\x1b[33mMáy chủ đã ngừng hoạt động\x1b[0m`)
   console.log()
   await stopBot()
+  process.exit(0)
 })
 
 export { io, runningTime }

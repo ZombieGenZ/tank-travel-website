@@ -162,14 +162,18 @@ export const findBusRouteController = async (
   try {
     const result = await BusRouteService.findBusRoute(req.body, user)
 
-    await writeInfoLog(`Thực hiện tìm kiếm thông tin tuyến thành công (User: ${user._id}) (IP: ${ip}])`)
+    await writeInfoLog(
+      `Thực hiện tìm kiếm thông tin tuyến thành công (Keyword: ${req.body.keywords}) (User: ${user._id}) (IP: ${ip}])`
+    )
 
     res.json({
       result,
       authenticate
     })
   } catch (err) {
-    await writeErrorLog(`Thực hiện tìm kiếm thông tin tuyến thất bại (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`)
+    await writeErrorLog(
+      `Thực hiện tìm kiếm thông tin tuyến thất bại (Keyword: ${req.body.keywords}) (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`
+    )
 
     res.json({
       message: BUSROUTE_MESSAGE.FIND_BUS_ROUTE_FAILED,
