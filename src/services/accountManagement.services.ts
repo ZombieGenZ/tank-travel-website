@@ -133,6 +133,25 @@ class AccountmManagementService {
       }
     )
   }
+
+  async unBanAccount(user_id: string) {
+    await Promise.all([
+      databaseService.users.updateOne(
+        {
+          _id: new ObjectId(user_id)
+        },
+        {
+          $set: {
+            penalty: null
+          },
+          $currentDate: {
+            updated_at: true
+          }
+        }
+      ),
+      databaseService.refreshToken.deleteMany({ user_id: new ObjectId(user_id) })
+    ])
+  }
 }
 
 const accountManagementService = new AccountmManagementService()

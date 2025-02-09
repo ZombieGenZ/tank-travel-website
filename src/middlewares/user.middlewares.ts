@@ -20,6 +20,7 @@ import fs from 'fs'
 import { ImageType } from '~/constants/image'
 import path from 'path'
 import { formatDateFull2 } from '~/utils/date'
+import AccountmManagementService from '~/services/accountManagement.services'
 
 export const sendEmailVerifyValidator = validate(
   checkSchema({
@@ -300,9 +301,13 @@ export const loginValidator = validate(
             }
 
             if (user.penalty !== null) {
-              throw new Error(
-                `Tài khoản của bạn đã bị khóa vì lý do ${user.penalty.reason} và sẽ mở khóa vào ${formatDateFull2(user.penalty.expired_at)}`
-              )
+              if (new Date(user.penalty.expired_at) < new Date()) {
+                await AccountmManagementService.unBanAccount(user._id.toString())
+              } else {
+                throw new Error(
+                  `Tài khoản của bạn đã bị khóa vì lý do ${user.penalty.reason} và sẽ mở khóa vào ${formatDateFull2(user.penalty.expired_at)}`
+                )
+              }
             }
 
             ;(req as Request).user = user
@@ -1202,9 +1207,13 @@ export const loginManageValidator = validate(
             }
 
             if (user.penalty !== null) {
-              throw new Error(
-                `Tài khoản của bạn đã bị khóa vì lý do ${user.penalty.reason} và sẽ mở khóa vào ${formatDateFull2(user.penalty.expired_at)}`
-              )
+              if (new Date(user.penalty.expired_at) < new Date()) {
+                await AccountmManagementService.unBanAccount(user._id.toString())
+              } else {
+                throw new Error(
+                  `Tài khoản của bạn đã bị khóa vì lý do ${user.penalty.reason} và sẽ mở khóa vào ${formatDateFull2(user.penalty.expired_at)}`
+                )
+              }
             }
 
             if (user.permission == 0) {

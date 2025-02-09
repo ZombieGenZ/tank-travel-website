@@ -3,7 +3,8 @@ import { ParamsDictionary } from 'express-serve-static-core'
 import {
   GetAccountRequestBody,
   FindAccountRequestBody,
-  BanAccountRequestBody
+  BanAccountRequestBody,
+  UnBanAccountRequestBody
 } from '~/models/requests/accountManagement.requests'
 import User from '~/models/schemas/users.schemas'
 import { writeInfoLog, writeErrorLog } from '~/utils/log'
@@ -104,6 +105,37 @@ export const banAccountController = async (
 
     res.json({
       messgae: ACCOUNT_MANAGEMENT_MESSAGE.BAN_ACCOUNT_FAILURE,
+      authenticate
+    })
+  }
+}
+
+export const unBanAccountController = async (
+  req: Request<ParamsDictionary, any, UnBanAccountRequestBody>,
+  res: Response
+) => {
+  const ip = req.ip
+  const user = req.user as User
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  try {
+    await AccountmManagementService.unBanAccount(req.body.user_id)
+
+    await writeInfoLog(`Thực hiện mở khóa tài khoản ${req.body.user_id} thành công (User: ${user._id}) (IP: ${ip}])`)
+
+    res.json({
+      message: ACCOUNT_MANAGEMENT_MESSAGE.UNBAN_ACCOUNT_SUCCESS,
+      authenticate
+    })
+  } catch (err) {
+    await writeErrorLog(`Thực hiện khóa tài khoản ${req.body.user_id} (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`)
+
+    res.json({
+      messgae: ACCOUNT_MANAGEMENT_MESSAGE.UNBAN_ACCOUNT_FAILURE,
       authenticate
     })
   }

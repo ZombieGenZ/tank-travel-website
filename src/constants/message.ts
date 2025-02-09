@@ -331,5 +331,9 @@ export const ACCOUNT_MANAGEMENT_MESSAGE = {
   EXPIRED_AT_IS_MUST_BE_A_VALID_DATE: 'Thời gian mở lại tài khoản phải là một ngày hợp lệ',
   EXPIRED_AT_IS_MUST_BE_GREATER_THAN_CURRENT_DATE: 'Thời gian mở lại tài khoản phải lớn hơn ngày hiện tại',
   BAN_ACCOUNT_SUCCESS: 'Khóa tài khoản thành công!',
-  BAN_ACCOUNT_FAILURE: 'Khóa tài khoản thất bại'
+  BAN_ACCOUNT_FAILURE: 'Khóa tài khoản thất bại',
+  USER_ID_IS_ALREADY_BANNED: 'Người dùng đã bị khóa tài khoản rồi',
+  USER_ID_IS_NOT_BANNED: 'Người dùng chưa bị khóa tài khoản',
+  UNBAN_ACCOUNT_SUCCESS: 'Mở khóa tài khoản thành công!',
+  UNBAN_ACCOUNT_FAILURE: 'Mở khóa tài khoản thất bại'
 } as const

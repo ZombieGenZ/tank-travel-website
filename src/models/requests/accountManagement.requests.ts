@@ -15,3 +15,8 @@ export interface BanAccountRequestBody {
   reason: string
   expired_at: Date
 }
+
+export interface UnBanAccountRequestBody {
+  refresh_token: string
+  user_id: string
+}
