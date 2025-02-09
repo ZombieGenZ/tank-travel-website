@@ -17,8 +17,6 @@ import { ErrorWithStatus } from '~/models/errors'
 import HTTPSTATUS from '~/constants/httpStatus'
 import User from '~/models/schemas/users.schemas'
 import NotificationPrivateService from './notificationPrivate.services'
-import BusRoute from '~/models/schemas/busRoute.schemas'
-import Bill from '~/models/schemas/bill.schemas'
 import Profit from '~/models/schemas/profit.schemas'
 import { formatDateNotSecond } from '~/utils/date'
 

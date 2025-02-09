@@ -342,3 +342,12 @@ export const ACCOUNT_MANAGEMENT_MESSAGE = {
   SEND_NOTIFICATIONS_SUCCESS: 'Gửi thông báo thành công!',
   SEND_NOTIFICATIONS_FAILURE: 'Gửi thông báo thất bại'
 } as const
+
+export const STATISTICS_MESSAGE = {
+  GET_STATISTICS_FAILURE: 'Lấy thông tin thống kê thất bại',
+  START_TIME_IS_REQUIRED: 'Không được bỏ trống thời gian bắt đầu',
+  START_TIME_IS_MUST_BE_A_VALID_DATE: 'Thời gian bắt đầu phải là một ngày hợp lệ',
+  END_TIME_IS_REQUIRED: 'Không được bỏ trống thời gian kết thúc',
+  END_TIME_IS_MUST_BE_A_VALID_DATE: 'Thời gian kết thúc phải là một ngày hợp lệ',
+  END_TIME_IS_MUST_BE_GREATER_THAN_START_TIME: 'Thời gian kết thúc phải lớn hơn thời gian bắt đầu'
+} as const

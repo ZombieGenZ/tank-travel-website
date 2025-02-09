@@ -30,6 +30,7 @@ import evaluateApi from '~/routes/evaluate.routes'
 import businessRegistrationApi from '~/routes/businessRegistration.routes'
 import notificationGlobalApi from '~/routes/notification-global.routes'
 import accountManagementApi from '~/routes/accountManagement.routes'
+import statisticalApi from '~/routes/statistical.routes'
 
 // import test router
 import testApi from '~/routes/test.routes'
@@ -75,6 +76,7 @@ app.use('/api/evaluate', evaluateApi)
 app.use('/api/business-registration', businessRegistrationApi)
 app.use('/api/notification-global', notificationGlobalApi)
 app.use('/api/account-management', accountManagementApi)
+app.use('/api/statistical', statisticalApi)
 
 // test router
 app.use('/test', testApi)
