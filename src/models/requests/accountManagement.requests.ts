@@ -1,10 +1,12 @@
 export interface GetAccountRequestBody {
   refresh_token: string
+  session_time: Date
   current: number
 }
 
 export interface FindAccountRequestBody {
   refresh_token: string
+  session_time: Date
   keywords: string
   current: number
 }

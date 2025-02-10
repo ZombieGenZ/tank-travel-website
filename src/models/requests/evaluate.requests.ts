@@ -19,6 +19,7 @@ export interface DeleteEvaluateRequestBody {
 
 export interface GetEvaluateRequestBody {
   refresh_token: string
+  session_time: Date
   current: number
 }
 
@@ -37,4 +38,10 @@ export interface UpdateFeedbackRequestBody {
 export interface DeleteFeedbackRequestBody {
   refresh_token: string
   evaluate_id: string
+}
+
+export interface GetEvaluateListRequestBody {
+  vehicle_id: string
+  session_time: Date
+  current: number
 }

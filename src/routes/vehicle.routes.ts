@@ -182,6 +182,7 @@ router.delete(
  * },
  * Body: {
  *    refresh_token: string,
+ *    session_time: Date,
  *    current: number
  * }
  */
@@ -222,6 +223,7 @@ router.get(
  * },
  * Body: {
  *    refresh_token: string,
+ *    session_time: Date,
  *    current: number,
  *    keywords: string
  * }

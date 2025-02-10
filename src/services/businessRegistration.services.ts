@@ -211,7 +211,7 @@ class BusinessRegistrationService {
     const next = limit + 1
 
     const result = await databaseService.businessRegistration
-      .find({})
+      .find({ created_at: { $lt: new Date(payload.session_time) } })
       .sort({ created_at: -1 })
       .skip(payload.current)
       .limit(next)

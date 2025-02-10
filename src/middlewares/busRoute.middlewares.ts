@@ -568,6 +568,18 @@ export const getBusRouteValidator = (req: Request, res: Response, next: NextFunc
 
   checkSchema(
     {
+      session_time: {
+        notEmpty: {
+          errorMessage: BUSROUTE_MESSAGE.SESSION_TIME_IS_REQUIRED
+        },
+        isISO8601: {
+          options: {
+            strict: true,
+            strictSeparator: true
+          },
+          errorMessage: BUSROUTE_MESSAGE.SESSION_TIME_IS_MUST_BE_A_DATE
+        }
+      },
       current: {
         notEmpty: {
           errorMessage: BUSROUTE_MESSAGE.CURRENT_IS_REQUIRED
@@ -612,6 +624,18 @@ export const findBusRouteValidator = (req: Request, res: Response, next: NextFun
 
   checkSchema(
     {
+      session_time: {
+        notEmpty: {
+          errorMessage: BUSROUTE_MESSAGE.SESSION_TIME_IS_REQUIRED
+        },
+        isISO8601: {
+          options: {
+            strict: true,
+            strictSeparator: true
+          },
+          errorMessage: BUSROUTE_MESSAGE.SESSION_TIME_IS_MUST_BE_A_DATE
+        }
+      },
       keywords: {
         notEmpty: {
           errorMessage: BUSROUTE_MESSAGE.KEYWORDS_IS_REQUIRED
@@ -656,6 +680,18 @@ export const findBusRouteValidator = (req: Request, res: Response, next: NextFun
 export const findBusRouteListValidator = validate(
   checkSchema(
     {
+      session_time: {
+        notEmpty: {
+          errorMessage: BUSROUTE_MESSAGE.SESSION_TIME_IS_REQUIRED
+        },
+        isISO8601: {
+          options: {
+            strict: true,
+            strictSeparator: true
+          },
+          errorMessage: BUSROUTE_MESSAGE.SESSION_TIME_IS_MUST_BE_A_DATE
+        }
+      },
       vehicle_type: {
         notEmpty: {
           errorMessage: VEHICLE_MESSGAE.VEHICLE_TYPE_IS_REQUIRED

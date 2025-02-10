@@ -13,5 +13,6 @@ export interface CensorRequestBody {
 
 export interface GetBusinessRegistrationRequestBody {
   refresh_token: string
+  session_time: Date
   current: number
 }

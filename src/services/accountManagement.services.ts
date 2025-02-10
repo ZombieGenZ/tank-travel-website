@@ -16,7 +16,7 @@ class AccountmManagementService {
     const next = limit + 1
 
     const result = await databaseService.users
-      .find({})
+      .find({ created_at: { $lt: new Date(payload.session_time) } })
       .project({
         password: 0,
         forgot_password_token: 0
@@ -52,7 +52,9 @@ class AccountmManagementService {
     const limit = Number(process.env.LOAD_QUANTITY_LIMIT as string)
     const next = limit + 1
 
-    const searchQuery: any = {}
+    const searchQuery: any = {
+      created_at: { $lt: new Date(payload.session_time) }
+    }
     if (payload.keywords) {
       searchQuery.$or = [
         {

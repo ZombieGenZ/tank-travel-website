@@ -17,8 +17,9 @@ import { ErrorWithStatus } from '~/models/errors'
 import HTTPSTATUS from '~/constants/httpStatus'
 import User from '~/models/schemas/users.schemas'
 import NotificationPrivateService from './notificationPrivate.services'
-import Profit from '~/models/schemas/profit.schemas'
 import { formatDateNotSecond } from '~/utils/date'
+import { db } from './firebase.services'
+import { io } from '~/index'
 
 class VehicleService {
   async createVehicle(payload: CreateVehicleRequestBody, user: User, preview: ImageType[]) {
@@ -61,6 +62,7 @@ class VehicleService {
   }
 
   async deleteVehicle(vehicle: Vehicle) {
+    const date = new Date()
     const previewPromises = vehicle.preview.map(
       (file) =>
         new Promise<void>((resolve, reject) => {
@@ -80,10 +82,17 @@ class VehicleService {
     interface ITotalRefundObject {
       user_id: ObjectId
       totalBalance: number
+      message: string
+      start_point: string
+      end_point: string
+      departure_time: Date
+      user: User
     }
+
     const totalProfitObject: ITotalProfitObject[] = []
     const totalRefundObject: ITotalRefundObject[] = []
     let totalPrice = 0
+    let totalQuantity = 0
 
     const busRoutes = await databaseService.busRoute.find({ vehicle: vehicle._id }).toArray()
 
@@ -92,6 +101,7 @@ class VehicleService {
 
       for (const bill of bills) {
         if (new Date(busRoute.arrival_time) > new Date()) {
+          const user = (await databaseService.users.findOne({ _id: bill.user })) as User
           const date = new Date(bill.booking_time)
           const time = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
 
@@ -101,7 +111,12 @@ class VehicleService {
           } else {
             totalRefundObject.push({
               user_id: bill.user,
-              totalBalance: bill.totalPrice
+              totalBalance: bill.totalPrice,
+              message: `+${bill.totalPrice.toLocaleString('vi-VN')} đ hoàn tiền chuyến đi ${busRoute.start_point} - ${busRoute.end_point} vào lúc ${formatDateNotSecond(busRoute.departure_time)} do doanh nghiệp đã hũy chuyến đi`,
+              start_point: busRoute.start_point,
+              end_point: busRoute.end_point,
+              departure_time: busRoute.departure_time,
+              user: user
             })
           }
 
@@ -114,14 +129,12 @@ class VehicleService {
               totalRevenue: (bill.totalPrice / 100) * Number(process.env.REVENUE_TAX as string)
             })
           }
+
+          totalPrice += bill.totalPrice
+          totalQuantity += bill.quantity
         }
 
-        totalPrice += bill.totalPrice
-
-        const refundMessage = `+${bill.totalPrice.toLocaleString('vi-VN')} đ hoàn tiền chuyến đi ${busRoute.start_point} - ${busRoute.end_point} vào lúc ${formatDateNotSecond(busRoute.departure_time)}`
-
         await Promise.all([
-          NotificationPrivateService.createNotification(bill.user, refundMessage),
           databaseService.bill.deleteOne({ _id: bill._id }),
           databaseService.billDetail.deleteMany({ bill: bill._id })
         ])
@@ -131,41 +144,77 @@ class VehicleService {
     }
 
     const profitPromises = totalProfitObject.map(async (item) => {
-      const profit = (await databaseService.profit.findOne({ time: item.time })) as Profit
-      if (profit) {
-        await databaseService.profit.updateOne(
-          { time: item.time },
-          {
-            $set: {
-              revenue: profit.revenue - item.totalRevenue
-            },
-            $currentDate: {
-              last_update: true
-            }
+      await databaseService.profit.updateOne(
+        { time: item.time },
+        {
+          $inc: {
+            revenue: item.totalRevenue
+          },
+          $currentDate: {
+            last_update: true
           }
-        )
-      }
+        }
+      )
     })
 
     const balancePromises = totalRefundObject.map(async (item) => {
-      const user = (await databaseService.users.findOne({ _id: item.user_id })) as User
-      if (user) {
-        await databaseService.users.updateOne(
+      const email_subject = `Thông Báo Hủy Tuyến ${item.start_point} - ${item.end_point} vào lúc ${formatDateNotSecond(item.departure_time)} - ${process.env.TRADEMARK_NAME}`
+      const email_html = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f4f4f4;">
+            <div style="background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <h1 style="color: #333; margin-bottom: 10px;">${process.env.TRADEMARK_NAME}</h1>
+                    <h2 style="color: #e74c3c;">Thông Báo Hủy Tuyến</h2>
+                </div>                  
+
+                <div style="color: #333; line-height: 1.6;">
+                    <p>Kính chào Quý Khách,</p>
+                    
+                    <p style="margin-bottom: 15px;">Chúng tôi xin thông báo rằng tuyến <strong>${item.start_point} - ${item.end_point}</strong> của Quý Khách đã bị <strong style="color: #e74c3c;">HỦY</strong>.</p>
+                    
+                    <div style="background-color: #f9f9f9; border-left: 4px solid #e74c3c; padding: 10px; margin: 15px 0;">
+                        <p style="margin: 0;"><strong>Chi Tiết Tuyến Xe Bị Hủy:</strong></p>
+                        <ul style="margin: 10px 0 0 20px; padding: 0;">
+                            <li>Điểm Khởi Hành: ${item.start_point}</li>
+                            <li>Điểm Dừng: ${item.end_point}</li>
+                            <li>Thời Gian Khởi Hành: ${formatDateNotSecond(item.departure_time)}</li>
+                        </ul>
+                    </div>
+                    
+                    <p>Để biết thêm chi tiết về việc hủy tuyến xe và các phương án thay thế, vui lòng truy cập <a href="${process.env.APP_URL}" style="color: #3498db; text-decoration: none;">website ${process.env.TRADEMARK_NAME}</a>.</p>
+                    
+                    <p>Chúng tôi xin lỗi vì sự bất tiện này và rất mong được phục vụ Quý Khách.</p>
+                    
+                    <div style="margin-top: 20px; text-align: center;">
+                        <p style="color: #7f8c8d; font-size: 0.9em;">Trân trọng,<br>Đội Ngũ ${process.env.TRADEMARK_NAME}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+      `
+
+      Promise.all([
+        sendMail(item.user.email, email_subject, email_html),
+        NotificationPrivateService.createNotification(item.user_id, item.message),
+        databaseService.users.updateOne(
           { _id: item.user_id },
           {
-            $set: {
-              balance: user.balance + item.totalBalance
+            $inc: {
+              balance: item.totalBalance
             }
           }
         )
-      }
+      ])
     })
 
     const authorVehicle = (await databaseService.users.findOne({ _id: vehicle.user })) as User
-    const totalProfit = (totalPrice / 100) * Number(process.env.REVENUE_TAX as string)
-    const totalRevenue = totalPrice - totalProfit
+    const totalTex = (totalPrice / 100) * Number(process.env.REVENUE_TAX as string)
+    const totalRevenue = totalPrice - totalTex
 
     const revenueMessage = `-${totalRevenue.toLocaleString('vi-VN')} đ do phương tiện ${vehicle.license_plate} đã bị hủy`
+
+    const revenueStatisticseFirebaseRealtime = db.ref(`statistics/revenue/${authorVehicle._id}`).push()
+    const orderStatisticseFirebaseRealtime = db.ref(`statistics/order/${authorVehicle._id}`).push()
 
     await Promise.all([
       ...previewPromises,
@@ -181,7 +230,37 @@ class VehicleService {
       ),
       databaseService.vehicles.deleteOne({ _id: new ObjectId(vehicle._id) }),
       NotificationPrivateService.createNotification(vehicle.user, revenueMessage),
-      databaseService.evaluate.deleteMany({ vehicle: vehicle._id })
+      databaseService.evaluate.deleteMany({ vehicle: vehicle._id }),
+      revenueStatisticseFirebaseRealtime.set({
+        type: '-',
+        value: totalRevenue,
+        time: date
+      }),
+      io.to(`statistics-${authorVehicle._id}`).emit('update-statistics-revenue', {
+        type: '-',
+        value: totalRevenue,
+        time: date
+      }),
+      io.to(`statistics-global`).emit('update-statistics-revenue-global', {
+        type: '-',
+        value: totalRevenue,
+        time: date
+      }),
+      orderStatisticseFirebaseRealtime.set({
+        type: '-',
+        value: totalQuantity,
+        time: date
+      }),
+      io.to(`statistics-${authorVehicle._id}`).emit('update-statistics-order', {
+        type: '-',
+        value: totalQuantity,
+        time: date
+      }),
+      io.to(`statistics-global`).emit('update-statistics-order-global', {
+        type: '-',
+        value: totalQuantity,
+        time: date
+      })
     ])
   }
 
@@ -191,7 +270,7 @@ class VehicleService {
 
     if (user.permission == UserPermission.ADMINISTRATOR) {
       const result = await databaseService.vehicles
-        .find({})
+        .find({ created_at: { $lt: new Date(payload.session_time) } })
         .project({ preview: 0 })
         .sort({ created_at: -1 })
         .skip(payload.current)
@@ -220,7 +299,10 @@ class VehicleService {
       }
     } else {
       const result = await databaseService.vehicles
-        .find({ user: user._id })
+        .find({
+          user: user._id,
+          created_at: { $lt: new Date(payload.session_time) }
+        })
         .project({ preview: 0 })
         .sort({ created_at: -1 })
         .skip(payload.current)
@@ -267,17 +349,22 @@ class VehicleService {
       const keywords = payload.keywords.split(' ')
 
       const searchQuery = {
-        $or: keywords.map((key) => ({
-          $or: [
-            { rules: { $regex: key, $options: 'i' } },
-            { amenities: { $regex: key, $options: 'i' } },
-            { license_plate: { $regex: key, $options: 'i' } },
+        $and: [
+          {
+            $or: keywords.map((key) => ({
+              $or: [
+                { rules: { $regex: key, $options: 'i' } },
+                { amenities: { $regex: key, $options: 'i' } },
+                { license_plate: { $regex: key, $options: 'i' } },
 
-            ...(isNaN(Number(key))
-              ? []
-              : [{ vehicle_type: Number(key) }, { seat_type: Number(key) }, { seats: Number(key) }])
-          ]
-        }))
+                ...(isNaN(Number(key))
+                  ? []
+                  : [{ vehicle_type: Number(key) }, { seat_type: Number(key) }, { seats: Number(key) }])
+              ]
+            }))
+          },
+          { created_at: { $lt: new Date(payload.session_time) } }
+        ]
       }
 
       const result = await databaseService.vehicles
@@ -325,7 +412,8 @@ class VehicleService {
                   : [{ vehicle_type: Number(key) }, { seat_type: Number(key) }, { seats: Number(key) }])
               ]
             }))
-          }
+          },
+          { created_at: { $lt: new Date(payload.session_time) } }
         ]
       }
 

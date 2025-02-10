@@ -8,6 +8,7 @@ export interface OrderRequestBody {
 
 export interface GetOrderRequestBody {
   refresh_token: string
+  session_time: Date
   current: number
 }
 

@@ -5,7 +5,8 @@ import {
   GetEvaluateRequestBody,
   CreateFeedbackRequestBody,
   UpdateFeedbackRequestBody,
-  DeleteFeedbackRequestBody
+  DeleteFeedbackRequestBody,
+  GetEvaluateListRequestBody
 } from '~/models/requests/evaluate.requests'
 import User from '~/models/schemas/users.schemas'
 import databaseService from './database.services'
@@ -61,7 +62,9 @@ class EvaluateService {
 
     if (user.permission == UserPermission.ADMINISTRATOR) {
       const result = await databaseService.evaluate
-        .find({})
+        .find({
+          created_at: { $lt: new Date(payload.session_time) }
+        })
         .sort({ created_at: -1 })
         .skip(payload.current)
         .limit(next)
@@ -90,6 +93,11 @@ class EvaluateService {
     } else {
       const result = await databaseService.evaluate
         .aggregate([
+          {
+            $match: {
+              created_at: { $lt: new Date(payload.session_time) }
+            }
+          },
           {
             $lookup: {
               from: process.env.DATABASE_VEHICLE_COLLECTION,
@@ -190,6 +198,42 @@ class EvaluateService {
         }
       }
     )
+  }
+
+  async GetEvaluateList(payload: GetEvaluateListRequestBody, vehicle: Vehicle) {
+    const limit = Number(process.env.LOAD_QUANTITY_LIMIT as string)
+    const next = limit + 1
+
+    const result = await databaseService.evaluate
+      .find({
+        vehicle: vehicle._id,
+        created_at: { $lt: new Date(payload.session_time) }
+      })
+      .sort({ created_at: -1 })
+      .skip(payload.current)
+      .limit(next)
+      .toArray()
+
+    const continued = result.length > limit
+
+    const evaluate = result.slice(0, limit)
+
+    const current = payload.current + evaluate.length
+
+    if (evaluate.length === 0) {
+      return {
+        message: EVALUATE_MESSAGE.NO_MATCHING_RESULTS_FOUND,
+        current: payload.current,
+        continued: false,
+        vehicle: []
+      }
+    } else {
+      return {
+        current,
+        continued,
+        evaluate
+      }
+    }
   }
 }
 

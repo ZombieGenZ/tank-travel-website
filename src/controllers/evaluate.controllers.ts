@@ -8,7 +8,8 @@ import {
   GetEvaluateRequestBody,
   CreateFeedbackRequestBody,
   UpdateFeedbackRequestBody,
-  DeleteFeedbackRequestBody
+  DeleteFeedbackRequestBody,
+  GetEvaluateListRequestBody
 } from '~/models/requests/evaluate.requests'
 import User from '~/models/schemas/users.schemas'
 import EvaluateService from '~/services/evaluate.services'
@@ -140,18 +141,14 @@ export const getEvaluateController = async (
   try {
     const result = await EvaluateService.GetEvaluate(req.body, user)
 
-    await writeInfoLog(
-      `Thực hiện lấy thông tin đánh giá của phương tiện ${evaluate.vehicle} thành công (User: ${user._id}) (IP: ${ip}])`
-    )
+    await writeInfoLog(`Thực hiện lấy thông tin đánh giá thành công (User: ${user._id}) (IP: ${ip}])`)
 
     res.json({
       result,
       authenticate
     })
   } catch (err) {
-    await writeErrorLog(
-      `Thực hiện lấy thông tin đánh giá của phương tiện ${evaluate.vehicle} thất bại (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`
-    )
+    await writeErrorLog(`Thực hiện lấy thông tin đánh giá thất bại (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`)
 
     res.json({
       messgae: EVALUATE_MESSAGE.GET_EVALUATE_FAILURE,
@@ -264,6 +261,32 @@ export const deleteFeedbackController = async (
     res.json({
       messgae: EVALUATE_MESSAGE.DELETE_EVALUATE_FEEDBACK_FAILURE,
       authenticate
+    })
+  }
+}
+
+export const getEvaluateListController = async (
+  req: Request<ParamsDictionary, any, GetEvaluateListRequestBody>,
+  res: Response
+) => {
+  const ip = req.ip
+  const vehicle = req.vehicle as Vehicle
+
+  try {
+    const result = await EvaluateService.GetEvaluateList(req.body, vehicle)
+
+    await writeInfoLog(`Thực hiện lấy thông tin đánh giá của phương tiện ${vehicle._id} thành công (IP: ${ip}])`)
+
+    res.json({
+      result
+    })
+  } catch (err) {
+    await writeErrorLog(
+      `Thực hiện lấy thông tin đánh giá của phương tiện ${vehicle._id} thất bại (IP: ${ip}]) | Error: ${err}`
+    )
+
+    res.json({
+      messgae: EVALUATE_MESSAGE.GET_EVALUATE_FAILURE
     })
   }
 }

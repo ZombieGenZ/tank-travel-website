@@ -641,6 +641,18 @@ export const getVehicleValidator = (req: Request, res: Response, next: NextFunct
   }
   checkSchema(
     {
+      session_time: {
+        notEmpty: {
+          errorMessage: VEHICLE_MESSGAE.SESSION_TIME_IS_REQUIRED
+        },
+        isISO8601: {
+          options: {
+            strict: true,
+            strictSeparator: true
+          },
+          errorMessage: VEHICLE_MESSGAE.SESSION_TIME_IS_MUST_BE_A_DATE
+        }
+      },
       current: {
         notEmpty: {
           errorMessage: VEHICLE_MESSGAE.CURRENT_IS_REQUIRED

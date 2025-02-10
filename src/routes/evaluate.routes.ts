@@ -6,7 +6,8 @@ import {
   getEvaluateController,
   createFeedbackController,
   updateFeedbackController,
-  deleteFeedbackController
+  deleteFeedbackController,
+  getEvaluateListController
 } from '~/controllers/evaluate.controllers'
 import {
   authenticationValidator,
@@ -21,7 +22,8 @@ import {
   getEvaluateValidator,
   createFeedbackValidator,
   updateFeedbackValidator,
-  deleteFeedbackValidator
+  deleteFeedbackValidator,
+  getEvaluateListValidator
 } from '~/middlewares/evaluate.middlewares'
 import { wrapRequestHandler } from '~/utils/handlers'
 const router = express.Router()
@@ -91,7 +93,7 @@ router.delete(
 )
 
 /*
- * Description: Lấy danh sách đánh giá của một phương tiện có trong CSDL
+ * Description: Lấy danh sách đánh giá
  * Path: /api/evaluate/get-evaluate
  * Method: GET
  * headers: {
@@ -99,6 +101,7 @@ router.delete(
  * },
  * Body: {
  *    refresh_token: string,
+ *    session_time: Date,
  *    current: number
  * }
  */
@@ -171,5 +174,17 @@ router.delete(
   deleteFeedbackValidator,
   wrapRequestHandler(deleteFeedbackController)
 )
+
+/*
+ * Description: Lấy danh sách đánh giá của một phương tiện có trong CSDL
+ * Path: /api/evaluate/get-evaluate-list
+ * Method: GET
+ * Body: {
+ *    session_time: Date,
+ *    vehicle_id: string,
+ *    current: number
+ * }
+ */
+router.get('/get-evaluate-list', getEvaluateListValidator, wrapRequestHandler(getEvaluateListController))
 
 export default router

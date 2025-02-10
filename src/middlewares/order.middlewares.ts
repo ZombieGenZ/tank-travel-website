@@ -232,6 +232,18 @@ export const getOrderValidator = (
 
   checkSchema(
     {
+      session_time: {
+        notEmpty: {
+          errorMessage: ORDER_MESSAGE.SESSION_TIME_IS_REQUIRED
+        },
+        isISO8601: {
+          options: {
+            strict: true,
+            strictSeparator: true
+          },
+          errorMessage: ORDER_MESSAGE.SESSION_TIME_IS_MUST_BE_A_DATE
+        }
+      },
       current: {
         notEmpty: {
           errorMessage: ORDER_MESSAGE.CURRENT_IS_REQUIRED

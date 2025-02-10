@@ -178,6 +178,18 @@ export const getBusinessRegistrationValidator = (req: Request, res: Response, ne
   }
   checkSchema(
     {
+      session_time: {
+        notEmpty: {
+          errorMessage: BUSINESS_REGISTRATION_MESSAGE.SESSION_TIME_IS_REQUIRED
+        },
+        isISO8601: {
+          options: {
+            strict: true,
+            strictSeparator: true
+          },
+          errorMessage: BUSINESS_REGISTRATION_MESSAGE.SESSION_TIME_IS_MUST_BE_A_DATE
+        }
+      },
       current: {
         notEmpty: {
           errorMessage: BUSINESS_REGISTRATION_MESSAGE.CURRENT_IS_REQUIRED

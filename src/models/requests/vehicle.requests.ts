@@ -33,11 +33,13 @@ export interface VehicleIdRequestBody {
 
 export interface GetVehicleRequestBody {
   refresh_token: string
+  session_time: Date
   current: number
 }
 
 export interface FindVehicleRequestBody {
   refresh_token: string
+  session_time: Date
   current: number
   keywords: string
 }

@@ -28,16 +28,19 @@ export interface DeleteBusRouteRequestBody {
 
 export interface GetBusRouteRequestBody {
   refresh_token: string
+  session_time: Date
   current: number
 }
 
 export interface FindBusRouteRequestBody {
   refresh_token: string
+  session_time: Date
   current: number
   keywords: string
 }
 
 export interface FindBusRouteListRequestBody {
+  session_time: Date
   vehicle_type: number
   start_point: string
   end_point: string

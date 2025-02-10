@@ -14,6 +14,18 @@ export const getAccountValidator = (req: Request, res: Response, next: NextFunct
 
   checkSchema(
     {
+      session_time: {
+        notEmpty: {
+          errorMessage: ACCOUNT_MANAGEMENT_MESSAGE.SESSION_TIME_IS_REQUIRED
+        },
+        isISO8601: {
+          options: {
+            strict: true,
+            strictSeparator: true
+          },
+          errorMessage: ACCOUNT_MANAGEMENT_MESSAGE.SESSION_TIME_IS_MUST_BE_A_DATE
+        }
+      },
       current: {
         notEmpty: {
           errorMessage: ACCOUNT_MANAGEMENT_MESSAGE.CURRENT_IS_REQUIRED
@@ -58,6 +70,18 @@ export const findAccountValidator = (req: Request, res: Response, next: NextFunc
 
   checkSchema(
     {
+      session_time: {
+        notEmpty: {
+          errorMessage: ACCOUNT_MANAGEMENT_MESSAGE.SESSION_TIME_IS_REQUIRED
+        },
+        isISO8601: {
+          options: {
+            strict: true,
+            strictSeparator: true
+          },
+          errorMessage: ACCOUNT_MANAGEMENT_MESSAGE.SESSION_TIME_IS_MUST_BE_A_DATE
+        }
+      },
       keywords: {
         notEmpty: {
           errorMessage: ACCOUNT_MANAGEMENT_MESSAGE.KEYWORDS_IS_REQUIRED

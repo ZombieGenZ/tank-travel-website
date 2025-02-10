@@ -101,6 +101,7 @@ router.delete(
  * },
  * Body: {
  *    refresh_token: string,
+ *    session_time: Date,
  *    current: number
  * }
  */
@@ -121,6 +122,7 @@ router.get(
  * },
  * Body: {
  *    refresh_token: string,
+ *    session_time: Date,
  *    current: number,
  *    keywords: string
  * }
@@ -138,6 +140,7 @@ router.get(
  * Path: /api/bus-route/find-bus-route-list
  * Method: GET
  * Body: {
+ *    session_time: Date,
  *    vehicle_type: number,
  *    start_point: string,
  *    end_point: string,
