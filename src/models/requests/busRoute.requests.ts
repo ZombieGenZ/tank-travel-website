@@ -39,6 +39,11 @@ export interface FindBusRouteRequestBody {
   keywords: string
 }
 
+export interface GetBusRouteListRequestBody {
+  session_time: Date
+  current: number
+}
+
 export interface FindBusRouteListRequestBody {
   session_time: Date
   vehicle_type: number

@@ -21,6 +21,7 @@ import { ImageType } from '~/constants/image'
 import path from 'path'
 import { formatDateFull2 } from '~/utils/date'
 import AccountmManagementService from '~/services/accountManagement.services'
+import { getEmailInfomation } from '~/utils/email'
 
 export const sendEmailVerifyValidator = validate(
   checkSchema({
@@ -44,6 +45,12 @@ export const sendEmailVerifyValidator = validate(
       },
       custom: {
         options: async (value) => {
+          const email_infomation = await getEmailInfomation(value)
+
+          if (!email_infomation) {
+            throw new Error(USER_MESSAGE.EMAIL_IS_NOT_VALID)
+          }
+
           const user = await databaseService.users.findOne({ email: value })
 
           if (user !== null) {

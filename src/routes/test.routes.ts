@@ -1,7 +1,8 @@
-import express, { Request, Response, NextFunction } from 'express'
+import express, { Request, Response } from 'express'
 import { db } from '~/services/firebase.services'
 import { io } from '../index'
 import axios from 'axios'
+import { getEmailInfomation } from '~/utils/email'
 const router = express.Router()
 
 router.get('/vehicle/create', (req: Request, res: Response) => {
@@ -40,14 +41,14 @@ router.get('/notificaton', async (req: Request, res: Response) => {
   res.render('test/test.notificaton.ejs', { host: process.env.APP_URL })
 })
 
-router.get('/verify-email', async (req: Request, res: Response) => {
-  axios
-    .get(
-      'https://api.hunter.io/v2/email-verifier?email=zombiegenzzz@gmail.com&api_key=6562539c3ae740fafe8384b18639a6007ef0c015'
-    )
-    .then((response) => {
-      res.json(response.data)
-    })
-})
+// router.get('/verify-email', async (req: Request, res: Response) => {
+//   const { email } = req.body
+
+//   const emailInfomation = await getEmailInfomation(email)
+
+//   res.json({
+//     info: emailInfomation
+//   })
+// })
 
 export default router

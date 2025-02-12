@@ -3,6 +3,7 @@ import {
   UpdateBusRouteRequestBody,
   GetBusRouteRequestBody,
   FindBusRouteRequestBody,
+  GetBusRouteListRequestBody,
   FindBusRouteListRequestBody
 } from '~/models/requests/busRoute.requests'
 import databaseService from './database.services'
@@ -457,6 +458,89 @@ class BusRouteService {
     }
   }
 
+  async getBusRouteList(payload: GetBusRouteListRequestBody) {
+    const date = new Date()
+    const limit = Number(process.env.LOAD_QUANTITY_LIMIT as string)
+    const next = limit + 1
+
+    const result = await databaseService.busRoute
+      .aggregate([
+        {
+          $match: {
+            created_at: { $lt: new Date(payload.session_time) },
+            quantity: { $gt: 0 }
+          }
+        },
+        {
+          $lookup: {
+            from: process.env.DATABASE_VEHICLE_COLLECTION,
+            localField: 'vehicle',
+            foreignField: '_id',
+            as: 'vehicle'
+          }
+        },
+        {
+          $unwind: '$vehicle'
+        },
+        {
+          $match: {
+            'vehicle.status': VehicleStatus.ACCEPTED
+          }
+        },
+        {
+          $addFields: {
+            departure_time_date: { $toDate: '$departure_time' }
+          }
+        },
+        {
+          $addFields: {
+            time_difference: {
+              $abs: {
+                $subtract: ['$departure_time_date', date]
+              }
+            }
+          }
+        },
+        {
+          $sort: { time_difference: 1 }
+        },
+        {
+          $skip: payload.current
+        },
+        {
+          $limit: next
+        },
+        {
+          $project: {
+            time_difference: 0,
+            'vehicle.license_plate': 0
+          }
+        }
+      ])
+      .toArray()
+
+    const continued = result.length > limit
+
+    const busRoute = result.slice(0, limit)
+
+    const current = payload.current + busRoute.length
+
+    if (busRoute.length === 0) {
+      return {
+        message: BUSROUTE_MESSAGE.NO_MATCHING_RESULTS_FOUND,
+        current: payload.current,
+        continued: false,
+        vehicle: []
+      }
+    } else {
+      return {
+        current,
+        continued,
+        busRoute
+      }
+    }
+  }
+
   async findBusRouteList(payload: FindBusRouteListRequestBody) {
     const limit = Number(process.env.LOAD_QUANTITY_LIMIT as string)
     const next = limit + 1
@@ -513,6 +597,11 @@ class BusRouteService {
         },
         {
           $limit: next
+        },
+        {
+          $project: {
+            'vehicle.license_plate': 0
+          }
         }
       ])
       .toArray()

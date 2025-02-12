@@ -1,20 +1,22 @@
 import express from 'express'
 import {
   createController,
+  updateController,
   deleteController,
-  findBusRouteController,
-  findBusRouteListController,
   getBusRouteController,
-  updateController
+  findBusRouteController,
+  getBusRouteListController,
+  findBusRouteListController
 } from '~/controllers/busRoute.controllers'
 import { authenticationValidator, businessAuthenticationValidator } from '~/middlewares/authentication.middlewares'
 import {
   createValidator,
+  updateValidator,
   deleteValidator,
-  findBusRouteListValidator,
-  findBusRouteValidator,
   getBusRouteValidator,
-  updateValidator
+  findBusRouteValidator,
+  getBusRouteListValidator,
+  findBusRouteListValidator
 } from '~/middlewares/busRoute.middlewares'
 import { wrapRequestHandler } from '~/utils/handlers'
 const router = express.Router()
@@ -134,6 +136,17 @@ router.get(
   findBusRouteValidator,
   wrapRequestHandler(findBusRouteController)
 )
+
+/*
+ * Description: Lấy thông tin các tuyến đã có trên CSDL
+ * Path: /api/bus-route/get-bus-route-list
+ * Method: GET
+ * Body: {
+ *    session_time: Date,
+ *    current: number
+ * }
+ */
+router.get('/get-bus-route-list', getBusRouteListValidator, wrapRequestHandler(getBusRouteListController))
 
 /*
  * Description: Tìm kiếm thông tin các tuyến đã có trên CSDL

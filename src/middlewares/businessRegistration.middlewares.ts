@@ -5,6 +5,7 @@ import HTTPSTATUS from '~/constants/httpStatus'
 import { BUSINESS_REGISTRATION_MESSAGE } from '~/constants/message'
 import databaseService from '~/services/database.services'
 import UserServices from '~/services/user.services'
+import { getEmailInfomation } from '~/utils/email'
 import { validate } from '~/utils/validation'
 
 export const registerValidator = validate(
@@ -49,6 +50,12 @@ export const registerValidator = validate(
               if (result) {
                 throw new Error(BUSINESS_REGISTRATION_MESSAGE.EMAIL_IS_ALWAYS_EXISTENT)
               }
+            }
+
+            const email_infomation = await getEmailInfomation(value)
+
+            if (!email_infomation) {
+              throw new Error(BUSINESS_REGISTRATION_MESSAGE.EMAIL_IS_INVALID)
             }
 
             const result = await databaseService.businessRegistration.findOne({ email: value })

@@ -677,6 +677,42 @@ export const findBusRouteValidator = (req: Request, res: Response, next: NextFun
     })
 }
 
+export const getBusRouteListValidator = validate(
+  checkSchema(
+    {
+      session_time: {
+        notEmpty: {
+          errorMessage: BUSROUTE_MESSAGE.SESSION_TIME_IS_REQUIRED
+        },
+        isISO8601: {
+          options: {
+            strict: true,
+            strictSeparator: true
+          },
+          errorMessage: BUSROUTE_MESSAGE.SESSION_TIME_IS_MUST_BE_A_DATE
+        }
+      },
+      current: {
+        notEmpty: {
+          errorMessage: BUSROUTE_MESSAGE.CURRENT_IS_REQUIRED
+        },
+        isInt: {
+          errorMessage: BUSROUTE_MESSAGE.CURRENT_IS_MUST_BE_A_NUMBER
+        },
+        custom: {
+          options: (value) => {
+            if (value < 0) {
+              throw new Error(BUSROUTE_MESSAGE.CURRENT_IS_MUST_BE_GREATER_THAN_0)
+            }
+            return true
+          }
+        }
+      }
+    },
+    ['body']
+  )
+)
+
 export const findBusRouteListValidator = validate(
   checkSchema(
     {

@@ -3,11 +3,12 @@ import { ParamsDictionary } from 'express-serve-static-core'
 import { BUSROUTE_MESSAGE } from '~/constants/message'
 import {
   CreateBusRouteRequestBody,
+  UpdateBusRouteRequestBody,
   DeleteBusRouteRequestBody,
-  FindBusRouteListRequestBody,
-  FindBusRouteRequestBody,
   GetBusRouteRequestBody,
-  UpdateBusRouteRequestBody
+  FindBusRouteRequestBody,
+  GetBusRouteListRequestBody,
+  FindBusRouteListRequestBody
 } from '~/models/requests/busRoute.requests'
 import BusRoute from '~/models/schemas/busRoute.schemas'
 import User from '~/models/schemas/users.schemas'
@@ -178,6 +179,29 @@ export const findBusRouteController = async (
     res.json({
       message: BUSROUTE_MESSAGE.FIND_BUS_ROUTE_FAILED,
       authenticate
+    })
+  }
+}
+
+export const getBusRouteListController = async (
+  req: Request<ParamsDictionary, any, GetBusRouteListRequestBody>,
+  res: Response
+) => {
+  const ip = req.ip
+
+  try {
+    const result = await BusRouteService.getBusRouteList(req.body)
+
+    await writeInfoLog(`Thực hiện lấy danh sách các tuyến thành công (IP: ${ip}])`)
+
+    res.json({
+      result
+    })
+  } catch (err) {
+    await writeErrorLog(`Thực hiện lấy danh sách các tuyến thất bại (IP: ${ip}]) | Error: ${err}`)
+
+    res.json({
+      message: BUSROUTE_MESSAGE.GET_BUS_ROUTE_FAILED
     })
   }
 }
