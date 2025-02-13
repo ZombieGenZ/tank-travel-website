@@ -61,7 +61,11 @@ app.set('trust proxy', true)
 databaseService.connect()
 
 app.get('/', (req: Request, res: Response) => {
-  res.json({ message: 'Hello, World!' })
+  res.render('trang-chu')
+})
+
+app.get('/login', (req: Request, res: Response) => {
+  res.render('dang-nhap')
 })
 
 // download router

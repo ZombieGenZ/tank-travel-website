@@ -3,9 +3,13 @@ dist/
 .env
 public/**
 data/**
-!public/images/
+!public/css/
+!public/css/**
+!public/js/
+!public/js/**
 !public/app/
 !public/app/**
+!public/images/
 !public/images/system/
 !public/images/system/**
 !public/images/upload/
