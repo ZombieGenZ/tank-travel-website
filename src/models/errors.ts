@@ -10,10 +10,10 @@ type ErrorType = Record<
 >
 
 export class ErrorWithStatus {
-  messgae: string
+  message: string
   status: number
   constructor({ message, status }: { message: string; status: number }) {
-    this.messgae = message
+    this.message = message
     this.status = status
   }
 }

@@ -20,7 +20,7 @@ const router = express.Router()
 /*
  * Description: Lấy danh sách tất cả tài khoản có trong CSDL
  * Path: /api/account-management/get-account
- * Method: GET
+ * Method: POST
  * headers: {
  *    authorization: Bearer <token>
  * },
@@ -31,7 +31,7 @@ const router = express.Router()
  * }
  */
 
-router.get(
+router.post(
   '/get-account',
   authenticationValidator,
   administratorAuthenticationValidator,
@@ -42,7 +42,7 @@ router.get(
 /*
  * Description: Tìm kiếm tài khoản có trong CSDL
  * Path: /api/account-management/find-account
- * Method: GET
+ * Method: POST
  * headers: {
  *    authorization: Bearer <token>
  * },
@@ -54,7 +54,7 @@ router.get(
  * }
  */
 
-router.get(
+router.post(
   '/find-account',
   authenticationValidator,
   administratorAuthenticationValidator,

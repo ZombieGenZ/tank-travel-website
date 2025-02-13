@@ -422,8 +422,16 @@ export const changePasswordTemporaryController = async (
 export const getUserInfomationController = async (req: Request, res: Response) => {
   const ip = req.ip as string
   const user = req.user as User
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
 
   await writeInfoLog(`Thực hiện lấy thông tin tài khoản ${user._id} thành công (IP: ${ip}])`)
 
-  res.json({ user: omit(user, ['password', 'forgot_password_token']) })
+  res.json({
+    user: omit(user, ['password', 'forgot_password_token']),
+    authenticate
+  })
 }

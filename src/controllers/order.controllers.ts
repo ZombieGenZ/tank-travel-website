@@ -13,11 +13,7 @@ import User from '~/models/schemas/users.schemas'
 import OrderService from '~/services/order.services'
 import { writeInfoLog, writeErrorLog } from '~/utils/log'
 
-export const orderController = async (
-  req: Request<ParamsDictionary, any, OrderRequestBody>,
-  res: Response,
-  next: NextFunction
-) => {
+export const orderController = async (req: Request<ParamsDictionary, any, OrderRequestBody>, res: Response) => {
   const ip = req.ip
   const user = req.user as User
   const busRoute = req.bus_route as BusRoute

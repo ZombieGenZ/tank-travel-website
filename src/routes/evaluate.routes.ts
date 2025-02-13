@@ -95,7 +95,7 @@ router.delete(
 /*
  * Description: Lấy danh sách đánh giá
  * Path: /api/evaluate/get-evaluate
- * Method: GET
+ * Method: POST
  * headers: {
  *    authorization: Bearer <token>
  * },
@@ -105,7 +105,7 @@ router.delete(
  *    current: number
  * }
  */
-router.get(
+router.post(
   '/get-evaluate',
   authenticationValidator,
   businessAuthenticationValidator,
@@ -178,13 +178,13 @@ router.delete(
 /*
  * Description: Lấy danh sách đánh giá của một phương tiện có trong CSDL
  * Path: /api/evaluate/get-evaluate-list
- * Method: GET
+ * Method: POST
  * Body: {
  *    session_time: Date,
  *    vehicle_id: string,
  *    current: number
  * }
  */
-router.get('/get-evaluate-list', getEvaluateListValidator, wrapRequestHandler(getEvaluateListController))
+router.post('/get-evaluate-list', getEvaluateListValidator, wrapRequestHandler(getEvaluateListController))
 
 export default router

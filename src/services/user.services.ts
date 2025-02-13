@@ -281,7 +281,7 @@ class UserService {
                   <p>© ${new Date().getFullYear()} ${process.env.TRADEMARK_NAME}. Mọi quyền được bảo lưu.</p>
               </div>
           </div>
-      </d>
+      </div>
     `
 
     await Promise.all([
@@ -378,7 +378,7 @@ class UserService {
     const date = new Date()
     const email_subject = `Thông báo thay đổi mật khẩu - ${process.env.TRADEMARK_NAME}`
     const email_html = `
-      <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
+      <div style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
           <div style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
               <div style="text-align: center; padding: 20px 0; background-color: #003366;">
                   <h1 style="color: #ffffff; margin: 0; font-size: 24px;">${process.env.TRADEMARK_NAME}</h1>
@@ -420,7 +420,7 @@ class UserService {
                   </p>
               </div>
           </div>
-      </body>
+      </div>
     `
 
     await Promise.all([
@@ -591,7 +591,7 @@ class UserService {
   async changePhone(payload: ChangePhoneRequestBody, user: User) {
     const email_subject = `Thông báo thay đổi số điện thoại - ${process.env.TRADEMARK_NAME}`
     const email_html = `
-      <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
+      <div style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
           <div style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
               <div style="text-align: center; padding: 20px 0; background-color: #003366;">
                   <h1 style="color: #ffffff; margin: 0; font-size: 24px;">${process.env.TRADEMARK_NAME}</h1>
@@ -628,7 +628,7 @@ class UserService {
                   </p>
               </div>
           </div>
-      </body>
+      </div>
     `
 
     await Promise.all([

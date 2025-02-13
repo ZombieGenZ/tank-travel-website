@@ -97,7 +97,7 @@ router.delete(
 /*
  * Description: Lấy thông tin các tuyến đã có trên CSDL
  * Path: /api/bus-route/get-bus-route
- * Method: GET
+ * Method: POST
  * headers: {
  *    authorization: Bearer <token>
  * },
@@ -107,7 +107,7 @@ router.delete(
  *    current: number
  * }
  */
-router.get(
+router.post(
   '/get-bus-route',
   authenticationValidator,
   businessAuthenticationValidator,
@@ -118,7 +118,7 @@ router.get(
 /*
  * Description: Tìm kiếm thông tin các tuyến đã có trên CSDL
  * Path: /api/bus-route/find-bus-route
- * Method: GET
+ * Method: POST
  * headers: {
  *    authorization: Bearer <token>
  * },
@@ -129,7 +129,7 @@ router.get(
  *    keywords: string
  * }
  */
-router.get(
+router.post(
   '/find-bus-route',
   authenticationValidator,
   businessAuthenticationValidator,
@@ -140,18 +140,18 @@ router.get(
 /*
  * Description: Lấy thông tin các tuyến đã có trên CSDL
  * Path: /api/bus-route/get-bus-route-list
- * Method: GET
+ * Method: POST
  * Body: {
  *    session_time: Date,
  *    current: number
  * }
  */
-router.get('/get-bus-route-list', getBusRouteListValidator, wrapRequestHandler(getBusRouteListController))
+router.post('/get-bus-route-list', getBusRouteListValidator, wrapRequestHandler(getBusRouteListController))
 
 /*
  * Description: Tìm kiếm thông tin các tuyến đã có trên CSDL
  * Path: /api/bus-route/find-bus-route-list
- * Method: GET
+ * Method: POST
  * Body: {
  *    session_time: Date,
  *    vehicle_type: number,
@@ -161,6 +161,6 @@ router.get('/get-bus-route-list', getBusRouteListValidator, wrapRequestHandler(g
  *    current: number
  * }
  */
-router.get('/find-bus-route-list', findBusRouteListValidator, wrapRequestHandler(findBusRouteListController))
+router.post('/find-bus-route-list', findBusRouteListValidator, wrapRequestHandler(findBusRouteListController))
 
 export default router

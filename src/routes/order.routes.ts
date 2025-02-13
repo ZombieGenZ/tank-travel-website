@@ -50,7 +50,7 @@ router.post(
 /*
  * Description: Lấy thông tin các đơn hàng của một khách hàng
  * Path: /api/order/get-order-list
- * Method: GET
+ * Method: POST
  * headers: {
  *    authorization: Bearer <token>
  * },
@@ -60,7 +60,7 @@ router.post(
  *    current: number
  * }
  */
-router.get(
+router.post(
   '/get-order-list',
   authenticationValidator,
   customerAuthenticationValidator,
@@ -71,7 +71,7 @@ router.get(
 /*
  * Description: Lấy thông tin chi tiết của một đơn hàng
  * Path: /api/order/get-order-detail-list
- * Method: GET
+ * Method: POST
  * headers: {
  *    authorization: Bearer <token>
  * },
@@ -81,7 +81,7 @@ router.get(
  *    current: number
  * }
  */
-router.get(
+router.post(
   '/get-order-detail-list',
   authenticationValidator,
   customerAuthenticationValidator,
@@ -92,7 +92,7 @@ router.get(
 /*
  * Description: Lấy thông tin các đơn đặt hàng có trong CSDL
  * Path: /api/order/get-order
- * Method: GET
+ * Method: POST
  * headers: {
  *    authorization: Bearer <token>
  * },
@@ -102,7 +102,7 @@ router.get(
  *    current: number
  * }
  */
-router.get(
+router.post(
   '/get-order',
   authenticationValidator,
   businessAuthenticationValidator,

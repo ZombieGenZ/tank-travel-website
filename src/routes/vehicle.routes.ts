@@ -71,7 +71,7 @@ const upload = multer({
 /*
  * Description: Lấy thông tin các loại phương tiện
  * Path: /api/vehicle/get-vehicle-type
- * Method: GET
+ * Method: POST
  * headers: {
  *    authorization: Bearer <token>
  * },
@@ -79,7 +79,7 @@ const upload = multer({
  *    refresh_token: string
  * }
  */
-router.get(
+router.post(
   '/get-vehicle-type',
   authenticationValidator,
   businessAuthenticationValidator,
@@ -89,7 +89,7 @@ router.get(
 /*
  * Description: Lấy thông tin các loại chổ ngồi
  * Path: /api/vehicle/get-seat-type
- * Method: GET
+ * Method: POST
  * headers: {
  *    authorization: Bearer <token>
  * },
@@ -97,7 +97,7 @@ router.get(
  *    refresh_token: string
  * }
  */
-router.get('/get-seat-type', authenticationValidator, businessAuthenticationValidator, wrapRequestHandler(getSeatType))
+router.post('/get-seat-type', authenticationValidator, businessAuthenticationValidator, wrapRequestHandler(getSeatType))
 
 /*
  * Description: Tạo một phương tiện mới
@@ -176,7 +176,7 @@ router.delete(
 /*
  * Description: Lấy thông tin phương tiện đã có trên CSDL
  * Path: /api/vehicle/get-vehicle
- * Method: GET
+ * Method: POST
  * headers: {
  *    authorization: Bearer <token>
  * },
@@ -186,7 +186,7 @@ router.delete(
  *    current: number
  * }
  */
-router.get(
+router.post(
   '/get-vehicle',
   authenticationValidator,
   businessAuthenticationValidator,
@@ -197,7 +197,7 @@ router.get(
 /*
  * Description: Lấy đường dẩn hình ảnh xem trước của phương tiện đã có trên máy chủ
  * Path: /api/vehicle/get-vehicle-preview
- * Method: GET
+ * Method: POST
  * headers: {
  *    authorization: Bearer <token>
  * },
@@ -206,7 +206,7 @@ router.get(
  *    vehicle_id: string
  * }
  */
-router.get(
+router.post(
   '/get-vehicle-preview',
   authenticationValidator,
   businessAuthenticationValidator,
@@ -217,7 +217,7 @@ router.get(
 /*
  * Description: Tìm kiếm thông tin phương tiện đã có trên CSDL
  * Path: /api/vehicle/find-vehicle
- * Method: GET
+ * Method: POST
  * headers: {
  *    authorization: Bearer <token>
  * },
@@ -228,7 +228,7 @@ router.get(
  *    keywords: string
  * }
  */
-router.get(
+router.post(
   '/find-vehicle',
   authenticationValidator,
   businessAuthenticationValidator,
@@ -262,7 +262,7 @@ router.put(
 /*
  * Description: Lấy tấ cả các thông tin số hiệu và id của các phương tiện đã có trên CSDL
  * Path: /api/vehicle/get-vehicle-list
- * Method: GET
+ * Method: POST
  * headers: {
  *    authorization: Bearer <token>
  * },
@@ -270,7 +270,7 @@ router.put(
  *    refresh_token: string
  * }
  */
-router.get(
+router.post(
   '/get-vehicle-list',
   authenticationValidator,
   businessAuthenticationValidator,

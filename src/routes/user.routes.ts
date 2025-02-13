@@ -300,7 +300,7 @@ router.put(
 /*
  * Description: Lấy thông tin user đang đăng nhập
  * Path: /api/users/get-user-infomation
- * Method: GET
+ * Method: POST
  * headers: {
  *    authorization: Bearer <token>
  * },
@@ -308,7 +308,7 @@ router.put(
  *    refresh_token: string
  * }
  */
-router.get('/get-user-infomation', authenticationValidator, wrapRequestHandler(getUserInfomationController))
+router.post('/get-user-infomation', authenticationValidator, wrapRequestHandler(getUserInfomationController))
 
 /*
  * Description: Đăng nhập vào một tài khoản có thể sử dụng chức năng quản lý hiện có trên CSDL

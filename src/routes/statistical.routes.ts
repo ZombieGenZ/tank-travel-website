@@ -13,7 +13,7 @@ const router = express.Router()
 /*
  * Description: Lấy thống kê doanh thu (lấy trong ngày)
  * Path: /api/statistical/get-revenue-statistics
- * Method: GET
+ * Method: POST
  * headers: {
  *    authorization: Bearer <token>
  * },
@@ -21,7 +21,7 @@ const router = express.Router()
  *    refresh_token: string
  * }
  */
-router.get(
+router.post(
   '/get-revenue-statistics',
   authenticationValidator,
   businessAuthenticationValidator,
@@ -31,7 +31,7 @@ router.get(
 /*
  * Description: Lấy thống kê doanh thu (Lấy theo khoản thời gian)
  * Path: /api/statistical/find-revenue-statistics
- * Method: GET
+ * Method: POST
  * headers: {
  *    authorization: Bearer <token>
  * },
@@ -41,7 +41,7 @@ router.get(
  *    end_time: Date
  * }
  */
-router.get(
+router.post(
   '/find-revenue-statistics',
   authenticationValidator,
   businessAuthenticationValidator,
@@ -52,7 +52,7 @@ router.get(
 /*
  * Description: Lấy thống kê số vé đã đặt (lấy trong ngày)
  * Path: /api/statistical/get-order-statistics
- * Method: GET
+ * Method: POST
  * headers: {
  *    authorization: Bearer <token>
  * },
@@ -60,7 +60,7 @@ router.get(
  *    refresh_token: string
  * }
  */
-router.get(
+router.post(
   '/get-order-statistics',
   authenticationValidator,
   businessAuthenticationValidator,
@@ -70,7 +70,7 @@ router.get(
 /*
  * Description: Lấy thống kê số vé đã đặt (Lấy theo khoản thời gian)
  * Path: /api/statistical/find-order-statistics
- * Method: GET
+ * Method: POST
  * headers: {
  *    authorization: Bearer <token>
  * },
@@ -80,7 +80,7 @@ router.get(
  *    end_time: Date
  * }
  */
-router.get(
+router.post(
   '/find-order-statistics',
   authenticationValidator,
   businessAuthenticationValidator,

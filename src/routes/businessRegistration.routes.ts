@@ -50,7 +50,7 @@ router.put(
 /*
  * Description: Lấy thông tin doanh nghiệp đã đăng ký
  * Path: /api/business-registration/get-business-registration
- * Method: GET
+ * Method: POST
  * headers: {
  *    authorization: Bearer <token>
  * },
@@ -60,7 +60,7 @@ router.put(
  *    current: number
  * }
  */
-router.get(
+router.post(
   '/get-business-registration',
   authenticationValidator,
   administratorAuthenticationValidator,
