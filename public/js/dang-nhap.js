@@ -18,23 +18,31 @@ function validateEmail(email) {
 }
 
 function login() {
-  const username = document.getElementById('username_login').value
-  const password = document.getElementById('password_login').value
-
-  // check gì đó
+  const username = document.getElementById('username_login').value.trim()
+  const password = document.getElementById('password_login').value.trim()
 
   if (username === '' || password === '') {
-    // xử lý gì đó
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Do not leave username or password blank!',
+      footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+    })
     return
   }
 
-  if (validateEmail(username)) {
-    // xử lý gì đó
+  if (!validateEmail(username)) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Do not leave username or password blank!',
+      footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+    })
     return
   }
 
   const body = {
-    username,
+    email: username,
     password
   }
 
@@ -49,6 +57,62 @@ function login() {
       return response.json()
     })
     .then((data) => {
-      console.log(data)
+      if (data == null || data == undefined) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Error connecting to server',
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+        })
+        return
+      }
+
+      if (data.message === 'Input data error') {
+        for (const key in data.errors) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: data.errors[key].msg,
+            footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+          })
+        }
+        return
+      }
+
+      if (data.message === 'Please change your temporary password before logging in') {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Please change your temporary password before logging in',
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+        })
+        return
+      }
+
+      if (data.message === 'Login successful!') {
+        localStorage.setItem('access_token', data.authenticate.access_token)
+        localStorage.setItem('refresh_token', data.authenticate.refresh_token)
+
+        Swal.fire({
+          title: 'Good job!',
+          text: data.message,
+          icon: 'success'
+        }).then((result) => {
+          if (result.dismiss === Swal.DismissReason.backdrop) {
+            location.reload()
+          } else {
+            location.reload()
+          }
+        })
+        return
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Error connecting to server',
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+        })
+        return
+      }
     })
 }
