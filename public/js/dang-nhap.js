@@ -1,4 +1,3 @@
-import Swal from 'sweetalert2'
 const openlogin = document.getElementById('open_login')
 const loginform = document.getElementById('login_form')
 const buttonclose = document.getElementById('button_close')
@@ -100,9 +99,9 @@ function login() {
           icon: 'success'
         }).then((result) => {
           if (result.dismiss === Swal.DismissReason.backdrop) {
-            location.reload()
+            window.location.href = '/'
           } else {
-            location.reload()
+            window.location.href = '/'
           }
         })
         return
