@@ -228,7 +228,7 @@ class BusinessRegistrationService {
         message: BUSINESS_REGISTRATION_MESSAGE.NO_MATCHING_RESULTS_FOUND,
         current: payload.current,
         continued: false,
-        vehicle: []
+        business_registration: []
       }
     } else {
       return {
