@@ -68,6 +68,10 @@ app.get('/login', (req: Request, res: Response) => {
   res.render('dang-nhap')
 })
 
+app.get('/ticket-infor', (req: Request, res: Response) => {
+  res.render('ticket-infomation')
+})
+
 // download router
 app.use('/download', downloadApi)
 
