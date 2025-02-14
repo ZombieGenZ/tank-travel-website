@@ -32,6 +32,19 @@ if (
           localStorage.setItem('access_token', data.authenticate.access_token)
           localStorage.setItem('refresh_token', data.authenticate.refresh_token)
         }
+
+        if(user != null) {
+          const buttonlogin = document.getElementById('btn_login');
+          const navbar = document.getElementById('navbar');
+          const personal = document.getElementById('personal');
+          personal.innerHTML = '<i class="ri-user-3-line"></i>';
+          buttonlogin.innerText = "Logout";
+
+
+          navbar.parentNode.removeChild(buttonlogin);
+          navbar.parentNode.appendChild(personal);
+
+        }
       }
     })
 }
