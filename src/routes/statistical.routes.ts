@@ -92,7 +92,7 @@ router.post(
 
 /*
  * Description: Lấy thống kê số đơn đã đặt (lấy trong ngày)
- * Path: /api/statistical/get-order-statistics
+ * Path: /api/statistical/get-deal-statistics
  * Method: POST
  * headers: {
  *    authorization: Bearer <token>
@@ -110,7 +110,7 @@ router.post(
 
 /*
  * Description: Lấy thống kê số đơn đã đặt (Lấy theo khoản thời gian)
- * Path: /api/statistical/find-order-statistics
+ * Path: /api/statistical/find-deal-statistics
  * Method: POST
  * headers: {
  *    authorization: Bearer <token>

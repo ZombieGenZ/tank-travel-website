@@ -68,7 +68,7 @@ app.get('/login', (req: Request, res: Response) => {
   res.render('dang-nhap')
 })
 
-app.get('/ticket-infor', (req: Request, res: Response) => {
+app.get('/ticket-info', (req: Request, res: Response) => {
   res.render('ticket-infomation')
 })
 

@@ -1,8 +1,6 @@
 import express, { Request, Response } from 'express'
 import { db } from '~/services/firebase.services'
 import { io } from '../index'
-import axios from 'axios'
-import { getEmailInfomation } from '~/utils/email'
 const router = express.Router()
 
 router.get('/vehicle/create', (req: Request, res: Response) => {

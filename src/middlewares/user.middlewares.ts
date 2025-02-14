@@ -312,7 +312,7 @@ export const loginValidator = validate(
                 await AccountmManagementService.unBanAccount(user._id.toString())
               } else {
                 throw new Error(
-                  `Tài khoản của bạn đã bị khóa vì lý do ${user.penalty.reason} và sẽ mở khóa vào ${formatDateFull2(user.penalty.expired_at)}`
+                  `Your account has been banned for reason ${user.penalty.reason} and will unlock on ${formatDateFull2(user.penalty.expired_at)}`
                 )
               }
             }
@@ -1218,7 +1218,7 @@ export const loginManageValidator = validate(
                 await AccountmManagementService.unBanAccount(user._id.toString())
               } else {
                 throw new Error(
-                  `Tài khoản của bạn đã bị khóa vì lý do ${user.penalty.reason} và sẽ mở khóa vào ${formatDateFull2(user.penalty.expired_at)}`
+                  `Your account has been banned for reason ${user.penalty.reason} and will unlock on ${formatDateFull2(user.penalty.expired_at)}`
                 )
               }
             }

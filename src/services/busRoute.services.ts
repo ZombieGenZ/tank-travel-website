@@ -68,7 +68,8 @@ class BusRouteService {
     const totalProfitObject: ITotalProfitObject[] = []
     const totalRefundObject: ITotalRefundObject[] = []
     let totalPrice = 0
-    let totalQuantity = 0
+    let totalQuantityRemove = 0
+    let totalDealRemove = 0
 
     const bills = await databaseService.bill.find({ bus_route: busRoute._id }).toArray()
 
@@ -104,8 +105,10 @@ class BusRouteService {
         }
 
         totalPrice += bill.totalPrice
-        totalQuantity += bill.quantity
       }
+
+      totalQuantityRemove += bill.quantity
+      totalDealRemove++
 
       await Promise.all([
         databaseService.bill.deleteOne({ _id: bill._id }),
@@ -185,6 +188,7 @@ class BusRouteService {
 
     const revenueStatisticseFirebaseRealtime = db.ref(`statistics/revenue/${authorVehicle._id}`).push()
     const orderStatisticseFirebaseRealtime = db.ref(`statistics/order/${authorVehicle._id}`).push()
+    const dealStatisticseFirebaseRealtime = db.ref(`statistics/deal/${authorVehicle._id}`).push()
 
     await Promise.all([
       ...profitPromises,
@@ -218,17 +222,32 @@ class BusRouteService {
       }),
       orderStatisticseFirebaseRealtime.set({
         type: '-',
-        value: totalQuantity,
+        value: totalQuantityRemove,
         time: date
       }),
       io.to(`statistics-${authorVehicle._id}`).emit('update-statistics-order', {
         type: '-',
-        value: totalQuantity,
+        value: totalQuantityRemove,
         time: date
       }),
       io.to(`statistics-global`).emit('update-statistics-order-global', {
         type: '-',
-        value: totalQuantity,
+        value: totalQuantityRemove,
+        time: date
+      }),
+      dealStatisticseFirebaseRealtime.set({
+        type: '-',
+        value: totalDealRemove,
+        time: date
+      }),
+      io.to(`statistics-${authorVehicle._id}`).emit('update-statistics-deal', {
+        type: '-',
+        value: totalDealRemove,
+        time: date
+      }),
+      io.to(`statistics-global`).emit('update-statistics-deal-global', {
+        type: '-',
+        value: totalDealRemove,
         time: date
       })
     ])

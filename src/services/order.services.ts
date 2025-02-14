@@ -634,6 +634,7 @@ class OrderService {
 
     const revenueStatisticseFirebaseRealtime = db.ref(`statistics/revenue/${authorVehicle._id}`).push()
     const orderStatisticseFirebaseRealtime = db.ref(`statistics/order/${authorVehicle._id}`).push()
+    const dealStatisticseFirebaseRealtime = db.ref(`statistics/deal/${authorVehicle._id}`).push()
 
     Promise.all([
       databaseService.billDetail.updateOne(
@@ -771,7 +772,22 @@ class OrderService {
       }),
       io.to(`statistics-global`).emit('update-statistics-order-global', {
         type: '-',
+        value: totalQuantity == 0 ? 1 : 0,
+        time: date
+      }),
+      dealStatisticseFirebaseRealtime.set({
+        type: '-',
         value: 1,
+        time: date
+      }),
+      io.to(`statistics-${authorVehicle._id}`).emit('update-statistics-deal', {
+        type: '-',
+        value: totalQuantity == 0 ? 1 : 0,
+        time: date
+      }),
+      io.to(`statistics-global`).emit('update-statistics-deal-global', {
+        type: '-',
+        value: totalQuantity == 0 ? 1 : 0,
         time: date
       })
     ])
