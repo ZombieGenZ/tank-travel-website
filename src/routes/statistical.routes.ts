@@ -3,7 +3,9 @@ import {
   getRevenueStatisticsController,
   findRevenueStatisticsController,
   getOrderStatisticsController,
-  findOrderStatisticsController
+  findOrderStatisticsController,
+  getDealtatisticsController,
+  findDealStatisticsController
 } from '~/controllers/statistical.controllers'
 import { authenticationValidator, businessAuthenticationValidator } from '~/middlewares/authentication.middlewares'
 import { findStatisticalValidator } from '~/middlewares/statistical.middlewares'
@@ -86,6 +88,45 @@ router.post(
   businessAuthenticationValidator,
   findStatisticalValidator,
   wrapRequestHandler(findOrderStatisticsController)
+)
+
+/*
+ * Description: Lấy thống kê số đơn đã đặt (lấy trong ngày)
+ * Path: /api/statistical/get-order-statistics
+ * Method: POST
+ * headers: {
+ *    authorization: Bearer <token>
+ * },
+ * Body: {
+ *    refresh_token: string
+ * }
+ */
+router.post(
+  '/get-deal-statistics',
+  authenticationValidator,
+  businessAuthenticationValidator,
+  wrapRequestHandler(getDealtatisticsController)
+)
+
+/*
+ * Description: Lấy thống kê số đơn đã đặt (Lấy theo khoản thời gian)
+ * Path: /api/statistical/find-order-statistics
+ * Method: POST
+ * headers: {
+ *    authorization: Bearer <token>
+ * },
+ * Body: {
+ *    refresh_token: string,
+ *    start_time: Date,
+ *    end_time: Date
+ * }
+ */
+router.post(
+  '/find-deal-statistics',
+  authenticationValidator,
+  businessAuthenticationValidator,
+  findStatisticalValidator,
+  wrapRequestHandler(findDealStatisticsController)
 )
 
 export default router

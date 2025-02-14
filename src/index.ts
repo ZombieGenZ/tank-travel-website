@@ -168,7 +168,13 @@ io.on('connection', (socket: Socket) => {
           // value: giá trị của phản hồi
           //
           // sự kiện: update-statistics-order
-          // mô tả: cập nhật thống kê số lượng bán ra cho doanh nghiệp
+          // mô tả: cập nhật thống kê số lượng vé bán ra cho doanh nghiệp
+          // dử liệu: type, value
+          // type: loại phàn hồi (gồm 2 loại '+' và '-')
+          // value: giá trị của phản hồi
+          //
+          // sự kiện: update-statistics-deal
+          // mô tả: cập nhật thống kê số lượng đơn bán ra cho doanh nghiệp
           // dử liệu: type, value
           // type: loại phàn hồi (gồm 2 loại '+' và '-')
           // value: giá trị của phản hồi
@@ -186,7 +192,13 @@ io.on('connection', (socket: Socket) => {
           // value: giá trị của phản hồi
           //
           // sự kiện: update-statistics-order-global
-          // mô tả: cập nhật thống kê số lượng bán ra của toàn hệ thống
+          // mô tả: cập nhật thống kê số lượng vé bán ra của toàn hệ thống
+          // dử liệu: type, value
+          // type: loại phàn hồi (gồm 2 loại '+' và '-')
+          // value: giá trị của phản hồi
+          //
+          // sự kiện: update-statistics-deal-global
+          // mô tả: cập nhật thống kê số lượng đơn bán ra của toàn hệ thống
           // dử liệu: type, value
           // type: loại phàn hồi (gồm 2 loại '+' và '-')
           // value: giá trị của phản hồi
