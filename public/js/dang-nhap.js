@@ -1,3 +1,4 @@
+import Swal from 'sweetalert2'
 const openlogin = document.getElementById('open_login')
 const loginform = document.getElementById('login_form')
 const buttonclose = document.getElementById('button_close')
