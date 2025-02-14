@@ -87,14 +87,14 @@ export const getOrderStatisticsController = async (
   try {
     const result = await StatisticalService.getOrderStatistics(user)
 
-    await writeInfoLog(`Thực hiện lấy thống kê số đơn hàng thành công (User: ${user._id}) (IP: ${ip}])`)
+    await writeInfoLog(`Thực hiện lấy thống kê số vé thành công (User: ${user._id}) (IP: ${ip}])`)
 
     res.json({
       result,
       authenticate
     })
   } catch (err) {
-    await writeErrorLog(`Thực hiện lấy thống kê số đơn hàng thất bại (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`)
+    await writeErrorLog(`Thực hiện lấy thống kê số vé thất bại (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`)
 
     res.json({
       message: STATISTICS_MESSAGE.GET_STATISTICS_FAILURE,
@@ -118,9 +118,7 @@ export const findOrderStatisticsController = async (
   try {
     const result = await StatisticalService.findOrderStatistics(req.body, user)
 
-    await writeInfoLog(
-      `Thực hiện lấy thống kê số đơn hàng theo khoản thời gian thành công (User: ${user._id}) (IP: ${ip}])`
-    )
+    await writeInfoLog(`Thực hiện lấy thống kê số vé theo khoản thời gian thành công (User: ${user._id}) (IP: ${ip}])`)
 
     res.json({
       result,
@@ -128,7 +126,71 @@ export const findOrderStatisticsController = async (
     })
   } catch (err) {
     await writeErrorLog(
-      `Thực hiện lấy thống kê số đơn hàng theo khoản thời gian thất bại (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`
+      `Thực hiện lấy thống kê số vé theo khoản thời gian thất bại (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`
+    )
+
+    res.json({
+      message: STATISTICS_MESSAGE.GET_STATISTICS_FAILURE,
+      authenticate
+    })
+  }
+}
+
+export const getDealtatisticsController = async (
+  req: Request<ParamsDictionary, any, GetStatisticsRequestBody>,
+  res: Response
+) => {
+  const ip = req.ip
+  const user = req.user as User
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  try {
+    const result = await StatisticalService.getDealStatistics(user)
+
+    await writeInfoLog(`Thực hiện lấy thống kê số đơn thành công (User: ${user._id}) (IP: ${ip}])`)
+
+    res.json({
+      result,
+      authenticate
+    })
+  } catch (err) {
+    await writeErrorLog(`Thực hiện lấy thống kê số đơn thất bại (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`)
+
+    res.json({
+      message: STATISTICS_MESSAGE.GET_STATISTICS_FAILURE,
+      authenticate
+    })
+  }
+}
+
+export const findDealStatisticsController = async (
+  req: Request<ParamsDictionary, any, FindStatisticsRequestBody>,
+  res: Response
+) => {
+  const ip = req.ip
+  const user = req.user as User
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  try {
+    const result = await StatisticalService.findDealStatistics(req.body, user)
+
+    await writeInfoLog(`Thực hiện lấy thống kê số đơn theo khoản thời gian thành công (User: ${user._id}) (IP: ${ip}])`)
+
+    res.json({
+      result,
+      authenticate
+    })
+  } catch (err) {
+    await writeErrorLog(
+      `Thực hiện lấy thống kê số đơn theo khoản thời gian thất bại (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`
     )
 
     res.json({

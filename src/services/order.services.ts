@@ -156,6 +156,7 @@ class OrderService {
 
     const revenueStatisticseFirebaseRealtime = db.ref(`statistics/revenue/${vehicle.user}`).push()
     const orderStatisticseFirebaseRealtime = db.ref(`statistics/order/${vehicle.user}`).push()
+    const dealStatisticseFirebaseRealtime = db.ref(`statistics/deal/${vehicle.user}`).push()
 
     const notificationMessageCustomer = `-${totalPrice.toLocaleString('vi-VN')} đ thanh toán mua ${payload.quantity} vé xe ${busRoute.start_point} - ${busRoute.end_point}`
     const notificationMessageBusiness = `+${totalRevenue.toLocaleString('vi-VN')} đ khách hàng thanh toán mua ${payload.quantity} vé xe ${busRoute.start_point} - ${busRoute.end_point}`
@@ -251,6 +252,21 @@ class OrderService {
       io.to(`statistics-global`).emit('update-statistics-order-global', {
         type: '+',
         value: payload.quantity,
+        time: date
+      }),
+      dealStatisticseFirebaseRealtime.set({
+        type: '+',
+        value: 1,
+        time: date
+      }),
+      io.to(`statistics-${vehicle.user}`).emit('update-statistics-deal', {
+        type: '+',
+        value: 1,
+        time: date
+      }),
+      io.to(`statistics-global`).emit('update-statistics-deal-global', {
+        type: '+',
+        value: 1,
         time: date
       })
     ])
