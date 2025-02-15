@@ -400,13 +400,12 @@ export const changePasswordTemporaryController = async (
   const user = req.user as User
 
   try {
-    const authenticate = await UserServices.ChangePasswordTemporary(req.body, user)
+    await UserServices.ChangePasswordTemporary(req.body, user)
 
     await writeInfoLog(`Thực hiện thay đổi mật khẩu lần đầu cho tài khoản ${user._id} thành công (IP: ${ip}])`)
 
     res.json({
-      message: USER_MESSAGE.CHANGED_TEMPORARY_PASSWORD_SUCCESS,
-      authenticate
+      message: USER_MESSAGE.CHANGED_TEMPORARY_PASSWORD_SUCCESS
     })
   } catch (err) {
     await writeErrorLog(

@@ -87,7 +87,7 @@ export const USER_MESSAGE = {
   CHANGED_AVATAR_SUCCESS: 'Avatar changed successfully!',
   CHANGED_AVATAR_FAILURE: 'Failed to change avatar',
   USER_IS_TEMPORARY: 'Please change your temporary password before logging in',
-  CHANGED_TEMPORARY_PASSWORD_SUCCESS: 'Temporary password changed successfully!',
+  CHANGED_TEMPORARY_PASSWORD_SUCCESS: 'Temporary password changed successfully! Please log in again',
   CHANGED_TEMPORARY_PASSWORD_FAILURE: 'Failed to change temporary password',
   ACCOUNT_IS_NOT_A_CURRENT_ACCOUNT:
     'This account is not issued by us or the account has already been changed for the first time',

@@ -689,8 +689,6 @@ class UserService {
   }
 
   async ChangePasswordTemporary(payload: ChangePasswordTemporaryRequestBody, user: User) {
-    const [access_token, refresh_token] = await this.signAccessTokenAndRefreshToken(user._id.toString())
-
     Promise.all([
       databaseService.users.updateOne(
         {
@@ -705,14 +703,8 @@ class UserService {
             updated_at: true
           }
         }
-      ),
-      this.registerRefreshToken(user._id.toString(), refresh_token)
+      )
     ])
-
-    return {
-      access_token,
-      refresh_token
-    }
   }
 }
 
