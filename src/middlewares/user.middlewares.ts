@@ -1246,3 +1246,24 @@ export const loginManageValidator = validate(
     ['body']
   )
 )
+
+export const bannedValidator = async (req: Request, res: Response, next: NextFunction) => {
+  const user = req.user as User
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  if (user.penalty !== null) {
+    if (new Date(user.penalty.expired_at) < new Date()) {
+      await AccountmManagementService.unBanAccount(user._id.toString())
+    } else {
+      throw new Error(
+        `Your account has been banned for reason ${user.penalty.reason} and will unlock on ${formatDateFull2(user.penalty.expired_at)}`
+      )
+    }
+  }
+
+  next()
+}

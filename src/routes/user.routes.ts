@@ -33,7 +33,8 @@ import {
   AuthenticationValidator,
   image3x4Validator,
   changePasswordTemporaryValidator,
-  loginManageValidator
+  loginManageValidator,
+  bannedValidator
 } from '~/middlewares/user.middlewares'
 import { wrapRequestHandler } from '~/utils/handlers'
 import multer from 'multer'
@@ -308,7 +309,12 @@ router.put(
  *    refresh_token: string
  * }
  */
-router.post('/get-user-infomation', authenticationValidator, wrapRequestHandler(getUserInfomationController))
+router.post(
+  '/get-user-infomation',
+  authenticationValidator,
+  bannedValidator,
+  wrapRequestHandler(getUserInfomationController)
+)
 
 /*
  * Description: Đăng nhập vào một tài khoản có thể sử dụng chức năng quản lý hiện có trên CSDL
