@@ -7,6 +7,7 @@
     --text-light: #64748b;
     --extra-light: #f1f5f9;
     --max-width: 100%;
+    --white: white;
 }
 
 * {
@@ -235,23 +236,31 @@ body {
   }
 
   footer {
-    width: var(--max-width);
     background-color: var(--primary-color);
   }
 
-  .footer__container {
-    display: grid;
-    grid-template-columns: 2fr repeat(4, 1fr);
-    gap: 8rem;
+  .footer {
     margin-top: 4rem;
+  }
+
+  .footer__container {
+    width: var(--max-width);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
   }
 
   .footer__col p {
     line-height: 2rem;
+    color: var(--white);
   }
 
   .footer__col {
     width: 15rem;
+  }
+
+  .footer__col img {
+    width: 100%;
   }
 
   .footer__col h3 {
