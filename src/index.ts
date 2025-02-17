@@ -72,6 +72,10 @@ app.get('/ticket-info', (req: Request, res: Response) => {
   res.render('ticket-infomation')
 })
 
+app.get('/forgot_pass', (req: Request, res: Response) => {
+  res.render('forgot_password')
+})
+
 // download router
 app.use('/download', downloadApi)
 

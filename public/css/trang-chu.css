@@ -240,7 +240,7 @@ body {
   }
 
   .footer {
-    margin-top: 4rem;
+    margin-top: 1rem;
   }
 
   .footer__container {
@@ -256,7 +256,7 @@ body {
   }
 
   .footer__col {
-    width: 15rem;
+    width: 100%;
   }
 
   .footer__col img {

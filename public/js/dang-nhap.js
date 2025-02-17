@@ -3,6 +3,11 @@ const loginform = document.getElementById('login_form')
 const buttonclose = document.getElementById('button_close')
 const usernamelogin = document.getElementById('username_login')
 const password_login = document.getElementById('password_login')
+const forgot_pass = document.getElementById('forget_password')
+
+forgot_pass.addEventListener('click', () => {
+  window.location.href = 'forgot_pass';
+})
 
 openlogin.addEventListener('click', () => {
   loginform.classList.add('open_form')
@@ -11,6 +16,8 @@ openlogin.addEventListener('click', () => {
 buttonclose.addEventListener('click', () => {
   loginform.classList.remove('open_form')
 })
+
+
 
 function validateEmail(email) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
