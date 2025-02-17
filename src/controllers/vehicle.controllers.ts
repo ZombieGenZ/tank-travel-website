@@ -326,3 +326,36 @@ export const getVehicleListController = async (
     })
   }
 }
+
+export const getVehicleRegistrationController = async (
+  req: Request<ParamsDictionary, any, GetVehicleRequestBody>,
+  res: Response
+) => {
+  const ip = req.ip
+  const user = req.user as User
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  try {
+    const result = await VehicleService.getVehicleRegistration(req.body)
+
+    await writeInfoLog(`Thực hiện lấy thông tin phương tiện đang chờ duyệt thành công (User: ${user._id}) (IP: ${ip}])`)
+
+    res.json({
+      result,
+      authenticate
+    })
+  } catch (err) {
+    await writeErrorLog(
+      `Thực hiện lấy thông tin phương tiện đang chờ duyệt thất bại (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`
+    )
+
+    res.json({
+      message: VEHICLE_MESSGAE.GET_VEHICLE_FAILURE,
+      authenticate
+    })
+  }
+}

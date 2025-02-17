@@ -627,6 +627,42 @@ class VehicleService {
       }
     }
   }
+
+  async getVehicleRegistration(payload: GetVehicleRequestBody) {
+    const limit = Number(process.env.LOAD_QUANTITY_LIMIT as string)
+    const next = limit + 1
+
+    const result = await databaseService.vehicles
+      .find({
+        created_at: { $lt: new Date(payload.session_time) },
+        status: 0
+      })
+      .sort({ created_at: -1 })
+      .skip(payload.current)
+      .limit(next)
+      .toArray()
+
+    const continued = result.length > limit
+
+    const vehicle = result.slice(0, limit)
+
+    const current = payload.current + vehicle.length
+
+    if (vehicle.length === 0) {
+      return {
+        message: VEHICLE_MESSGAE.NO_MATCHING_RESULTS_FOUND,
+        current: payload.current,
+        continued: false,
+        vehicle: []
+      }
+    } else {
+      return {
+        current,
+        continued,
+        vehicle
+      }
+    }
+  }
 }
 const vehicleService = new VehicleService()
 export default vehicleService

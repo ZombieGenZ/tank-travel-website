@@ -9,7 +9,8 @@ import {
   getVehiclePreviewController,
   findVehicleController,
   censorVehicleController,
-  getVehicleListController
+  getVehicleListController,
+  getVehicleRegistrationController
 } from '~/controllers/vehicle.controllers'
 const router = express.Router()
 import multer from 'multer'
@@ -23,7 +24,8 @@ import {
   vehicleIdValidator,
   getVehicleValidator,
   findVehicleValidator,
-  censorVehicleValidator
+  censorVehicleValidator,
+  getVehicleRegistrationValidator
 } from '~/middlewares/vehicle.middlewares'
 import {
   authenticationValidator,
@@ -275,6 +277,27 @@ router.post(
   authenticationValidator,
   businessAuthenticationValidator,
   wrapRequestHandler(getVehicleListController)
+)
+
+/*
+ * Description: Lấy thông tin phương tiện đang chờ duyệt đang có trên CSDL
+ * Path: /api/vehicle/get-vehicle-registration
+ * Method: POST
+ * headers: {
+ *    authorization: Bearer <token>
+ * },
+ * Body: {
+ *    refresh_token: string,
+ *    session_time: Date,
+ *    current: number
+ * }
+ */
+router.post(
+  '/get-vehicle-registration',
+  authenticationValidator,
+  administratorAuthenticationValidator,
+  getVehicleRegistrationValidator,
+  wrapRequestHandler(getVehicleRegistrationController)
 )
 
 export default router
