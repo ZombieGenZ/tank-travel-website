@@ -413,6 +413,17 @@ export const cancelTicketValidator = async (
               throw new Error(ORDER_MESSAGE.TICKET_ID_IS_NOT_EXIST)
             }
 
+            const bill = await databaseService.bill.findOne({ _id: ticket.bill })
+            const busRoute = await databaseService.busRoute.findOne({ _id: bill?.bus_route })
+
+            if (busRoute === null || busRoute === undefined) {
+              throw new Error(ORDER_MESSAGE.BUS_ROUTE_IS_NOT_EXIST)
+            }
+
+            if (busRoute.departure_time < new Date()) {
+              throw new Error(ORDER_MESSAGE.BUS_ROUTE_IS_DEPARTURED)
+            }
+
             ;(req as Request).billDetail = ticket
 
             return true

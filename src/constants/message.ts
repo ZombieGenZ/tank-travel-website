@@ -232,7 +232,9 @@ export const ORDER_MESSAGE = {
   GET_ORDER_DETAIL_FAILED: 'Failed to get order details',
   CANCELED_TICKET_FAILURE: 'Failed to cancel ticket',
   SESSION_TIME_IS_REQUIRED: 'Session time cannot be empty',
-  SESSION_TIME_IS_MUST_BE_A_DATE: 'Session time is not in the correct format'
+  SESSION_TIME_IS_MUST_BE_A_DATE: 'Session time is not in the correct format',
+  BUS_ROUTE_IS_NOT_EXIST: 'Bus route does not exist',
+  BUS_ROUTE_IS_DEPARTURED: 'This bus route has already departed'
 } as const
 
 export const EVALUATE_MESSAGE = {
