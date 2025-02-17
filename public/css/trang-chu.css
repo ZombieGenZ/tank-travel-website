@@ -124,6 +124,11 @@ body {
     box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.1);
   }
 
+  .booking_container form {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr) auto;
+  }
+
   .booking_nav {
     max-width: 600px;
     margin: auto;
@@ -268,4 +273,11 @@ body {
     font-weight: 500;
     color: var(--white);
     margin-bottom: 1rem;
+  }
+
+  @media (max-width: 832px) {
+    .booking_container form {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr) auto;
+    }
   }

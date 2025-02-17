@@ -40,7 +40,7 @@ if (
           personal.id = 'personal'
           personal.innerHTML = '<i class="ri-user-3-line"></i>'
           buttonlogin.innerText = 'Logout'
-          personal_infor.parentNode.appendChild(personal)
+          personal_infor.appendChild(personal)
         }
       }
     })
