@@ -1,7 +1,7 @@
 const button = document.getElementById('btn')
 
 button.addEventListener('click', () => {
-    const username = document.getElementById('username_login').value.trim()
+    const username = document.getElementById('username_changepass').value.trim()
     if(!validateEmail(username)) {
         Swal.fire({
             title: 'Oops...',
@@ -16,7 +16,7 @@ button.addEventListener('click', () => {
             footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
         }).then((willRedirect) => {
             if (willRedirect) {
-              window.location.href = "/";
+              window.location.href = "/change_pass";
             }})
     }
 })

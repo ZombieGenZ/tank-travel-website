@@ -35,13 +35,12 @@ if (
 
         if (user != null) {
           const buttonlogin = document.getElementById('btn_login')
-          const navbar = document.getElementById('navbar')
-          const personal = document.getElementById('personal')
+          const personal = document.createElement('div')
+          const personal_infor = document.getElementById('personal_infor')
+          personal.id = 'personal'
           personal.innerHTML = '<i class="ri-user-3-line"></i>'
           buttonlogin.innerText = 'Logout'
-
-          navbar.parentNode.removeChild(buttonlogin)
-          navbar.parentNode.appendChild(personal)
+          personal_infor.parentNode.appendChild(personal)
         }
       }
     })
@@ -54,3 +53,4 @@ document.getElementById('btn_login').addEventListener('click', () => {
 document.getElementById('ticket-information').addEventListener('click', () => {
   window.location.href = '/ticket-info'
 })
+

@@ -76,6 +76,10 @@ app.get('/forgot_pass', (req: Request, res: Response) => {
   res.render('forgot_password')
 })
 
+app.get('/change_pass', (req: Request, res: Response) => {
+  res.render('change_password')
+})
+
 // download router
 app.use('/download', downloadApi)
 
