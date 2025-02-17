@@ -23,6 +23,15 @@ body {
     background-color: white;
 }
 
+.nav_logo {
+  font-size: 1.5rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 1rem;
+  font-weight: 500;
+}
+
 main {
     overflow: hidden;
     border-radius: 10px;

@@ -30,7 +30,6 @@ function login() {
 
   if (username === '' || password === '') {
     Swal.fire({
-      icon: 'error',
       title: 'Oops...',
       text: 'Do not leave username or password blank!',
       footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
@@ -40,7 +39,6 @@ function login() {
 
   if (!validateEmail(username)) {
     Swal.fire({
-      icon: 'error',
       title: 'Oops...',
       text: 'Do not leave username or password blank!',
       footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
@@ -66,7 +64,6 @@ function login() {
     .then((data) => {
       if (data == null || data == undefined) {
         Swal.fire({
-          icon: 'error',
           title: 'Oops...',
           text: 'Error connecting to server',
           footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
@@ -77,7 +74,6 @@ function login() {
       if (data.message === 'Input data error') {
         for (const key in data.errors) {
           Swal.fire({
-            icon: 'error',
             title: 'Oops...',
             text: data.errors[key].msg,
             footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
@@ -88,7 +84,6 @@ function login() {
 
       if (data.message === 'Please change your temporary password before logging in') {
         Swal.fire({
-          icon: 'error',
           title: 'Oops...',
           text: 'Please change your temporary password before logging in',
           footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
@@ -103,7 +98,6 @@ function login() {
         Swal.fire({
           title: 'Good job!',
           text: data.message,
-          icon: 'success'
         }).then((result) => {
           if (result.dismiss === Swal.DismissReason.backdrop) {
             window.location.href = '/'
@@ -114,7 +108,6 @@ function login() {
         return
       } else {
         Swal.fire({
-          icon: 'error',
           title: 'Oops...',
           text: 'Error connecting to server',
           footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'

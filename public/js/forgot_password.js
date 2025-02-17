@@ -17,11 +17,11 @@ button.addEventListener('click', () => {
         }).then((willRedirect) => {
             if (willRedirect) {
               window.location.href = "/change_pass";
-            }})
+        }})
     }
 })
 
 function validateEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     return emailRegex.test(email)
-  }
+}

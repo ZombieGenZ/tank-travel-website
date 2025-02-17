@@ -52,6 +52,8 @@ body {
   }
 
   nav {
+    position: sticky;
+    top: 0;
     max-width: var(--max-width);
     margin: auto;
     padding: 1rem;
@@ -59,6 +61,8 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
+    background-color: var(--extra-light);
+    z-index: 999;
   }
 
   .ul_links {
@@ -87,6 +91,7 @@ body {
     padding: .5rem 1rem;
     background-color: var(--extra-light);
     cursor: pointer;
+    box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.1);
   }
 
   .link a:hover {
