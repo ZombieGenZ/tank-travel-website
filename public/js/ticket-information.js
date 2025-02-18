@@ -87,9 +87,95 @@ document.getElementById('signup_business').addEventListener('click', () => {
   window.location.href = '/business_signup'
 })
 
+function formatDate(dateString) {
+  const date = new Date(dateString)
+  const hours = date.getHours().toString().padStart(2, '0')
+  const minutes = date.getMinutes().toString().padStart(2, '0')
+  const day = date.getDate().toString().padStart(2, '0')
+  const month = (date.getMonth() + 1).toString().padStart(2, '0')
+  const year = date.getFullYear()
+  return `${hours}:${minutes} ${day}/${month}/${year}`
+}
+
 const session_time = new Date().toISOString()
 let current = 0
 
 window.addEventListener('load', () => {
-  
+  const body = {
+    session_time: session_time,
+    current: current
+  }
+
+  fetch('/api/bus-route/get-bus-route-list', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${access_token}`
+    },
+    body: JSON.stringify(body)
+  })
+    .then((response) => {
+      return response.json()
+    })
+    .then((data) => {
+      console.log(data)
+
+      if (data == null || data == undefined || data.result.message == 'Failed to get bus route information') {
+        Swal.fire({
+          title: 'Oops...',
+          text: 'Error connecting to server',
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+        })
+        return
+      }
+
+      if (data.result.message == 'No matching results found') {
+        document.getElementById('see_more').innerHTML = ''
+        return
+      }
+
+      if (data.result.busRoute !== null && data.result.busRoute !== undefined) {
+        const list = document.getElementById('list_ticket')
+        const busRoute = data.result.busRoute
+
+        for (const key in busRoute) {
+          list.innerHTML += `
+              <li class="each_ticket">
+                <div class="information">
+                    <h3>${busRoute[key].start_point} to ${busRoute[key].end_point}</h3>
+                    <div class="date_local">
+                        <div class="detail_ticket start_point">
+                            <h4>Departure:</h4>
+                            <p>${busRoute[key].start_point}</p>
+                        </div>
+                        <div class="detail_ticket end_point">
+                            <h4>Destination:</h4>
+                            <p>${busRoute[key].end_point}</p>
+                        </div>
+                        <div class="detail_ticket date_begin">
+                            <h4>Date:</h4>
+                            <p>${formatDate(busRoute[key].departure_time)}</p>
+                        </div>
+                        <div class="detail_ticket price">
+                            <h4>Price:</h4>
+                            <p>${busRoute[key].price.toLocaleString('vi-VN')} VND</p>
+                        </div>
+                    </div>
+                    <div class="morinfor_bookbutton">
+                        <button class="btn">More information</button>
+                        <button class="btn">Book</button>    
+                    </div>
+                </div>    
+            </li>
+          `
+        }
+
+        current = data.result.current
+        if (!data.result.continued) {
+          document.getElementById('see_more').innerHTML = ''
+        } else {
+          document.getElementById('see_more').innerHTML = `<h3>See more <i class="ri-arrow-down-line"></i></h3>`
+        }
+      }
+    })
 })
