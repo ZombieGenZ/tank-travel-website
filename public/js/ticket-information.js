@@ -87,3 +87,9 @@ document.getElementById('signup_business').addEventListener('click', () => {
   window.location.href = '/business_signup'
 })
 
+const session_time = new Date().toISOString()
+let current = 0
+
+window.addEventListener('load', () => {
+  
+})

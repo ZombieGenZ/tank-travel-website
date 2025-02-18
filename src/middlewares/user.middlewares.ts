@@ -1255,9 +1255,10 @@ export const bannedValidator = async (req: Request, res: Response, next: NextFun
     if (new Date(user.penalty.expired_at) < new Date()) {
       await AccountmManagementService.unBanAccount(user._id.toString())
     } else {
-      throw new Error(
-        `Your account has been banned for reason ${user.penalty.reason} and will unlock on ${formatDateFull2(user.penalty.expired_at)}`
-      )
+      res.json({
+        message: `Your account has been banned for reason ${user.penalty.reason} and will unlock on ${formatDateFull2(user.penalty.expired_at)}`
+      })
+      return
     }
   }
 

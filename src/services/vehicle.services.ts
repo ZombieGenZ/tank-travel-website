@@ -289,17 +289,32 @@ class VehicleService {
 
     if (user.permission == UserPermission.ADMINISTRATOR) {
       const result = await databaseService.vehicles
-        .find({ created_at: { $lt: new Date(payload.session_time) } })
-        .project({ preview: 0 })
-        .sort({ created_at: -1 })
-        .skip(payload.current)
-        .limit(next)
+        .aggregate([
+          { $match: { created_at: { $lt: new Date(payload.session_time) } } },
+          { $sort: { created_at: -1 } },
+          { $skip: payload.current },
+          { $limit: next },
+          {
+            $lookup: {
+              from: process.env.DATABASE_USER_COLLECTION,
+              localField: 'user',
+              foreignField: '_id',
+              as: 'user'
+            }
+          },
+          { $unwind: '$user' },
+          {
+            $project: {
+              preview: 0,
+              'user.password': 0,
+              'user.forgot_password_token': 0
+            }
+          }
+        ])
         .toArray()
 
       const continued = result.length > limit
-
       const vehicle = result.slice(0, limit)
-
       const current = payload.current + vehicle.length
 
       if (vehicle.length === 0) {
@@ -318,20 +333,37 @@ class VehicleService {
       }
     } else {
       const result = await databaseService.vehicles
-        .find({
-          user: user._id,
-          created_at: { $lt: new Date(payload.session_time) }
-        })
-        .project({ preview: 0 })
-        .sort({ created_at: -1 })
-        .skip(payload.current)
-        .limit(next)
+        .aggregate([
+          {
+            $match: {
+              user: user._id,
+              created_at: { $lt: new Date(payload.session_time) }
+            }
+          },
+          { $sort: { created_at: -1 } },
+          { $skip: payload.current },
+          { $limit: next },
+          {
+            $lookup: {
+              from: process.env.DATABASE_USER_COLLECTION,
+              localField: 'user',
+              foreignField: '_id',
+              as: 'user'
+            }
+          },
+          { $unwind: '$user' },
+          {
+            $project: {
+              preview: 0,
+              'vehicle.password': 0,
+              'vehicle.forgot_password_token': 0
+            }
+          }
+        ])
         .toArray()
 
       const continued = result.length > limit
-
       const vehicle = result.slice(0, limit)
-
       const current = payload.current + vehicle.length
 
       if (vehicle.length === 0) {
@@ -375,7 +407,6 @@ class VehicleService {
                 { rules: { $regex: key, $options: 'i' } },
                 { amenities: { $regex: key, $options: 'i' } },
                 { license_plate: { $regex: key, $options: 'i' } },
-
                 ...(isNaN(Number(key))
                   ? []
                   : [{ vehicle_type: Number(key) }, { seat_type: Number(key) }, { seats: Number(key) }])
@@ -387,17 +418,32 @@ class VehicleService {
       }
 
       const result = await databaseService.vehicles
-        .find(searchQuery)
-        .project({ preview: 0 })
-        .sort({ created_at: -1 })
-        .skip(payload.current)
-        .limit(next)
+        .aggregate([
+          { $match: searchQuery },
+          { $sort: { created_at: -1 } },
+          { $skip: payload.current },
+          { $limit: next },
+          {
+            $lookup: {
+              from: process.env.DATABASE_USER_COLLECTION,
+              localField: 'user',
+              foreignField: '_id',
+              as: 'user'
+            }
+          },
+          { $unwind: '$user' },
+          {
+            $project: {
+              preview: 0,
+              'user.password': 0,
+              'user.forgot_password_token': 0
+            }
+          }
+        ])
         .toArray()
 
       const continued = result.length > limit
-
       const vehicle = result.slice(0, limit)
-
       const current = payload.current + vehicle.length
 
       if (vehicle.length === 0) {
@@ -437,17 +483,32 @@ class VehicleService {
       }
 
       const result = await databaseService.vehicles
-        .find(searchQuery)
-        .project({ preview: 0 })
-        .sort({ created_at: -1 })
-        .skip(payload.current)
-        .limit(next)
+        .aggregate([
+          { $match: searchQuery },
+          { $sort: { created_at: -1 } },
+          { $skip: payload.current },
+          { $limit: next },
+          {
+            $lookup: {
+              from: process.env.DATABASE_USER_COLLECTION,
+              localField: 'user',
+              foreignField: '_id',
+              as: 'user'
+            }
+          },
+          { $unwind: '$user' },
+          {
+            $project: {
+              preview: 0,
+              'user.password': 0,
+              'user.forgot_password_token': 0
+            }
+          }
+        ])
         .toArray()
 
       const continued = result.length > limit
-
       const vehicle = result.slice(0, limit)
-
       const current = payload.current + vehicle.length
 
       if (vehicle.length === 0) {
