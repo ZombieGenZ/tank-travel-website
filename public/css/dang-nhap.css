@@ -186,6 +186,11 @@ span {
     border: none;
     padding: .75rem .5rem;
     background-color: var(--primary-color);
+    cursor: pointer;
+  }
+
+  .send_button:hover {
+    background-color: var(--primary-dark-color);
   }
 
   #forget_password {

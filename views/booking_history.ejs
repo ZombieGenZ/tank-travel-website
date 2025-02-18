@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet"/>
     <title>Document</title>
-    <link rel="stylesheet" href="/css/trang-chu.css">
+    <link rel="stylesheet" href="/css/booking_history.css">
 </head>
 <body>
     <nav id="navbar">
@@ -27,49 +27,27 @@
         </ul>
     </div>
 
-    <header class="section_container section_header">
-        <h1>A greatest website to find and booking<br> An experience.</h1>
-        <img src="/images/system/buss.jpg" alt="">
-    </header>
-
-    <section class="section_container booking_container">
-        <div class="booking_nav">
-            <span><i class="ri-bus-2-fill"></i> Bus</span>
-            <span><i class="ri-train-fill"></i> Train</span>
-        </div>
-        <div class="form">
-            <div class="form__group">
-                <span><i class="ri-map-pin-line"></i></span>
-                <div class="input__content">
-                    <div class="input__group">
-                        <input type="input" class="form__field" placeholder="Name" required="">
-                        <label for="name" class="form__label">Departure</label>
+    <section class="section_container viewhistory_container">
+        <div class="header_history">
+            <h2>Booking history</h2>
+            <div class="fucntion_search">
+                <div class="dropdown">
+                    <input type="text" class="dropdown_month" readonly>
+                    <div class="month">
+                        <div>Yesterday</div>
+                        <div>1 week ago</div>
+                        <div>1 month ago</div>
+                        <div>1 year ago</div>
                     </div>
-                    <p>Add departure</p>
                 </div>
-            </div>
-            <div class="form__group">
-                <span><i class="ri-map-pin-line"></i></span>
-                <div class="input__content">
-                    <div class="input__group">
-                        <input type="input" class="form__field" placeholder="Name" required="">
-                        <label for="name" class="form__label">Destination</label>
+                <div class="dropdown">
+                    <input type="text" class="dropdown_status" readonly>
+                    <div class="month">
+                        <div>Success</div>
+                        <div>Failed</div>
+                        <div>Browsing</div>
                     </div>
-                    <p>Add destination</p>
                 </div>
-            </div>
-            <div class="form__group">
-                <span><i class="ri-map-pin-line"></i></span>
-                <div class="input__content">
-                    <div class="input__group">
-                        <input type="date" class="form__field" placeholder="Name" required="">
-                        <label for="name" class="form__label">Date - Time</label>
-                    </div>
-                    <p>Add date - time</p>
-                </div>
-            </div>
-            <div class="form__group">
-                <button class="btn" id="search_bus"><i class="ri-search-2-line"></i></button>
             </div>
         </div>
     </section>
@@ -100,6 +78,6 @@
         </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="/js/trang-chu.js"></script>
+    <script src="/js/booking_history.js"></script>
 </body>
 </html>

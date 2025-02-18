@@ -40,10 +40,13 @@ if (
           const booking_history = document.createElement('li')
           const recharge = document.createElement('li')
           const personal_infor = document.getElementById('personal_infor')
+          const dropdown_personal = document.getElementById('dropdown_personal')
           recharge.classList.add('link')
           recharge.innerHTML = '<a href="#"><i class="ri-money-dollar-circle-line"></i> Recharge</a>'
+          recharge.id = 'recharge_money'
           booking_history.classList.add('link')
           booking_history.innerHTML = '<a href="#"><i class="ri-history-line"></i> Booking history</a>'
+          booking_history.id = 'booking_history'
           personal.id = 'personal'
           personal.innerHTML = '<i class="ri-user-3-line"></i>'
           buttonlogin.style.display = 'none'
@@ -51,10 +54,26 @@ if (
           personal_infor.appendChild(personal)
           ul.appendChild(recharge)
           ul.appendChild(booking_history)
+
+          personal.addEventListener('click', () => {
+            dropdown_personal.classList.toggle('active')
+          })
+
+          recharge.addEventListener('click', () => {
+            window.location.href = '/recharge'
+          })
+
+          booking_history.addEventListener('click', () => {
+            window.location.href = '/booking_history'
+          })
         }
       }
     })
 }
+
+document.getElementById('profile').addEventListener('click', () => {
+  window.location.href = '/profile'
+})
 
 document.getElementById('btn_login').addEventListener('click', () => {
   window.location.href = '/login'
