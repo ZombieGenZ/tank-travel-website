@@ -43,7 +43,7 @@ class RevenueService {
       amount: payload.transferAmount
     }
 
-    const paymentFirebaseRealtime = db.ref(`payment/${revenue?.user}`).push()
+    const paymentFirebaseRealtime = db.ref(`payment/${revenue?.user}/${payload.code}`).push()
 
     await Promise.all([
       databaseService.revenue.updateOne(
