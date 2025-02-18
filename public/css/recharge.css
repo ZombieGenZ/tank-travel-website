@@ -52,6 +52,10 @@ body {
   gap: 2rem;
 }
 
+.recharge_form img {
+  width: 70%;
+}
+
 .recharge_container .form {
   display: flex;
   flex-direction: column;

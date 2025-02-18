@@ -4,6 +4,8 @@ button_data.forEach(button => {
   button.addEventListener('click', () => {
     const data_view = button.textContent;
     money_view.value = data_view
+    const price_information = document.getElementById('price_information')
+    price_information.innerText = `Price: ${data_view} VNĐ`
   })
 })
 
