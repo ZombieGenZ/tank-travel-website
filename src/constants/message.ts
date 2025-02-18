@@ -24,7 +24,7 @@ export const USER_MESSAGE = {
   COMFORM_PASSWORD_MUST_BE_STRONG:
     'Confirm password must be at least 8 characters long, including uppercase, lowercase, numbers, and special characters',
   COMFIRM_PASSWORD_MUST_BE_THE_SAME_AS_PASSWORD: 'Confirm password must match the password',
-  REGISTER_SUCCESS: 'Registration successful!',
+  REGISTER_SUCCESS: 'Registration successful! Please log in again',
   REGISTER_FAILURE: 'Registration failed',
   INCORRECT_EMAIL_OR_PASSWORD: 'Incorrect email or password',
   LOGIN_SUCCESS: 'Login successful!',
