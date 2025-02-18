@@ -12,6 +12,7 @@ import Evaluate from '~/models/schemas/evaluate.schemas'
 import BusinessRegistration from '~/models/schemas/businessregistration.schemas'
 import Log from '~/models/schemas/log.schemas'
 import NotificationPrivate from '~/models/schemas/notificationPrivate.schemas'
+import Revenue from '~/models/schemas/revenue.schemas'
 dotenv.config()
 
 const uri = `mongodb+srv://${process.env.DATABASE_USERNAME}:${process.env.DATABASE_PASSWORD}@datvexe.bxmnu.mongodb.net/?retryWrites=true&w=majority&appName=DatVeXe`
@@ -68,6 +69,9 @@ class DatabaseService {
   }
   get notificationPrivate(): Collection<NotificationPrivate> {
     return this.db.collection(process.env.DATABASE_NOTIFICATION_PRIVATE_COLLECTION as string)
+  }
+  get revenue(): Collection<Revenue> {
+    return this.db.collection(process.env.DATABASE_REVENUE_COLLECTION as string)
   }
 }
 

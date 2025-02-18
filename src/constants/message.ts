@@ -367,3 +367,14 @@ export const STATISTICS_MESSAGE = {
   END_TIME_IS_MUST_BE_A_VALID_DATE: 'End time must be a valid date',
   END_TIME_IS_MUST_BE_GREATER_THAN_START_TIME: 'End time must be later than start time'
 } as const
+
+export const REVENUE_MESSAGE = {
+  AMOUNT_REQUIRED: 'Amount cannot be empty',
+  AMOUNT_MUST_BE_NUMBER: 'Amount must be a number',
+  AMOUNT_MUST_BE_GREATER_THAN_1000: 'Amount must be greater than 1000',
+  CREATE_BANK_ORDER_FAILURE: 'Failed to create QR code order',
+  API_KEY_REQUIRED: 'API key cannot be empty',
+  API_KEY_INVALID: 'Invalid API key',
+  CHECKOUT_ORDER_SUCCESS: 'Order paid successfully!',
+  CHECKOUT_ORDER_FAILURE: 'Failed to pay order'
+}
