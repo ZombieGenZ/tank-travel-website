@@ -308,8 +308,9 @@ io.on('connection', (socket: Socket) => {
           // mô tả chi tiết sự kiện:
           // sự kiện: update-order-status
           // mô tả: cập nhật trạng thái đơn hàng cho người dùng
-          // dử liệu: status
+          // dử liệu: status, amount
           // status: trạng thái đơn hàng
+          // amount: số tiền đã thanh toán
 
           socket.join(`BANK_DH${order_id}`)
           await writeInfoLog(`Khách hàng ${user._id} (SocketID: ${socket.id}) đã kết nối đến phòng BANK_DH${order_id}`)

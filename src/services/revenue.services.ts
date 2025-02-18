@@ -52,7 +52,8 @@ class RevenueService {
         },
         {
           $set: {
-            payment_info: payment_info
+            payment_info: payment_info,
+            amount_received: payload.transferAmount
           }
         }
       ),
@@ -70,7 +71,8 @@ class RevenueService {
         status: true
       }),
       io.to(`BANK_DH${revenue?._id}`).emit('update-order-status', {
-        status: true
+        status: true,
+        amount: payload.transferAmount
       })
     ])
   }
