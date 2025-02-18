@@ -5,6 +5,8 @@ import Revenue from '~/models/schemas/revenue.schemas'
 import { PaymentType } from '~/constants/enum'
 import { ObjectId } from 'mongodb'
 import { BankRevenue } from '~/constants/revenue'
+import { db } from './firebase.services'
+import { io } from '~/index'
 
 class RevenueService {
   async createBankOrder(payload: CreateBankOrderRequestBody, user: User) {
@@ -26,7 +28,11 @@ class RevenueService {
   }
 
   async checkoutBankOrder(payload: CheckoutBankOrderRequestBody) {
-    const order_id = payload.content.substring(2)
+    if (payload.code == null) {
+      return
+    }
+
+    const order_id = payload.code.substring(2)
 
     const revenue = await databaseService.revenue.findOne({ _id: new ObjectId(order_id) })
 
@@ -36,6 +42,8 @@ class RevenueService {
       description: payload.content,
       amount: payload.transferAmount
     }
+
+    const paymentFirebaseRealtime = db.ref(`payment/${revenue?.user}`).push()
 
     await Promise.all([
       databaseService.revenue.updateOne(
@@ -57,7 +65,13 @@ class RevenueService {
             balance: payload.transferAmount
           }
         }
-      )
+      ),
+      paymentFirebaseRealtime.set({
+        status: true
+      }),
+      io.to(`BANK_DH${revenue?._id}`).emit('update-order-status', {
+        status: true
+      })
     ])
   }
 }

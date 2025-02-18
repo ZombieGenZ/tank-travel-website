@@ -46,7 +46,6 @@ export const checkoutBankOrderController = async (
   const ip = req.ip as string
 
   try {
-    console.log(req.body)
     await RevenueService.checkoutBankOrder(req.body)
 
     await writeInfoLog(`Thực hiện xác nhận đơn thanh toán ngân hàng thành công (IP: ${ip}])`)

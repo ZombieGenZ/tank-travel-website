@@ -290,6 +290,39 @@ io.on('connection', (socket: Socket) => {
     }
   })
 
+  socket.on('connect-payment-realtime', async (refresh_token: string, order_id: string) => {
+    if (refresh_token !== null && refresh_token !== undefined && refresh_token.trim() !== '') {
+      try {
+        const decoded_refresh_token = (await verifyToken({
+          token: refresh_token,
+          publicKey: process.env.SECURITY_JWT_SECRET_REFRESH_TOKEN as string
+        })) as TokenPayload
+
+        const user = await databaseService.users.findOne({ _id: new ObjectId(decoded_refresh_token.user_id) })
+
+        if (user !== null && user !== undefined) {
+          // Phòng: BANK_DH<order_id>
+          // sự kiện:
+          // update-order-status: cập nhật trạng thái đơn hàng cho người dùng
+          //
+          // mô tả chi tiết sự kiện:
+          // sự kiện: update-order-status
+          // mô tả: cập nhật trạng thái đơn hàng cho người dùng
+          // dử liệu: status
+          // status: trạng thái đơn hàng
+
+          socket.join(`BANK_DH${order_id}`)
+          await writeInfoLog(`Khách hàng ${user._id} (SocketID: ${socket.id}) đã kết nối đến phòng BANK_DH${order_id}`)
+          console.log(
+            `\x1b[33mNgười dùng \x1b[36m${socket.id}\x1b[33m đã kết nối đến phòng \x1b[36mBANK_DH${order_id}\x1b[0m`
+          )
+        }
+      } catch {
+        console.log()
+      }
+    }
+  })
+
   socket.on('disconnect', () => {
     console.log(`\x1b[33mNgười dùng \x1b[36m${socket.id}\x1b[33m đã ngắt kết nối đến máy chủ \x1b[36m${port}\x1b[0m`)
   })

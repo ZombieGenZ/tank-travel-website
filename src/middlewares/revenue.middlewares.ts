@@ -58,8 +58,6 @@ export const sepayApiKeyValidator = validate(
         },
         custom: {
           options: (value) => {
-            console.log(value)
-
             if (!value.startsWith('Apikey ')) {
               throw new Error(REVENUE_MESSAGE.API_KEY_INVALID)
             }
