@@ -1,3 +1,12 @@
+const button_data = document.querySelectorAll('.btn_toview')
+const money_view = document.getElementById('money_view')
+button_data.forEach(button => {
+  button.addEventListener('click', () => {
+    const data_view = button.textContent;
+    money_view.value = data_view
+  })
+})
+
 let user = null
 const access_token = localStorage.getItem('access_token')
 const refresh_token = localStorage.getItem('refresh_token')

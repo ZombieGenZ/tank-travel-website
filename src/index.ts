@@ -85,6 +85,18 @@ app.get('/change_pass', (req: Request, res: Response) => {
   res.render('change_password')
 })
 
+app.get('/recharge', (req: Request, res: Response) => {
+  res.render('recharge')
+})
+
+app.get('/booking_history', (req: Request, res: Response) => {
+  res.render('booking_history')
+})
+
+app.get('/profile', (req: Request, res: Response) => {
+  res.render('profile')
+})
+
 // download router
 app.use('/download', downloadApi)
 

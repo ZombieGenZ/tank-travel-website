@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet"/>
     <title>Document</title>
-    <link rel="stylesheet" href="/css/trang-chu.css">
+    <link rel="stylesheet" href="/css/recharge.css">
 </head>
 <body>
     <nav id="navbar">
@@ -27,50 +27,36 @@
         </ul>
     </div>
 
-    <header class="section_container section_header">
-        <h1>A greatest website to find and booking<br> An experience.</h1>
-        <img src="/images/system/buss.jpg" alt="">
-    </header>
-
-    <section class="section_container booking_container">
-        <div class="booking_nav">
-            <span><i class="ri-bus-2-fill"></i> Bus</span>
-            <span><i class="ri-train-fill"></i> Train</span>
-        </div>
+    <section class="section_container recharge_container">
+        <h1>Recharge</h1>
         <div class="form">
             <div class="form__group">
-                <span><i class="ri-map-pin-line"></i></span>
                 <div class="input__content">
                     <div class="input__group">
-                        <input type="input" class="form__field" placeholder="Name" required="">
-                        <label for="name" class="form__label">Departure</label>
+                        <input type="number" class="form__field" id="wallet_money" placeholder="Name" value="0" readonly>
+                        <label for="name" class="form__label">My wallet</label>
                     </div>
-                    <p>Add departure</p>
+                    <p>Recharge into my wallet</p>
                 </div>
             </div>
             <div class="form__group">
-                <span><i class="ri-map-pin-line"></i></span>
                 <div class="input__content">
                     <div class="input__group">
-                        <input type="input" class="form__field" placeholder="Name" required="">
-                        <label for="name" class="form__label">Destination</label>
+                        <input type="number" class="form__field" id="money_view" placeholder="Name" value="0" readonly>
+                        <label for="name" class="form__label">Money</label>
                     </div>
-                    <p>Add destination</p>
+                    <p>Amount to deposit</p>
                 </div>
             </div>
-            <div class="form__group">
-                <span><i class="ri-map-pin-line"></i></span>
-                <div class="input__content">
-                    <div class="input__group">
-                        <input type="date" class="form__field" placeholder="Name" required="">
-                        <label for="name" class="form__label">Date - Time</label>
-                    </div>
-                    <p>Add date - time</p>
-                </div>
+            <div class="class_money">
+                <button class="btn btn_toview">100000</button>
+                <button class="btn btn_toview">200000</button>
+                <button class="btn btn_toview">500000</button>
+                <button class="btn btn_toview">1000000</button>
+                <button class="btn btn_toview">1500000</button>
+                <button class="btn btn_toview">2000000</button>
             </div>
-            <div class="form__group">
-                <button class="btn" id="search_bus"><i class="ri-search-2-line"></i></button>
-            </div>
+            <button class="btn btn_recharge">Recharge</button>
         </div>
     </section>
 
@@ -100,6 +86,6 @@
         </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="/js/trang-chu.js"></script>
+    <script src="/js/recharge.js"></script>
 </body>
 </html>
