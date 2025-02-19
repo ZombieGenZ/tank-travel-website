@@ -27,6 +27,7 @@ body {
   left: 0;
   padding: 1rem;
   font-weight: 500;
+  cursor: pointer;
 }
 
 .bussiness_signup {

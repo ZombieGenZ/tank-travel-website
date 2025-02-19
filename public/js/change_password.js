@@ -114,3 +114,7 @@ function changePassword() {
       }
     })
 }
+
+document.getElementById('nav_logo').addEventListener('click', () => {
+  window.location.href = '/'
+})

@@ -5,6 +5,10 @@ const usernamelogin = document.getElementById('username_login')
 const password_login = document.getElementById('password_login')
 const forgot_pass = document.getElementById('forget_password')
 
+document.getElementById('nav_logo').addEventListener('click', () => {
+  window.location.href = '/'
+})
+
 forgot_pass.addEventListener('click', () => {
   window.location.href = 'forgot_pass'
 })

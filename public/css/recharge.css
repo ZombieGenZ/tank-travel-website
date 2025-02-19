@@ -218,6 +218,7 @@ body {
   .nav_logo {
     font-size: 1.5rem;
     font-weight: 500;
+    cursor: pointer;
   }
 
   .input__group {
@@ -304,6 +305,7 @@ body {
   .footer__col p {
     line-height: 2rem;
     color: var(--white);
+    cursor: pointer;
   }
 
   .footer__col {
@@ -312,6 +314,7 @@ body {
 
   .footer__col img {
     width: 100%;
+    cursor: pointer;
   }
 
   .footer__col h3 {

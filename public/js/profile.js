@@ -71,6 +71,14 @@ if (
     })
 }
 
+document.getElementById('nav_logo').addEventListener('click', () => {
+  window.location.href = '/'
+})
+
+document.getElementById('img_trangchu').addEventListener('click', () => {
+  window.location.href = '/'
+})
+
 document.getElementById('btn_login').addEventListener('click', () => {
   window.location.href = '/login'
 })

@@ -254,6 +254,7 @@ input[type="file"]::file-selector-button {
   .nav_logo {
     font-size: 1.5rem;
     font-weight: 500;
+    cursor: pointer;
   }
 
   
@@ -275,6 +276,7 @@ input[type="file"]::file-selector-button {
   .footer__col p {
     line-height: 2rem;
     color: var(--white);
+    cursor: pointer;
   }
 
   .footer__col {
@@ -283,6 +285,7 @@ input[type="file"]::file-selector-button {
 
   .footer__col img {
     width: 100%;
+    cursor: pointer;
   }
 
   .footer__col h3 {
