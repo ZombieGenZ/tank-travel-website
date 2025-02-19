@@ -5,9 +5,9 @@ const usernamelogin = document.getElementById('username_login')
 const password_login = document.getElementById('password_login')
 const forgot_pass = document.getElementById('forget_password')
 const see_pass = document.querySelectorAll('.see_pass')
-const pass_confirm = document.querySelectorAll('.')
+// const pass_confirm = document.querySelectorAll('.')
 
-see_pass.forEach(seepass => {
+see_pass.forEach((seepass) => {
   seepass.innerHTML = '<i class="ri-eye-off-line"></i>'
 })
 
@@ -246,6 +246,12 @@ function reSendEmail(btn) {
         Swal.fire({
           title: 'Good job!',
           text: data.message
+        }).then((result) => {
+          if (result.dismiss === Swal.DismissReason.backdrop) {
+            location.reload()
+          } else {
+            location.reload()
+          }
         })
         return
       } else {
@@ -486,3 +492,7 @@ function login() {
       }
     })
 }
+
+document.getElementById('nav_logo').addEventListener('click', () => {
+  window.location.href = '/'
+})
