@@ -203,3 +203,9 @@ span {
   #login {
     margin-top: .5rem;
   }
+
+  .see_pass {
+    position: absolute;
+    right: 2%;
+    top: 20%;
+  }
