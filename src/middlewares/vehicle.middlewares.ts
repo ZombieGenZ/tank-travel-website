@@ -46,7 +46,7 @@ export const authenticateCreateValidator = async (req: Request, res: Response, n
 
       const new_access_token = await userService.signAccessToken(user_id)
       const new_refresh_token = await userService.signRefreshToken(user_id)
-      await userService.changeRefreshToken(user_id, new_access_token)
+      await userService.changeRefreshToken(user_id, new_refresh_token)
 
       req.user = user
       req.access_token = new_access_token
