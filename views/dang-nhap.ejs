@@ -4,12 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet"/>
+    <link rel="icon" href="/images/system/logotab.jpg" type="image/x-icon">
     <script src="/js/check-login.js"></script>
-    <title>Document</title>
+    <title>Login</title>
     <link rel="stylesheet" href="/css/dang-nhap.css">
 </head>
 <body>
-    <div class="nav_logo">TANK TRAVEL</div>
+    <div class="nav_logo"  id="nav_logo">TANK TRAVEL</div>
     <main>
         <div class="signup_form">
             <div class="form">
@@ -28,12 +29,14 @@
                     <label for="name" class="form__label">Phone number</label>
                 </div>
                 <div class="input__group">
-                    <input type="password" class="form__field" id="password_register" placeholder="Name" required="">
+                    <input type="password" class="form__field pass_confirm" id="password_register" placeholder="Name" required="">
                     <label for="name" class="form__label">Password</label>
+                    <div class="see_pass"></div>
                 </div>
                 <div class="input__group">
                     <input type="password" class="form__field" id="comform_password_register" placeholder="Name" required="">
                     <label for="name" class="form__label">Confirm password</label>
+                    <div class="see_pass"></div>
                 </div>
                 <div class="input__group">
                     <input type="password" class="form__field" id="email_verify_code" placeholder="Name" required="">
@@ -54,6 +57,7 @@
                 <div class="input__group">
                     <input type="password" class="form__field" id="password_login" placeholder="Name" required="">
                     <label for="name" class="form__label">Password</label>
+                    <div class="see_pass"></div>
                 </div>
                 <span><a id="forget_password">I forgot my password !</a></span>
                 <button class="btn" id="login" onclick="login()">Login</button>

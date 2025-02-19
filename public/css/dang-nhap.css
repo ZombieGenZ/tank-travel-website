@@ -30,6 +30,7 @@ body {
   left: 0;
   padding: 1rem;
   font-weight: 500;
+  cursor: pointer;
 }
 
 main {
@@ -201,4 +202,10 @@ span {
 
   #login {
     margin-top: .5rem;
+  }
+
+  .see_pass {
+    position: absolute;
+    right: 2%;
+    top: 20%;
   }

@@ -1,3 +1,8 @@
+function formatNumber(number) {
+  const formattedNumber = number.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+  return formattedNumber;
+}
+
 const button_data = document.querySelectorAll('.btn_toview')
 const money_view = document.getElementById('money_view')
 button_data.forEach((button) => {
@@ -5,7 +10,7 @@ button_data.forEach((button) => {
     const data_view = button.textContent
     money_view.value = data_view
     const price_information = document.getElementById('price_information')
-    price_information.innerText = `Price: ${data_view} VNĐ`
+    price_information.innerText = `Price: ${formatNumber(Number(data_view))} VNĐ`
   })
 })
 
@@ -14,8 +19,8 @@ const recharge_payment = document.querySelectorAll('.recharge_payment')
 const recharge_button = document.getElementById('recharge_button')
 
 recharge_button.addEventListener('click', () => {
-  const amount = document.getElementById('money_view').value
-
+  const amount = document.getElementById('money_view')
+  amount.readOnly = true
   if (amount === '') {
     Swal.fire({
       title: 'Oops...',
@@ -33,6 +38,8 @@ recharge_button.addEventListener('click', () => {
     })
     return
   }
+  const price_information = document.getElementById('price_information')
+  price_information.innerText = `Price: ${formatNumber(Number(amount.value))} VNĐ`
 
   const access_token = document.getElementById('access_token')
   const refresh_token = localStorage.getItem('refresh_token')
@@ -191,6 +198,14 @@ if (
       }
     })
 }
+
+document.getElementById('nav_logo').addEventListener('click', () => {
+  window.location.href = '/'
+})
+
+document.getElementById('img_trangchu').addEventListener('click', () => {
+  window.location.href = '/'
+})
 
 document.getElementById('profile').addEventListener('click', () => {
   window.location.href = '/profile'

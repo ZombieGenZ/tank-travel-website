@@ -35,3 +35,7 @@ if (
       }
     })
 }
+
+document.getElementById('nav_logo').addEventListener('click', () => {
+  window.location.href = '/'
+})

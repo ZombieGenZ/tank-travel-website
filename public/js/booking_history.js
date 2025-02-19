@@ -78,6 +78,14 @@ if (
     })
 }
 
+document.getElementById('nav_logo').addEventListener('click', () => {
+  window.location.href = '/'
+})
+
+document.getElementById('img_trangchu').addEventListener('click', () => {
+  window.location.href = '/'
+})
+
 document.getElementById('profile').addEventListener('click', () => {
   window.location.href = '/profile'
 })

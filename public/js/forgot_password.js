@@ -68,3 +68,7 @@ function validateEmail(email) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   return emailRegex.test(email)
 }
+
+document.getElementById('nav_logo').addEventListener('click', () => {
+  window.location.href = '/'
+})
