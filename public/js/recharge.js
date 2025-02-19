@@ -9,6 +9,17 @@ button_data.forEach(button => {
   })
 })
 
+const recharge_grid = document.getElementById('recharge_container')
+const recharge_payment = document.querySelectorAll('.recharge_payment')
+const recharge_button = document.getElementById('recharge_button')
+
+recharge_button.addEventListener('click', () => {
+  recharge_grid.style.gridTemplateColumns = '1fr 1fr 1fr'
+  recharge_payment.forEach(dis => {
+    dis.style.display = 'flex'
+  })
+})
+
 let user = null
 const access_token = localStorage.getItem('access_token')
 const refresh_token = localStorage.getItem('refresh_token')

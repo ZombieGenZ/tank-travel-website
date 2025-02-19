@@ -33,7 +33,7 @@ body {
 .recharge_container {
   display: grid;
   width: 90%;
-  grid-template-columns: repeat(3, 1fr) auto;
+  grid-template-columns: repeat(1, 1fr) auto;
   padding: 2rem 1rem;
   gap: 1rem;
   margin-top: 4rem;
@@ -120,6 +120,14 @@ body {
 
   .form__group {
     width: 100%;
+  }
+
+  .recharge_payment {
+    display: none;
+  }
+
+  .active {
+    transform: translateX(0);
   }
 
   a {
