@@ -204,8 +204,26 @@ span {
     margin-top: .5rem;
   }
 
-  .see_pass {
+  .close_pass {
+    position: absolute;
+    display: block;
+    right: 2%;
+    top: 20%;
+    cursor: pointer;
+  }
+
+  .open_pass {
+    display: none;
     position: absolute;
     right: 2%;
     top: 20%;
+    cursor: pointer;
+  }
+
+  .off {
+    display: none;
+  }
+
+  .on {
+    display: block;
   }

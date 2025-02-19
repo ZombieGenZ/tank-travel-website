@@ -4,11 +4,17 @@ const buttonclose = document.getElementById('button_close')
 const usernamelogin = document.getElementById('username_login')
 const password_login = document.getElementById('password_login')
 const forgot_pass = document.getElementById('forget_password')
-const see_pass = document.querySelectorAll('.see_pass')
-// const pass_confirm = document.querySelectorAll('.')
+const close_pass = document.querySelectorAll('.close_pass')
+const open_pass = document.querySelectorAll('.open_pass')
 
-see_pass.forEach((seepass) => {
-  seepass.innerHTML = '<i class="ri-eye-off-line"></i>'
+close_pass[0].addEventListener('click', () => {
+  close_pass[0].classList.add('off')
+  open_pass[0].classList.add('on')
+})
+
+open_pass[0].addEventListener('click', () => {
+  close_pass[0].classList.remove('off')
+  open_pass[0].classList.remove('on')
 })
 
 document.getElementById('nav_logo').addEventListener('click', () => {
@@ -34,7 +40,6 @@ function validateEmail(email) {
 
 function isValidPhoneNumber(phoneNumber) {
   const cleanedPhoneNumber = phoneNumber.replace(/\D/g, '')
-
   if (cleanedPhoneNumber.length !== 10) {
     return false
   }
