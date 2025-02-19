@@ -35,7 +35,6 @@ import revenueApi from '~/routes/revenue.routes'
 
 // import test router
 import testApi from '~/routes/test.routes'
-import { query, validationResult } from 'express-validator'
 
 const app = express()
 const server = createServer(app)

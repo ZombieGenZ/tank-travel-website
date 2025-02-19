@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet"/>
+    <!-- <script src="/js/check-login.js"></script> -->
     <title>Document</title>
     <link rel="stylesheet" href="/css/recharge.css">
 </head>
@@ -63,22 +64,22 @@
         <div class="recharge_form recharge_payment">
             <h1>Method 1:</h1>
             <p>Open the banking app and scan the QR code</p>
-            <img src="/images/system/qrcode.png" alt="">
+            <img src="/images/system/qrcode.png" alt="" id="bank-qr">
         </div>
         <div class="recharge_form recharge_payment">
             <h1>Method 2:</h1>
             <p>Manual transfer according to information</p>
             <img src="/images/system/MB.png" alt="">
-            <div class="information_master">
+            <div class="information_master" id="bank-owner">
                 Account owner: Nguyen Duc Anh
             </div>
-            <div class="information_master">
+            <div class="information_master" id="bank-number">
                 Account number: Nguyen Duc Anh
             </div>
             <div class="information_master" id="price_information">
                 Price: 
             </div>
-            <div class="information_master">
+            <div class="information_master" id="bank-content">
                 Money transfer content: DH553
             </div>
         </div>
@@ -110,6 +111,7 @@
         </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <script src="/js/recharge.js"></script>
 </body>
 </html>

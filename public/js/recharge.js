@@ -1,8 +1,8 @@
 const button_data = document.querySelectorAll('.btn_toview')
 const money_view = document.getElementById('money_view')
-button_data.forEach(button => {
+button_data.forEach((button) => {
   button.addEventListener('click', () => {
-    const data_view = button.textContent;
+    const data_view = button.textContent
     money_view.value = data_view
     const price_information = document.getElementById('price_information')
     price_information.innerText = `Price: ${data_view} VNĐ`
@@ -14,8 +14,107 @@ const recharge_payment = document.querySelectorAll('.recharge_payment')
 const recharge_button = document.getElementById('recharge_button')
 
 recharge_button.addEventListener('click', () => {
+  const amount = document.getElementById('money_view').value
+
+  if (amount === '') {
+    Swal.fire({
+      title: 'Oops...',
+      text: 'Please enter the amount to deposit',
+      footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+    })
+    return
+  }
+
+  if (Number(amount) < 1000) {
+    Swal.fire({
+      title: 'Oops...',
+      text: 'The amount to be deposited must be greater than or equal to 1,000 VND',
+      footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+    })
+    return
+  }
+
+  const access_token = document.getElementById('access_token')
+  const refresh_token = localStorage.getItem('refresh_token')
+
+  const body = {
+    refresh_token: refresh_token,
+    amount: amount
+  }
+
+  fetch('/api/revenue/create-bank-order', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${access_token}`
+    },
+    body: JSON.stringify(body)
+  })
+    .then((response) => {
+      return response.json()
+    })
+    .then((data) => {
+      if (data === null || data === undefined) {
+        Swal.fire({
+          title: 'Oops...',
+          text: 'Error connecting to server',
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+        })
+        return
+      }
+
+      if (data.message === 'Input data error') {
+        for (const key in data.errors) {
+          Swal.fire({
+            title: 'Oops...',
+            text: data.errors[key].msg,
+            footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+          })
+        }
+        return
+      }
+
+      if (data.result !== null) {
+        localStorage.setItem('access_token', data.authenticate.access_token)
+        localStorage.setItem('refresh_token', data.authenticate.refresh_token)
+
+        const refresh_token = localStorage.getItem('refresh_token')
+
+        console.log(data.result)
+
+        document.getElementById('bank-qr').src = data.result.payment_qr_url
+        document.getElementById('bank-owner').innerHTML = `Account owner: ${data.result.account_name}`
+        document.getElementById('bank-number').innerHTML = `Account number: ${data.result.account_no}`
+        document.getElementById('bank-content').innerHTML = `Money transfer content: ${data.result.order_id}`
+        document.getElementById('price_information').innerHTML = `Price: ${Number(amount).toLocaleString()}đ`
+
+        const socket = io(`<%= host %>`)
+        socket.emit(`BANK_DH${data.result.order_id}`, refresh_token)
+
+        socket.on('update-order-status', (res) => {
+          if (res.status) {
+            const wallet = document.getElementById('wallet_money').value
+
+            document.getElementById('wallet_money').value = wallet + res.amount
+
+            Swal.fire({
+              title: 'Good job!',
+              text: 'Nạp tiền thành công!'
+            })
+          }
+        })
+      } else {
+        Swal.fire({
+          title: 'Oops...',
+          text: 'Error connecting to server',
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+        })
+        return
+      }
+    })
+
   recharge_grid.style.gridTemplateColumns = '1fr 1fr 1fr'
-  recharge_payment.forEach(dis => {
+  recharge_payment.forEach((dis) => {
     dis.style.display = 'flex'
   })
 })
@@ -108,4 +207,3 @@ document.getElementById('ticket-information').addEventListener('click', () => {
 document.getElementById('signup_business').addEventListener('click', () => {
   window.location.href = '/business_signup'
 })
-
