@@ -1,3 +1,4 @@
+const server_url = 'http://tank-travel.io.vn'
 function formatNumber(number) {
   const formattedNumber = number.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')
   return formattedNumber
@@ -88,20 +89,11 @@ recharge_button.addEventListener('click', () => {
 
         const refresh_token = localStorage.getItem('refresh_token')
 
-        document.getElementById('bank-qr').src = data.result.payment_qr_url
-        document.getElementById('bank-owner').innerHTML = `Account owner: ${data.result.account_name}`
-        document.getElementById('bank-number').innerHTML = `Account number: ${data.result.account_no}`
-        document.getElementById('bank-content').innerHTML = `Money transfer content: ${data.result.order_id}`
-        document.getElementById('price_information').innerHTML = `Price: ${Number(amount).toLocaleString()}đ`
-
-        socket = io(`http://tank-travel.io.vn`, {
+        socket = io(server_url, {
           withCredentials: true,
           transports: ['websocket']
         })
-        socket.emit('connect-payment-realtime', refresh_token, data.result.order_id)
-
         socket.on('update-order-status', (res) => {
-          console.log(res)
           const wallet = Number(document.getElementById('wallet_money').value)
 
           document.getElementById('wallet_money').value = wallet + res.amount
@@ -111,6 +103,14 @@ recharge_button.addEventListener('click', () => {
             text: 'Nạp tiền thành công!'
           })
         })
+
+        socket.emit('connect-payment-realtime', refresh_token, data.result.order_id)
+
+        document.getElementById('bank-qr').src = data.result.payment_qr_url
+        document.getElementById('bank-owner').innerHTML = `Account owner: ${data.result.account_name}`
+        document.getElementById('bank-number').innerHTML = `Account number: ${data.result.account_no}`
+        document.getElementById('bank-content').innerHTML = `Money transfer content: ${data.result.order_id}`
+        document.getElementById('price_information').innerHTML = `Price: ${Number(amount).toLocaleString()}đ`
       } else {
         Swal.fire({
           title: 'Oops...',

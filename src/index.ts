@@ -319,7 +319,7 @@ io.on('connection', (socket: Socket) => {
         const user = await databaseService.users.findOne({ _id: new ObjectId(decoded_refresh_token.user_id) })
 
         if (user !== null && user !== undefined) {
-          // Phòng: BANK_DH<order_id>
+          // Phòng: BANK_<order_id>
           // sự kiện:
           // update-order-status: cập nhật trạng thái đơn hàng cho người dùng
           //
@@ -330,10 +330,10 @@ io.on('connection', (socket: Socket) => {
           // status: trạng thái đơn hàng
           // amount: số tiền đã thanh toán
 
-          socket.join(`BANK_DH${order_id}`)
-          await writeInfoLog(`Khách hàng ${user._id} (SocketID: ${socket.id}) đã kết nối đến phòng BANK_DH${order_id}`)
+          socket.join(`BANK_${order_id}`)
+          await writeInfoLog(`Khách hàng ${user._id} (SocketID: ${socket.id}) đã kết nối đến phòng BANK_${order_id}`)
           console.log(
-            `\x1b[33mNgười dùng \x1b[36m${socket.id}\x1b[33m đã kết nối đến phòng \x1b[36mBANK_DH${order_id}\x1b[0m`
+            `\x1b[33mNgười dùng \x1b[36m${socket.id}\x1b[33m đã kết nối đến phòng \x1b[36mBANK_${order_id}\x1b[0m`
           )
         }
       } catch {

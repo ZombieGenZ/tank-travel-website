@@ -3,41 +3,41 @@ import { db } from '~/services/firebase.services'
 import { io } from '../index'
 const router = express.Router()
 
-router.get('/vehicle/create', (req: Request, res: Response) => {
-  res.render('test/vehicle.create.ejs')
-})
+// router.get('/vehicle/create', (req: Request, res: Response) => {
+//   res.render('test/vehicle.create.ejs')
+// })
 
-router.post('/chat', async (req: Request, res: Response) => {
-  const room = '/test/go-chat'
-  const { message } = req.body
+// router.post('/chat', async (req: Request, res: Response) => {
+//   const room = '/test/go-chat'
+//   const { message } = req.body
 
-  const ref = db.ref(`messages${room}`).push()
-  await ref.set({ message, timestamp: Date.now() })
+//   const ref = db.ref(`messages${room}`).push()
+//   await ref.set({ message, timestamp: Date.now() })
 
-  io.to(room).emit('new-message', { message, room })
+//   io.to(room).emit('new-message', { message, room })
 
-  res.json({ success: true })
-})
+//   res.json({ success: true })
+// })
 
-router.get('/go-chat', async (req: Request, res: Response) => {
-  res.render('test/test.chat.ejs', { host: process.env.APP_URL })
-})
+// router.get('/go-chat', async (req: Request, res: Response) => {
+//   res.render('test/test.chat.ejs', { host: process.env.APP_URL })
+// })
 
-router.get('/balance', async (req: Request, res: Response) => {
-  res.render('test/test.balance.ejs', { host: process.env.APP_URL })
-})
+// router.get('/balance', async (req: Request, res: Response) => {
+//   res.render('test/test.balance.ejs', { host: process.env.APP_URL })
+// })
 
-router.get('/revenue', async (req: Request, res: Response) => {
-  res.render('test/test.revenue.ejs', { host: process.env.APP_URL })
-})
+// router.get('/revenue', async (req: Request, res: Response) => {
+//   res.render('test/test.revenue.ejs', { host: process.env.APP_URL })
+// })
 
-router.get('/log', async (req: Request, res: Response) => {
-  res.render('test/test.log.ejs', { host: process.env.APP_URL })
-})
+// router.get('/log', async (req: Request, res: Response) => {
+//   res.render('test/test.log.ejs', { host: process.env.APP_URL })
+// })
 
-router.get('/notificaton', async (req: Request, res: Response) => {
-  res.render('test/test.notificaton.ejs', { host: process.env.APP_URL })
-})
+// router.get('/notificaton', async (req: Request, res: Response) => {
+//   res.render('test/test.notificaton.ejs', { host: process.env.APP_URL })
+// })
 
 // router.get('/verify-email', async (req: Request, res: Response) => {
 //   const { email } = req.body
@@ -47,6 +47,21 @@ router.get('/notificaton', async (req: Request, res: Response) => {
 //   res.json({
 //     info: emailInfomation
 //   })
+// })
+
+// router.get('/bank-paymment', async (req: Request, res: Response) => {
+//   res.render('test/test.payment.bank.ejs', { host: process.env.APP_URL })
+// })
+
+// router.post('/api/bank-paymment', async (req: Request, res: Response) => {
+//   const { order_id, amount } = req.body
+
+//   io.to(`BANK_DH${order_id.toString()}`).emit('update-order-status', {
+//     result: true,
+//     amount: amount
+//   })
+
+//   res.json({ success: true })
 // })
 
 export default router
