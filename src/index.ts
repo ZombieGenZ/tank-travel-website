@@ -35,6 +35,7 @@ import revenueApi from '~/routes/revenue.routes'
 
 // import test router
 import testApi from '~/routes/test.routes'
+import { query, validationResult } from 'express-validator'
 
 const app = express()
 const server = createServer(app)
@@ -81,8 +82,26 @@ app.get('/business_signup', (req: Request, res: Response) => {
   res.render('business_registration')
 })
 
-app.get('/change_pass', (req: Request, res: Response) => {
-  res.render('change_password')
+app.get('/forgot-password', async (req: Request, res: Response) => {
+  if (!req.query.token) {
+    // DOITAFTER: màn hình 404
+    res.json({
+      message: 'You do not permission to access this page'
+    })
+  } else {
+    const result = await databaseService.users.findOne({
+      forgot_password_token: req.query.token as string
+    })
+
+    if (!result) {
+      res.json({
+        message: 'Token is invalid'
+      })
+      return
+    }
+
+    res.render('change_password')
+  }
 })
 
 app.get('/recharge', (req: Request, res: Response) => {

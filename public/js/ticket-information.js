@@ -109,8 +109,7 @@ window.addEventListener('load', () => {
   fetch('/api/bus-route/get-bus-route-list', {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${access_token}`
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify(body)
   })
@@ -118,14 +117,32 @@ window.addEventListener('load', () => {
       return response.json()
     })
     .then((data) => {
-      console.log(data)
-
-      if (data == null || data == undefined || data.result.message == 'Failed to get bus route information') {
+      if (data == null || data == undefined) {
         Swal.fire({
           title: 'Oops...',
           text: 'Error connecting to server',
           footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
         })
+        return
+      }
+
+      if (data.result.message == 'Failed to get bus route information') {
+        Swal.fire({
+          title: 'Oops...',
+          text: 'Error connecting to server',
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+        })
+        return
+      }
+
+      if (data.message === 'Input data error') {
+        for (const key in data.errors) {
+          Swal.fire({
+            title: 'Oops...',
+            text: data.errors[key].msg,
+            footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+          })
+        }
         return
       }
 

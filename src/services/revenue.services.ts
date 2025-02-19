@@ -7,6 +7,7 @@ import { ObjectId } from 'mongodb'
 import { BankRevenue } from '~/constants/revenue'
 import { db } from './firebase.services'
 import { io } from '~/index'
+import notificationPrivateService from './notificationPrivate.services'
 
 class RevenueService {
   async createBankOrder(payload: CreateBankOrderRequestBody, user: User) {
@@ -43,8 +44,12 @@ class RevenueService {
       amount: payload.transferAmount
     }
 
-    const paymentFirebaseRealtime = db.ref(`payment/${revenue?.user}/${payload.code}`).push()
+    const user = await databaseService.users.findOne({ _id: revenue?.user })
 
+    const paymentFirebaseRealtime = db.ref(`payment/${revenue?.user}/${payload.code}`).push()
+    const balanceFirebaseRealtime = db.ref(`balance/${user?._id}`).push()
+
+    const message = `+${payload.transferAmount}đ nạp tiền qua ngân hàng`
     await Promise.all([
       databaseService.revenue.updateOne(
         {
@@ -73,6 +78,15 @@ class RevenueService {
       io.to(`BANK_DH${revenue?._id}`).emit('update-order-status', {
         status: true,
         amount: payload.transferAmount
+      }),
+      notificationPrivateService.createNotification((user as User)._id, message),
+      balanceFirebaseRealtime.set({
+        type: '+',
+        value: payload.transferAmount
+      }),
+      io.to(`user-${user?._id}`).emit('update-balance', {
+        type: '+',
+        value: payload.transferAmount
       })
     ])
   }

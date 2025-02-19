@@ -87,3 +87,44 @@ document.getElementById('signup_business').addEventListener('click', () => {
   window.location.href = '/business_signup'
 })
 
+function logout() {
+  const refresh_token = localStorage.getItem('refresh_token')
+
+  const body = { refresh_token: refresh_token }
+
+  fetch('/api/users/logout', {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  })
+    .then((response) => {
+      return response.json()
+    })
+    .then((data) => {
+      if (data === null || data === undefined) {
+        Swal.fire({
+          title: 'Oops...',
+          text: 'Error connecting to server',
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+        })
+        return
+      }
+
+      if (data.message == 'Logout successful!') {
+        Swal.fire({
+          title: 'Good job!',
+          text: data.message
+        })
+        localStorage.removeItem('access_token')
+        localStorage.removeItem('refresh_token')
+        return
+      } else {
+        Swal.fire({
+          title: 'Oops...',
+          text: 'Error connecting to server',
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+        })
+        return
+      }
+    })
+}
