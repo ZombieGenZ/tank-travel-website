@@ -39,7 +39,7 @@ export const authenticationValidator = async (req: Request, res: Response, next:
 
       const new_access_token = await UsersServices.signAccessToken(user_id)
       const new_refresh_token = await UsersServices.signRefreshToken(user_id)
-      await UsersServices.changeRefreshToken(user_id, new_access_token)
+      await UsersServices.changeRefreshToken(user_id, new_refresh_token)
 
       req.user = user
       req.access_token = new_access_token
@@ -100,7 +100,7 @@ export const authenticationValidator = async (req: Request, res: Response, next:
 
       const new_access_token = await UsersServices.signAccessToken(user_id)
       const new_refresh_token = await UsersServices.signRefreshToken(user_id)
-      await UsersServices.changeRefreshToken(user_id, new_access_token)
+      await UsersServices.changeRefreshToken(user_id, new_refresh_token)
 
       req.user = user
       req.access_token = new_access_token
