@@ -26,7 +26,6 @@ if (
       return response.json()
     })
     .then((data) => {
-      console.log(data)
       if (data !== null && data !== undefined) {
         if (data.user !== null && data.user !== undefined) {
           user = data.user
@@ -102,7 +101,6 @@ document.getElementById('a_logout').addEventListener('click', () => {
   }).then((response) => {
       return response.json()
   }).then((data) => {
-      console.log(data)
       if (data === null || data === undefined) {
         Swal.fire({
           title: 'Oops...',

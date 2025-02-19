@@ -220,13 +220,13 @@ class UserService {
     await databaseService.refreshToken.insertOne(new RefreshToken({ token, user_id: new ObjectId(user_id) }))
   }
 
-  async changeRefreshToken(user_id: string, token: string) {
+  async changeRefreshToken(old_token: string, new_token: string) {
     await databaseService.refreshToken.updateOne(
       {
-        _id: new ObjectId(user_id)
+        token: old_token
       },
       {
-        $set: { refresh_token: token }
+        $set: { token: new_token }
       }
     )
   }

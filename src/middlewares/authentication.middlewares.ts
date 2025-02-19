@@ -13,7 +13,7 @@ export const authenticationValidator = async (req: Request, res: Response, next:
   const { authorization } = req.headers
   const { refresh_token } = req.body
 
-  if (!authorization || typeof authorization !== 'string' || authorization === '' || !authorization.split(' '[1])) {
+  if (!authorization || typeof authorization !== 'string' || authorization === '' || !authorization.split(' ')[1]) {
     if (!refresh_token || typeof refresh_token !== 'string' || refresh_token === '') {
       res
         .status(HTTPSTATUS.UNAUTHORIZED)
@@ -39,7 +39,8 @@ export const authenticationValidator = async (req: Request, res: Response, next:
 
       const new_access_token = await UsersServices.signAccessToken(user_id)
       const new_refresh_token = await UsersServices.signRefreshToken(user_id)
-      await UsersServices.changeRefreshToken(user_id, new_refresh_token)
+
+      await UsersServices.changeRefreshToken(refresh_token, new_refresh_token)
 
       req.user = user
       req.access_token = new_access_token
@@ -100,7 +101,8 @@ export const authenticationValidator = async (req: Request, res: Response, next:
 
       const new_access_token = await UsersServices.signAccessToken(user_id)
       const new_refresh_token = await UsersServices.signRefreshToken(user_id)
-      await UsersServices.changeRefreshToken(user_id, new_refresh_token)
+
+      await UsersServices.changeRefreshToken(refresh_token, new_refresh_token)
 
       req.user = user
       req.access_token = new_access_token
