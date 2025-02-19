@@ -1,6 +1,6 @@
 function formatNumber(number) {
-  const formattedNumber = number.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-  return formattedNumber;
+  const formattedNumber = number.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')
+  return formattedNumber
 }
 
 const button_data = document.querySelectorAll('.btn_toview')
@@ -17,9 +17,10 @@ button_data.forEach((button) => {
 const recharge_grid = document.getElementById('recharge_container')
 const recharge_payment = document.querySelectorAll('.recharge_payment')
 const recharge_button = document.getElementById('recharge_button')
+let socket
 
 recharge_button.addEventListener('click', () => {
-  const amount = document.getElementById('money_view')
+  const amount = document.getElementById('money_view').value
   amount.readOnly = true
   if (amount === '') {
     Swal.fire({
@@ -46,7 +47,7 @@ recharge_button.addEventListener('click', () => {
 
   const body = {
     refresh_token: refresh_token,
-    amount: amount
+    amount: Number(amount)
   }
 
   fetch('/api/revenue/create-bank-order', {
@@ -87,28 +88,28 @@ recharge_button.addEventListener('click', () => {
 
         const refresh_token = localStorage.getItem('refresh_token')
 
-        console.log(data.result)
-
         document.getElementById('bank-qr').src = data.result.payment_qr_url
         document.getElementById('bank-owner').innerHTML = `Account owner: ${data.result.account_name}`
         document.getElementById('bank-number').innerHTML = `Account number: ${data.result.account_no}`
         document.getElementById('bank-content').innerHTML = `Money transfer content: ${data.result.order_id}`
         document.getElementById('price_information').innerHTML = `Price: ${Number(amount).toLocaleString()}đ`
 
-        const socket = io(`<%= host %>`)
-        socket.emit(`BANK_DH${data.result.order_id}`, refresh_token)
+        socket = io(`http://tank-travel.io.vn`, {
+          withCredentials: true,
+          transports: ['websocket']
+        })
+        socket.emit('connect-payment-realtime', refresh_token, data.result.order_id)
 
         socket.on('update-order-status', (res) => {
-          if (res.status) {
-            const wallet = document.getElementById('wallet_money').value
+          console.log(res)
+          const wallet = Number(document.getElementById('wallet_money').value)
 
-            document.getElementById('wallet_money').value = wallet + res.amount
+          document.getElementById('wallet_money').value = wallet + res.amount
 
-            Swal.fire({
-              title: 'Good job!',
-              text: 'Nạp tiền thành công!'
-            })
-          }
+          Swal.fire({
+            title: 'Good job!',
+            text: 'Nạp tiền thành công!'
+          })
         })
       } else {
         Swal.fire({

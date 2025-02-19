@@ -73,10 +73,11 @@ class RevenueService {
         }
       ),
       paymentFirebaseRealtime.set({
-        status: true
+        result: true,
+        amount: payload.transferAmount
       }),
-      io.to(`BANK_DH${revenue?._id}`).emit('update-order-status', {
-        status: true,
+      io.to(`BANK_DH${revenue?._id.toString()}`).emit('update-order-status', {
+        result: true,
         amount: payload.transferAmount
       }),
       notificationPrivateService.createNotification((user as User)._id, message),

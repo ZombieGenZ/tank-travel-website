@@ -92,7 +92,6 @@ document.getElementById('signup_business').addEventListener('click', () => {
 })
 
 window.addEventListener('load', () => {
-  console.log(user)
   document.getElementById('img_infor_1').src = user.user.avatar.url
   document.getElementById('displayname').value = user.user.display_name
 })
