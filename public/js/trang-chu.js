@@ -1,6 +1,6 @@
 let user = null
-const access_token = localStorage.getItem('access_token')
-const refresh_token = localStorage.getItem('refresh_token')
+let access_token = localStorage.getItem('access_token')
+let refresh_token = localStorage.getItem('refresh_token')
 
 if (
   access_token !== null &&
@@ -26,11 +26,14 @@ if (
       return response.json()
     })
     .then((data) => {
+      console.log(data)
       if (data !== null && data !== undefined) {
         if (data.user !== null && data.user !== undefined) {
           user = data.user
           localStorage.setItem('access_token', data.authenticate.access_token)
           localStorage.setItem('refresh_token', data.authenticate.refresh_token)
+          access_token = data.authenticate.access_token
+          refresh_token = data.authenticate.refresh_token
         }
 
         if (user != null) {
@@ -87,7 +90,7 @@ document.getElementById('signup_business').addEventListener('click', () => {
   window.location.href = '/business_signup'
 })
 
-function logout() {
+document.getElementById('a_logout').addEventListener('click', () => {
   const refresh_token = localStorage.getItem('refresh_token')
 
   const body = { refresh_token: refresh_token }
@@ -96,11 +99,10 @@ function logout() {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
-  })
-    .then((response) => {
+  }).then((response) => {
       return response.json()
-    })
-    .then((data) => {
+  }).then((data) => {
+      console.log(data)
       if (data === null || data === undefined) {
         Swal.fire({
           title: 'Oops...',
@@ -127,4 +129,4 @@ function logout() {
         return
       }
     })
-}
+})

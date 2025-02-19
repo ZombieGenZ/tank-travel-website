@@ -379,10 +379,14 @@ export const refreshTokenValidator = validate(
             }
 
             try {
+              console.log(value)
               const [decoded_refresh_token, refreshToken] = await Promise.all([
                 verifyToken({ token: value, publicKey: process.env.SECURITY_JWT_SECRET_REFRESH_TOKEN as string }),
                 databaseService.refreshToken.findOne({ token: value })
               ])
+              console.log(decoded_refresh_token)
+              console.log(refreshToken)
+
 
               if (refreshToken === null) {
                 throw new ErrorWithStatus({

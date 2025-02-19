@@ -40,12 +40,123 @@ body {
 
 .profile_form {
   width: 60%;
-  background-color: var(--extra-light);
+  height: auto;
+  border-radius: 1rem;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 3rem;
+  padding: 5rem 2.5rem;
   box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.1);
+}
+
+.profile_form h1 {
+  font-size: 3rem;
+}
+
+.img_infor {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
+  width: 50%;
+}
+
+.img_infor img {
+  border-radius: 50%;
+  width: 100%;
+}
+
+.profile_big_infor {
+  display: flex;
+  gap: 5rem;
+}
+
+.profile_information {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+input[type="file"]::file-selector-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  cursor: pointer;
+}
+
+.input__group {
+  position: relative;
+  width: 100%;
+  padding: 15px 0;
+}
+
+/* From Uiverse.io by alexruix */ 
+.form__field {
+  font-family: inherit;
+  width: 100%;
+  border: none;
+  border-bottom: 2px solid #9b9b9b;
+  outline: 0;
+  font-size: 17px;
+  color: var(--text-dark);
+  padding: 7px 0;
+  background: transparent;
+  transition: border-color 0.2s;
+}
+
+.form__field::placeholder {
+  color: transparent;
+}
+
+.form__field:placeholder-shown ~ .form__label {
+  font-size: 17px;
+  cursor: text;
+  top: 20px;
+}
+
+.form__label {
+  position: absolute;
+  top: 0;
+  display: block;
+  transition: 0.2s;
+  font-size: 17px;
+  color: #9b9b9b;
+  pointer-events: none;
+}
+
+.form__field:focus {
+  padding-bottom: 6px;
+  font-weight: 700;
+  border-width: 3px;
+  border-image: linear-gradient(to right, #116399, #38caef);
+  border-image-slice: 1;
+}
+
+.form__field:focus ~ .form__label {
+  position: absolute;
+  top: 0;
+  display: block;
+  transition: 0.2s;
+  font-size: 17px;
+  color: var(--primary-color);
+  font-weight: 700;
+}
+
+/* reset input */
+.form__field:required, .form__field:invalid {
+  box-shadow: none;
 }
 
 .btn {
     padding: 0.75rem 2rem;
+    width: 100%;
     outline: none;
     border: none;
     font-size: 1rem;
