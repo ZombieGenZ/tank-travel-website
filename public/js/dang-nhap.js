@@ -7,14 +7,42 @@ const forgot_pass = document.getElementById('forget_password')
 const close_pass = document.querySelectorAll('.close_pass')
 const open_pass = document.querySelectorAll('.open_pass')
 
+const new_password = document.getElementById('password_register')
 close_pass[0].addEventListener('click', () => {
   close_pass[0].classList.add('off')
   open_pass[0].classList.add('on')
+  new_password.type = 'text'
 })
 
 open_pass[0].addEventListener('click', () => {
   close_pass[0].classList.remove('off')
   open_pass[0].classList.remove('on')
+  new_password.type = 'password'
+})
+
+const confirm_pass = document.getElementById('comfirm_password_register')
+close_pass[1].addEventListener('click', () => {
+  close_pass[1].classList.add('off')
+  open_pass[1].classList.add('on')
+  confirm_pass.type = 'text'
+})
+
+open_pass[1].addEventListener('click', () => {
+  close_pass[1].classList.remove('off')
+  open_pass[1].classList.remove('on')
+  confirm_pass.type = 'password'
+})
+
+close_pass[2].addEventListener('click', () => {
+  close_pass[2].classList.add('off')
+  open_pass[2].classList.add('on')
+  password_login.type = 'text'
+})
+
+open_pass[2].addEventListener('click', () => {
+  close_pass[2].classList.remove('off')
+  open_pass[2].classList.remove('on')
+  password_login.type = 'password'
 })
 
 document.getElementById('nav_logo').addEventListener('click', () => {
