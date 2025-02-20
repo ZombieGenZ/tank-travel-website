@@ -41,6 +41,8 @@ if (
           const recharge = document.createElement('li')
           const personal_infor = document.getElementById('personal_infor')
           const dropdown_personal = document.getElementById('dropdown_personal')
+          const So_du = document.createElement('div')
+          So_du.classList.add('So_du')
           recharge.classList.add('link')
           recharge.innerHTML = '<a href="#"><i class="ri-money-dollar-circle-line"></i> Recharge</a>'
           recharge.id = 'recharge_money'
@@ -49,8 +51,10 @@ if (
           booking_history.id = 'booking_history'
           personal.id = 'personal'
           personal.innerHTML = '<i class="ri-user-3-line"></i>'
+          So_du.innerText = `Số dư: ${0} VNĐ`
           buttonlogin.style.display = 'none'
           buttonlogin.disabled = true
+          personal_infor.appendChild(So_du)
           personal_infor.appendChild(personal)
           ul.appendChild(recharge)
           ul.appendChild(booking_history)
@@ -70,6 +74,52 @@ if (
       }
     })
 }
+
+document.getElementById('a_logout').addEventListener('click', () => {
+  const refresh_token = localStorage.getItem('refresh_token')
+
+  const body = { refresh_token: refresh_token }
+
+  fetch('/api/users/logout', {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  }).then((response) => {
+      return response.json()
+  }).then((data) => {
+      if (data === null || data === undefined) {
+        Swal.fire({
+          title: 'Oops...',
+          text: 'Lỗi kết nối đến máy chủ',
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
+        })
+        return
+      }
+
+      if (data.message == 'Đăng xuất thành công!') {
+        localStorage.removeItem('access_token')
+        localStorage.removeItem('refresh_token')
+        Swal.fire({
+          title: 'Thành công',
+          text: data.message
+        }).then((result) => {
+          if (result.dismiss === Swal.DismissReason.backdrop) {
+            window.location.href = '/'
+          } else {
+            window.location.href = '/'
+          }
+        })
+        return
+      } else {
+        Swal.fire({
+          title: 'Oops...',
+          text: 'Error connecting to server',
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
+        })
+        return
+      }
+    })
+})
 
 document.getElementById('nav_logo').addEventListener('click', () => {
   window.location.href = '/'

@@ -43,6 +43,8 @@ if (
           const recharge = document.createElement('li')
           const personal_infor = document.getElementById('personal_infor')
           const dropdown_personal = document.getElementById('dropdown_personal')
+          const So_du = document.createElement('div')
+          So_du.classList.add('So_du')
           recharge.classList.add('link')
           recharge.innerHTML = '<a href="#"><i class="ri-money-dollar-circle-line"></i> Recharge</a>'
           recharge.id = 'recharge_money'
@@ -51,8 +53,10 @@ if (
           booking_history.id = 'booking_history'
           personal.id = 'personal'
           personal.innerHTML = '<i class="ri-user-3-line"></i>'
+          So_du.innerText = `Số dư: ${0} VNĐ`
           buttonlogin.style.display = 'none'
           buttonlogin.disabled = true
+          personal_infor.appendChild(So_du)
           personal_infor.appendChild(personal)
           ul.appendChild(recharge)
           ul.appendChild(booking_history)
@@ -131,6 +135,7 @@ document.getElementById('a_logout').addEventListener('click', () => {
             location.reload()
           }
         })
+        window.location.href = '/'
         return
       } else {
         Swal.fire({
@@ -142,7 +147,6 @@ document.getElementById('a_logout').addEventListener('click', () => {
       }
     })
 })
-<<<<<<< HEAD
 
 const typed = new Typed('#text', {
   strings: [
@@ -152,5 +156,4 @@ const typed = new Typed('#text', {
   backSpeed: 100,
   loop: true
 });
-=======
->>>>>>> 5dffeb877681ca7a7b0b0bbc6d824d953bc41db1
+

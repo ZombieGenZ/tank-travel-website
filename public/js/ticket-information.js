@@ -41,6 +41,8 @@ if (
           const recharge = document.createElement('li')
           const personal_infor = document.getElementById('personal_infor')
           const dropdown_personal = document.getElementById('dropdown_personal')
+          const So_du = document.createElement('div')
+          So_du.classList.add('So_du')
           recharge.classList.add('link')
           recharge.innerHTML = '<a href="#"><i class="ri-money-dollar-circle-line"></i> Recharge</a>'
           recharge.id = 'recharge_money'
@@ -49,8 +51,10 @@ if (
           booking_history.id = 'booking_history'
           personal.id = 'personal'
           personal.innerHTML = '<i class="ri-user-3-line"></i>'
+          So_du.innerText = `Số dư: ${0} VNĐ`
           buttonlogin.style.display = 'none'
           buttonlogin.disabled = true
+          personal_infor.appendChild(So_du)
           personal_infor.appendChild(personal)
           ul.appendChild(recharge)
           ul.appendChild(booking_history)
@@ -66,7 +70,7 @@ if (
           booking_history.addEventListener('click', () => {
             window.location.href = '/booking_history'
           })
-        }
+        } 
       }
     })
 }
@@ -109,6 +113,7 @@ const session_time = new Date().toISOString()
 let current = 0
 
 window.addEventListener('load', () => {
+  console.log(user)
   const body = {
     session_time: session_time,
     current: current
@@ -188,11 +193,69 @@ window.addEventListener('load', () => {
                     </div>
                     <div class="morinfor_bookbutton">
                         <button class="btn">More information</button>
-                        <button class="btn">Book</button>    
+                        <button class="btn book_ticket">Book</button>    
                     </div>
                 </div>    
             </li>
           `
+          if(user == null) {
+            const book_ticket = document.querySelectorAll('.book_ticket')
+            book_ticket.forEach(book => {
+              book.addEventListener('click', () => {
+                Swal.fire({
+                  title: 'Oops...',
+                  text: 'Vui lòng đăng nhập để có thể đặt vé',
+                  footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
+                })
+              })
+            })
+          } else if (user != null) {
+            const book_ticket = document.querySelectorAll('.book_ticket')
+            book_ticket.forEach(book => {
+              book.addEventListener('click', async() => {
+                const { value: formValues } = await Swal.fire({
+                  icon: 'question',
+                  title: "Thông tin đặt vé",
+                  html: `
+                    <div class="input__group">
+                        <input type="input" class="form__field" placeholder="Name" required="">
+                        <label for="name" class="form__label">Họ và tên:</label>
+                    </div>
+                    <div class="input__group">
+                        <input type="email" class="form__field" placeholder="Name" required="">
+                        <label for="name" class="form__label">Email:</label>
+                    </div>
+                    <div class="input__group">
+                        <input type="input" class="form__field" placeholder="Name" required="">
+                        <label for="name" class="form__label">Số điện thoại:</label>
+                    </div>
+                    <div class="input__group">
+                        <input type="input" class="form__field" placeholder="Name" value="${busRoute[key].start_point}" readOnly>
+                        <label for="name" class="form__label">Nơi đi:</label>
+                    </div>
+                    <div class="input__group">
+                        <input type="input" class="form__field" placeholder="Name" value="${busRoute[key].end_point}" readOnly>
+                        <label for="name" class="form__label">Nơi đến:</label>
+                    </div>
+                    <div class="input__group">
+                        <input type="input" class="form__field" placeholder="Name" value="${formatDate(busRoute[key].departure_time)}" readOnly>
+                        <label for="name" class="form__label">Thời gian đi:</label>
+                    </div>
+                    <div class="input__group">
+                        <input type="input" class="form__field" placeholder="Name" value="${busRoute[key].price.toLocaleString('vi-VN')}" readOnly>
+                        <label for="name" class="form__label">Giá vé:</label>
+                    </div>
+                  `,
+                  focusConfirm: false,
+                  showCancelButton: true,
+                  confirmButtonText: 'Đặt vé'
+                });
+                if (formValues) {
+                  Swal.fire(JSON.stringify(formValues));
+                }
+              })
+            })
+          }
         }
 
         current = data.result.current
@@ -201,6 +264,52 @@ window.addEventListener('load', () => {
         } else {
           document.getElementById('see_more').innerHTML = `<h3>See more <i class="ri-arrow-down-line"></i></h3>`
         }
+      }
+    })
+})
+
+document.getElementById('a_logout').addEventListener('click', () => {
+  const refresh_token = localStorage.getItem('refresh_token')
+
+  const body = { refresh_token: refresh_token }
+
+  fetch('/api/users/logout', {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  }).then((response) => {
+      return response.json()
+  }).then((data) => {
+      if (data === null || data === undefined) {
+        Swal.fire({
+          title: 'Oops...',
+          text: 'Lỗi kết nối đến máy chủ',
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
+        })
+        return
+      }
+
+      if (data.message == 'Đăng xuất thành công!') {
+        localStorage.removeItem('access_token')
+        localStorage.removeItem('refresh_token')
+        Swal.fire({
+          title: 'Thành công',
+          text: data.message
+        }).then((result) => {
+          if (result.dismiss === Swal.DismissReason.backdrop) {
+            window.location.href = '/'
+          } else {
+            window.location.href = '/'
+          }
+        })
+        return
+      } else {
+        Swal.fire({
+          title: 'Oops...',
+          text: 'Error connecting to server',
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
+        })
+        return
       }
     })
 })
