@@ -197,6 +197,7 @@ window.addEventListener('load', () => {
                       </div>`,
                   focusConfirm: false,
                   showCancelButton: true,
+                  icon: 'info',
                   cancelButtonColor: '#d33',
                   cancelButtonText: 'Thoát',
                   confirmButtonText: 'Đặt vé',
