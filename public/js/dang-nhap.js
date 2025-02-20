@@ -7,6 +7,8 @@ const forgot_pass = document.getElementById('forget_password')
 const close_pass = document.querySelectorAll('.close_pass')
 const open_pass = document.querySelectorAll('.open_pass')
 
+let isLogin = false
+
 const new_password = document.getElementById('password_register')
 close_pass[0].addEventListener('click', () => {
   close_pass[0].classList.add('off')
@@ -495,7 +497,7 @@ function login() {
       if (data.message === 'Đăng nhập thành công!') {
         localStorage.setItem('access_token', data.authenticate.access_token)
         localStorage.setItem('refresh_token', data.authenticate.refresh_token)
-
+        localStorage.setItem('islogin', true)
         Swal.fire({
           title: 'Thành công!',
           text: data.message

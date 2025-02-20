@@ -1,46 +1,19 @@
-
-
-document.getElementById('nav_logo').addEventListener('click', () => {
-  window.location.href = '/'
-})
-
-document.getElementById('img_trangchu').addEventListener('click', () => {
-  window.location.href = '/'
-})
-
-document.getElementById('profile').addEventListener('click', () => {
-  window.location.href = '/profile'
-})
-
-document.getElementById('btn_login').addEventListener('click', () => {
-  window.location.href = '/login'
-})
-
-document.getElementById('ticket-information').addEventListener('click', () => {
-  window.location.href = '/ticket-info'
-})
-
-document.getElementById('signup_business').addEventListener('click', () => {
-  window.location.href = '/business_signup'
-})
-
-function formatDate(dateString) {
-  const date = new Date(dateString)
-  const hours = date.getHours().toString().padStart(2, '0')
-  const minutes = date.getMinutes().toString().padStart(2, '0')
-  const day = date.getDate().toString().padStart(2, '0')
-  const month = (date.getMonth() + 1).toString().padStart(2, '0')
-  const year = date.getFullYear()
-  return `${hours}:${minutes} ${day}/${month}/${year}`
-}
-
-const session_time = new Date().toISOString()
-let current = 0
-
-window.addEventListener('load', () => {
   let user = null
   const access_token = localStorage.getItem('access_token')
   const refresh_token = localStorage.getItem('refresh_token')
+
+  function formatDate(dateString) {
+    const date = new Date(dateString)
+    const hours = date.getHours().toString().padStart(2, '0')
+    const minutes = date.getMinutes().toString().padStart(2, '0')
+    const day = date.getDate().toString().padStart(2, '0')
+    const month = (date.getMonth() + 1).toString().padStart(2, '0')
+    const year = date.getFullYear()
+    return `${hours}:${minutes} ${day}/${month}/${year}`
+  }
+  
+  const session_time = new Date().toISOString()
+  let current = 0
 
   if (
     access_token !== null &&
@@ -72,9 +45,7 @@ window.addEventListener('load', () => {
             localStorage.setItem('access_token', data.authenticate.access_token)
             localStorage.setItem('refresh_token', data.authenticate.refresh_token)
           }
-
           if (user != null) {
-            console.log(user)
             const buttonlogin = document.getElementById('btn_login')
             const ul = document.getElementById('ul_links')
             const personal = document.createElement('div')
@@ -111,11 +82,38 @@ window.addEventListener('load', () => {
             booking_history.addEventListener('click', () => {
               window.location.href = '/booking_history'
             }) 
-          }
-          
+          } 
         }
       })
   }
+
+document.getElementById('nav_logo').addEventListener('click', () => {
+  window.location.href = '/'
+})
+
+document.getElementById('img_trangchu').addEventListener('click', () => {
+  window.location.href = '/'
+})
+
+document.getElementById('profile').addEventListener('click', () => {
+  window.location.href = '/profile'
+})
+
+document.getElementById('btn_login').addEventListener('click', () => {
+  window.location.href = '/login'
+})
+
+document.getElementById('ticket-information').addEventListener('click', () => {
+  window.location.href = '/ticket-info'
+})
+
+document.getElementById('signup_business').addEventListener('click', () => {
+  window.location.href = '/business_signup'
+})
+
+
+window.addEventListener('load', () => {
+  console.log(user)
   const body = {
     session_time: session_time,
     current: current
@@ -204,7 +202,7 @@ window.addEventListener('load', () => {
           moreinfor_ticket.forEach(moreinfor => {
             moreinfor.addEventListener('click', () => {
               Swal.fire({
-                title: 'Oops...',
+                title: 'Thông tin chi tiết vé xe',
                 html: `<div class="input__group">
                         <input type="input" class="form__field" placeholder="Name" value="${busRoute[key].start_point}" readOnly>
                         <label for="name" class="form__label">Nơi đi:</label>
@@ -297,9 +295,9 @@ window.addEventListener('load', () => {
           document.getElementById('see_more').innerHTML = ''
         } else {
           document.getElementById('see_more').innerHTML = `<h3>See more <i class="ri-arrow-down-line"></i></h3>`
-        }
       }
-    })
+    }
+  })
 })
 
 document.getElementById('a_logout').addEventListener('click', () => {
