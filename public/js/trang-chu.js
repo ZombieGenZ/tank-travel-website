@@ -112,30 +112,37 @@ document.getElementById('a_logout').addEventListener('click', () => {
       if (data === null || data === undefined) {
         Swal.fire({
           title: 'Oops...',
-          text: 'Error connecting to server',
-          footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+          text: 'Lỗi kết nối đến máy chủ',
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })
         return
       }
 
-      if (data.message == 'Logout successful!') {
-        Swal.fire({
-          title: 'Good job!',
-          text: data.message
-        })
+      if (data.message == 'Đăng xuất thành công!') {
         localStorage.removeItem('access_token')
         localStorage.removeItem('refresh_token')
+        Swal.fire({
+          title: 'Thành công',
+          text: data.message
+        }).then((result) => {
+          if (result.dismiss === Swal.DismissReason.backdrop) {
+            location.reload()
+          } else {
+            location.reload()
+          }
+        })
         return
       } else {
         Swal.fire({
           title: 'Oops...',
           text: 'Error connecting to server',
-          footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })
         return
       }
     })
 })
+<<<<<<< HEAD
 
 const typed = new Typed('#text', {
   strings: [
@@ -145,3 +152,5 @@ const typed = new Typed('#text', {
   backSpeed: 100,
   loop: true
 });
+=======
+>>>>>>> 5dffeb877681ca7a7b0b0bbc6d824d953bc41db1
