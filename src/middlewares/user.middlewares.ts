@@ -1209,10 +1209,6 @@ export const loginManageValidator = validate(
               throw new Error(USER_MESSAGE.USER_IS_NOT_VERIFIED)
             }
 
-            if (user.temporary) {
-              throw new Error(USER_MESSAGE.USER_IS_TEMPORARY)
-            }
-
             if (user.penalty !== null) {
               if (new Date(user.penalty.expired_at) < new Date()) {
                 await AccountmManagementService.unBanAccount(user._id.toString())
