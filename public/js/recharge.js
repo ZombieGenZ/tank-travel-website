@@ -23,7 +23,8 @@ let socket
 recharge_button.addEventListener('click', () => {
   const amount = document.getElementById('money_view').value
   recharge_button.disabled = true
-  amount.readOnly = true
+  console.log(amount)
+  // amount.readOnly = true
   if (amount === '') {
     Swal.fire({
       title: 'Oops...',
@@ -64,6 +65,7 @@ recharge_button.addEventListener('click', () => {
       return response.json()
     })
     .then((data) => {
+      console.log(data)
       if (data === null || data === undefined) {
         Swal.fire({
           title: 'Oops...',
