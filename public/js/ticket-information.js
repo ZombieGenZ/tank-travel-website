@@ -1,79 +1,4 @@
-let user = null
-const access_token = localStorage.getItem('access_token')
-const refresh_token = localStorage.getItem('refresh_token')
 
-if (
-  access_token !== null &&
-  access_token !== undefined &&
-  access_token !== '' &&
-  refresh_token !== null &&
-  refresh_token !== undefined &&
-  refresh_token !== ''
-) {
-  const body = {
-    refresh_token: refresh_token
-  }
-
-  fetch('/api/users/get-user-infomation', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${access_token}`
-    },
-    body: JSON.stringify(body)
-  })
-    .then((response) => {
-      return response.json()
-    })
-    .then((data) => {
-      if (data !== null && data !== undefined) {
-        if (data.user !== null && data.user !== undefined) {
-          user = data.user
-          localStorage.setItem('access_token', data.authenticate.access_token)
-          localStorage.setItem('refresh_token', data.authenticate.refresh_token)
-        }
-
-        if (user != null) {
-          const buttonlogin = document.getElementById('btn_login')
-          const ul = document.getElementById('ul_links')
-          const personal = document.createElement('div')
-          const booking_history = document.createElement('li')
-          const recharge = document.createElement('li')
-          const personal_infor = document.getElementById('personal_infor')
-          const dropdown_personal = document.getElementById('dropdown_personal')
-          const So_du = document.createElement('div')
-          So_du.classList.add('So_du')
-          recharge.classList.add('link')
-          recharge.innerHTML = '<a href="#"><i class="ri-money-dollar-circle-line"></i> Recharge</a>'
-          recharge.id = 'recharge_money'
-          booking_history.classList.add('link')
-          booking_history.innerHTML = '<a href="#"><i class="ri-history-line"></i> Booking history</a>'
-          booking_history.id = 'booking_history'
-          personal.id = 'personal'
-          personal.innerHTML = '<i class="ri-user-3-line"></i>'
-          So_du.innerText = `Số dư: ${0} VNĐ`
-          buttonlogin.style.display = 'none'
-          buttonlogin.disabled = true
-          personal_infor.appendChild(So_du)
-          personal_infor.appendChild(personal)
-          ul.appendChild(recharge)
-          ul.appendChild(booking_history)
-
-          personal.addEventListener('click', () => {
-            dropdown_personal.classList.toggle('active')
-          })
-
-          recharge.addEventListener('click', () => {
-            window.location.href = '/recharge'
-          })
-
-          booking_history.addEventListener('click', () => {
-            window.location.href = '/booking_history'
-          })
-        } 
-      }
-    })
-}
 
 document.getElementById('nav_logo').addEventListener('click', () => {
   window.location.href = '/'
@@ -113,7 +38,84 @@ const session_time = new Date().toISOString()
 let current = 0
 
 window.addEventListener('load', () => {
-  console.log(user)
+  let user = null
+  const access_token = localStorage.getItem('access_token')
+  const refresh_token = localStorage.getItem('refresh_token')
+
+  if (
+    access_token !== null &&
+    access_token !== undefined &&
+    access_token !== '' &&
+    refresh_token !== null &&
+    refresh_token !== undefined &&
+    refresh_token !== ''
+  ) {
+    const body = {
+      refresh_token: refresh_token
+    }
+
+    fetch('/api/users/get-user-infomation', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${access_token}`
+      },
+      body: JSON.stringify(body)
+    })
+      .then((response) => {
+        return response.json()
+      })
+      .then((data) => {
+        if (data !== null && data !== undefined) {
+          if (data.user !== null && data.user !== undefined) {
+            user = data.user
+            localStorage.setItem('access_token', data.authenticate.access_token)
+            localStorage.setItem('refresh_token', data.authenticate.refresh_token)
+          }
+
+          if (user != null) {
+            console.log(user)
+            const buttonlogin = document.getElementById('btn_login')
+            const ul = document.getElementById('ul_links')
+            const personal = document.createElement('div')
+            const booking_history = document.createElement('li')
+            const recharge = document.createElement('li')
+            const personal_infor = document.getElementById('personal_infor')
+            const dropdown_personal = document.getElementById('dropdown_personal')
+            const So_du = document.createElement('div')
+            So_du.classList.add('So_du')
+            recharge.classList.add('link')
+            recharge.innerHTML = '<a href="#"><i class="ri-money-dollar-circle-line"></i> Recharge</a>'
+            recharge.id = 'recharge_money'
+            booking_history.classList.add('link')
+            booking_history.innerHTML = '<a href="#"><i class="ri-history-line"></i> Booking history</a>'
+            booking_history.id = 'booking_history'
+            personal.id = 'personal'
+            personal.innerHTML = '<i class="ri-user-3-line"></i>'
+            So_du.innerText = `Số dư: ${0} VNĐ`
+            buttonlogin.style.display = 'none'
+            buttonlogin.disabled = true
+            personal_infor.appendChild(So_du)
+            personal_infor.appendChild(personal)
+            ul.appendChild(recharge)
+            ul.appendChild(booking_history)
+
+            personal.addEventListener('click', () => {
+              dropdown_personal.classList.toggle('active')
+            })
+
+            recharge.addEventListener('click', () => {
+              window.location.href = '/recharge'
+            })
+
+            booking_history.addEventListener('click', () => {
+              window.location.href = '/booking_history'
+            }) 
+          }
+          
+        }
+      })
+  }
   const body = {
     session_time: session_time,
     current: current
@@ -192,19 +194,50 @@ window.addEventListener('load', () => {
                         </div>
                     </div>
                     <div class="morinfor_bookbutton">
-                        <button class="btn">More information</button>
+                        <button class="btn moreinfor_ticket">More information</button>
                         <button class="btn book_ticket">Book</button>    
                     </div>
                 </div>    
             </li>
           `
+          const moreinfor_ticket = document.querySelectorAll('.moreinfor_ticket')
+          moreinfor_ticket.forEach(moreinfor => {
+            moreinfor.addEventListener('click', () => {
+              Swal.fire({
+                title: 'Oops...',
+                html: `<div class="input__group">
+                        <input type="input" class="form__field" placeholder="Name" value="${busRoute[key].start_point}" readOnly>
+                        <label for="name" class="form__label">Nơi đi:</label>
+                    </div>
+                    <div class="input__group">
+                        <input type="input" class="form__field" placeholder="Name" value="${busRoute[key].end_point}" readOnly>
+                        <label for="name" class="form__label">Nơi đến:</label>
+                    </div>
+                    <div class="input__group">
+                        <input type="input" class="form__field" placeholder="Name" value="${formatDate(busRoute[key].departure_time)}" readOnly>
+                        <label for="name" class="form__label">Thời gian đi:</label>
+                    </div>
+                    <div class="input__group">
+                        <input type="input" class="form__field" placeholder="Name" value="${busRoute[key].price.toLocaleString('vi-VN')}" readOnly>
+                        <label for="name" class="form__label">Giá vé:</label>
+                    </div>`,
+                focusConfirm: false,
+                showCancelButton: true,
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Thoát',
+                confirmButtonText: 'Đặt vé',
+                footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
+              })
+            })
+          })
+
           if(user == null) {
             const book_ticket = document.querySelectorAll('.book_ticket')
             book_ticket.forEach(book => {
               book.addEventListener('click', () => {
                 Swal.fire({
                   title: 'Oops...',
-                  text: 'Vui lòng đăng nhập để có thể đặt vé',
+                  text: `Vui lòng đăng nhập để có thể đặt vé`,
                   footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
                 })
               })
@@ -248,6 +281,7 @@ window.addEventListener('load', () => {
                   `,
                   focusConfirm: false,
                   showCancelButton: true,
+                  cancelButtonColor: '#d33',
                   confirmButtonText: 'Đặt vé'
                 });
                 if (formValues) {

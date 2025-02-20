@@ -64,6 +64,7 @@ recharge_button.addEventListener('click', () => {
       return response.json()
     })
     .then((data) => {
+      console.log(data)
       if (data === null || data === undefined) {
         Swal.fire({
           title: 'Oops...',
