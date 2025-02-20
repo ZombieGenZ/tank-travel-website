@@ -91,7 +91,7 @@ export const USER_MESSAGE = {
   CHANGED_TEMPORARY_PASSWORD_FAILURE: 'Thay đổi mật khẩu tạm thời thất bại',
   ACCOUNT_IS_NOT_A_CURRENT_ACCOUNT:
     'Tài khoản này không do chúng tôi cấp hoặc tài khoản đã được thay đổi mật khẩu tạm thời',
-  NOT_PERMISSION_TODO_THIS: 'BẠN LÀ NGƯỜI DÙNG? CÚT'
+  NOT_PERMISSION_TODO_THIS: 'Bạn không có quyền thực hiện hành động này'
 } as const
 
 export const AUTHENTICATION_MESSAGE = {
