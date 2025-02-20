@@ -311,6 +311,10 @@ body {
     margin-bottom: 1rem;
   }
 
+  #text {
+    color: var(--primary-color);
+  }
+
   @media (max-width: 832px) {
     .booking_container form {
       display: grid;

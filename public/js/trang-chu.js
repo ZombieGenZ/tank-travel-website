@@ -136,3 +136,12 @@ document.getElementById('a_logout').addEventListener('click', () => {
       }
     })
 })
+
+const typed = new Typed('#text', {
+  strings: [
+    document.getElementById('text').textContent, 'A trip to healing. ' , 'A memorable trip. '
+  ],
+  typeSpeed: 100,
+  backSpeed: 100,
+  loop: true
+});
