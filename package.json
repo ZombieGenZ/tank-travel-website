@@ -1,6 +1,6 @@
 {
   "name": "tank-travel",
-  "version": "0.9.1",
+  "version": "0.9.3",
   "main": "index.js",
   "scripts": {
     "dev": "npx nodemon",

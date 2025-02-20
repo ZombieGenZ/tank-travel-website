@@ -251,10 +251,10 @@ export const createValidator = (req: Request, res: Response, next: NextFunction)
         trim: true,
         isLength: {
           options: {
-            min: 7,
-            max: 8
+            min: 8,
+            max: 9
           },
-          errorMessage: VEHICLE_MESSGAE.LICENSE_PLATE_LENGTH_MUST_BE_FROM_7_TO_8
+          errorMessage: VEHICLE_MESSGAE.LICENSE_PLATE_LENGTH_MUST_BE_FROM_8_TO_9
         },
         custom: {
           options: async (value) => {
@@ -531,10 +531,10 @@ export const updateValidator = async (req: Request, res: Response, next: NextFun
         trim: true,
         isLength: {
           options: {
-            min: 7,
-            max: 8
+            min: 8,
+            max: 9
           },
-          errorMessage: VEHICLE_MESSGAE.LICENSE_PLATE_LENGTH_MUST_BE_FROM_7_TO_8
+          errorMessage: VEHICLE_MESSGAE.LICENSE_PLATE_LENGTH_MUST_BE_FROM_8_TO_9
         },
         custom: {
           options: async (value, { req }) => {
