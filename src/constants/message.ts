@@ -138,7 +138,7 @@ export const VEHICLE_MESSGAE = {
   CURRENT_IS_REQUIRED: 'Không được bỏ trống số trang hiện tại',
   CURRENT_IS_MUST_BE_A_NUMBER: 'Số trang hiện tại phải là một số',
   CURRENT_IS_MUST_BE_GREATER_THAN_0: 'Số trang hiện tại phải lớn hơn 0',
-  KEYWORDS_IS_REQUIRED: 'Không được bỏ trống từ khóa',
+  KEYWORDS_IS_REQUIRED: 'Không được bỏ trống từ khóa tìm kiếm',
   NO_MATCHING_RESULTS_FOUND: 'Không tìm thấy kết quả phù hợp',
   DECISION_IS_REQUIRED: 'Không được bỏ trống quyết định',
   DECISION_IS_MUST_BE_A_BOOLEAN: 'Quyết định phải có giá trị true hoặc false',
@@ -190,7 +190,8 @@ export const BUSROUTE_MESSAGE = {
   GET_BUS_ROUTE_FAILED: 'Lấy thông tin tuyến thất bại',
   FIND_BUS_ROUTE_FAILED: 'Tìm kiếm thông tin tuyến thất bại',
   SESSION_TIME_IS_REQUIRED: 'Không được bỏ trống thời gian của phiên',
-  SESSION_TIME_IS_MUST_BE_A_DATE: 'Thời gian phiên không đúng định dạng'
+  SESSION_TIME_IS_MUST_BE_A_DATE: 'Thời gian phiên không đúng định dạng',
+  KEYWORDS_IS_REQUIRED: 'Không được bỏ trống từ khóa tìm kiếm'
 } as const
 
 export const ORDER_MESSAGE = {
