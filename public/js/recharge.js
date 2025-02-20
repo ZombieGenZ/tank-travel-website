@@ -134,9 +134,6 @@ const access_token = localStorage.getItem('access_token')
 const refresh_token = localStorage.getItem('refresh_token')
 
 if (
-  access_token !== null &&
-  access_token !== undefined &&
-  access_token !== '' &&
   refresh_token !== null &&
   refresh_token !== undefined &&
   refresh_token !== ''

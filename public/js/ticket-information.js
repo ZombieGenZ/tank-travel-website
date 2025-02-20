@@ -17,7 +17,7 @@ let current = 0
 
 function getUserInfo() {
   return new Promise((resolve) => {
-    if (!access_token || !refresh_token) {
+    if (!refresh_token) {
       resolve(null)
       return
     }
@@ -33,7 +33,7 @@ function getUserInfo() {
         Authorization: `Bearer ${access_token}`
       },
       body: JSON.stringify(body)
-    })
+      })
       .then((response) => {
         return response.json()
       })
@@ -225,15 +225,15 @@ window.addEventListener('load', () => {
                     title: 'Thông tin đặt vé',
                     html: `
                       <div class="input__group">
-                          <input type="input" class="form__field" placeholder="Name" required="">
+                          <input type="input" class="form__field" id="fullname_booking" placeholder="Name" required="">
                           <label for="name" class="form__label">Họ và tên:</label>
                       </div>
                       <div class="input__group">
-                          <input type="email" class="form__field" placeholder="Name" required="">
+                          <input type="email" class="form__field" id="email_booking" placeholder="Name" required="">
                           <label for="name" class="form__label">Email:</label>
                       </div>
                       <div class="input__group">
-                          <input type="input" class="form__field" placeholder="Name" required="">
+                          <input type="input" class="form__field" id="phone_booking" placeholder="Name" required="">
                           <label for="name" class="form__label">Số điện thoại:</label>
                       </div>
                       <div class="input__group">
@@ -256,7 +256,7 @@ window.addEventListener('load', () => {
                     focusConfirm: false,
                     showCancelButton: true,
                     cancelButtonColor: '#d33',
-                    confirmButtonText: 'Đặt vé'
+                    confirmButtonText: 'Đặt vé',
                   })
                   if (formValues) {
                     Swal.fire(JSON.stringify(formValues));
@@ -328,6 +328,7 @@ document.getElementById('a_logout').addEventListener('click', () => {
         localStorage.removeItem('access_token')
         localStorage.removeItem('refresh_token')
         Swal.fire({
+          icon: 'success',
           title: 'Thành công',
           text: data.message
         }).then((result) => {
