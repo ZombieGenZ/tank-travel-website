@@ -124,15 +124,15 @@ document.getElementById('a_logout').addEventListener('click', () => {
         localStorage.removeItem('refresh_token')
         Swal.fire({
           title: 'Thành công',
+          icon: 'success',
           text: data.message
         }).then((result) => {
           if (result.dismiss === Swal.DismissReason.backdrop) {
-            location.reload()
+            window.location.href = '/'
           } else {
-            location.reload()
+            window.location.href = '/'
           }
         })
-        window.location.href = '/'
         return
       } else {
         Swal.fire({

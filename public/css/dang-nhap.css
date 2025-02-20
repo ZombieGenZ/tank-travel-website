@@ -47,10 +47,6 @@ main {
     box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.1);
 }
 
-body {
-    font-family: "Poppins", serif;
-}
-
 .form {
     display: flex;
     flex-direction: column;
