@@ -5,8 +5,8 @@ button.addEventListener('click', () => {
   if (!validateEmail(email)) {
     Swal.fire({
       title: 'Oops...',
-      text: 'Email address cannot be left blank!',
-      footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+      text: 'Vui lòng điền đầy đủ các thông tin',
+      footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
     })
     return
   }
@@ -29,35 +29,35 @@ button.addEventListener('click', () => {
       if (data == null || data == undefined) {
         Swal.fire({
           title: 'Oops...',
-          text: 'Error connecting to server',
-          footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+          text: 'Lỗi kết nối đến máy chủ',
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })
         return
       }
 
-      if (data.message === 'Input data error') {
+      if (data.message === 'Lỗi dữ liệu đầu vào') {
         for (const key in data.errors) {
           Swal.fire({
             title: 'Oops...',
             text: data.errors[key].msg,
-            footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+            footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
           })
         }
         return
       }
 
-      if (data.message == 'Email sent successfully! Please check your inbox') {
+      if (data.message == 'Email yêu cầu đặt lại mật khẩu đã được gửi thành công! Vui lòng kiểm tra hộp thư của bạn') {
         Swal.fire({
           title: 'Oops...',
           text: data.message,
-          footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })
         return
       } else {
         Swal.fire({
           title: 'Oops...',
-          text: 'Error connecting to server',
-          footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+          text: 'Lỗi kết nối đến máy chủ',
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })
         return
       }

@@ -39,8 +39,8 @@ document.getElementById('btn').addEventListener('click', () => {
   ) {
     Swal.fire({
       title: 'Oops...',
-      text: 'Do not leave data fields blank.',
-      footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+      text: 'Không được để trống các trường dử liệu',
+      footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
     })
     return
   }
@@ -48,8 +48,8 @@ document.getElementById('btn').addEventListener('click', () => {
   if (!isValidPhoneNumber(phoneNumber.trim())) {
     Swal.fire({
       title: 'Oops...',
-      text: 'Your phone number is not exist. Please right the correct phone number',
-      footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+      text: 'Số điện thoại không hợp lệ',
+      footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
     })
     return
   }
@@ -57,8 +57,8 @@ document.getElementById('btn').addEventListener('click', () => {
   if (!validateEmail(email.trim())) {
     Swal.fire({
       title: 'Oops...',
-      text: 'Your email is not exist. Please right the correct email',
-      footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+      text: 'Email không hợp lệ',
+      footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
     })
     return
   }
@@ -84,18 +84,18 @@ document.getElementById('btn').addEventListener('click', () => {
       if (data == null || data == undefined) {
         Swal.fire({
           title: 'Oops...',
-          text: 'Error connecting to server',
-          footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+          text: 'Lỗi kết nối đến máy chủ',
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })
         return
       }
 
-      if (data.message === 'Input data error') {
+      if (data.message === 'Lỗi dữ liệu đầu vào') {
         for (const key in data.errors) {
           Swal.fire({
             title: 'Oops...',
             text: data.errors[key].msg,
-            footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+            footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
           })
         }
         return
@@ -103,7 +103,7 @@ document.getElementById('btn').addEventListener('click', () => {
 
       if (data.message === 'Business registration successful!') {
         Swal.fire({
-          title: 'Good job!',
+          title: 'Thành công',
           text: data.message
         }).then((willRedirect) => {
           if (willRedirect) {
@@ -115,7 +115,7 @@ document.getElementById('btn').addEventListener('click', () => {
         Swal.fire({
           title: 'Oops...',
           text: data.message,
-          footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })
         return
       }

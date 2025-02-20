@@ -128,22 +128,22 @@ window.addEventListener('load', () => {
       if (data == null || data == undefined) {
         Swal.fire({
           title: 'Oops...',
-          text: 'Error connecting to server',
+          text: 'Lỗi kết nối đến máy chủ',
           footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
         })
         return
       }
 
-      if (data.result.message == 'Failed to get bus route information') {
+      if (data.result.message == 'Lấy thông tin tuyến thất bại') {
         Swal.fire({
           title: 'Oops...',
-          text: 'Error connecting to server',
+          text: 'Lỗi kết nối đến máy chủ',
           footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
         })
         return
       }
 
-      if (data.message === 'Input data error') {
+      if (data.message === 'Lỗi dữ liệu đầu vào') {
         for (const key in data.errors) {
           Swal.fire({
             title: 'Oops...',
@@ -154,7 +154,7 @@ window.addEventListener('load', () => {
         return
       }
 
-      if (data.result.message == 'No matching results found') {
+      if (data.result.message == 'Không tìm thấy kết quả phù hợp') {
         document.getElementById('see_more').innerHTML = ''
         return
       }

@@ -31,8 +31,8 @@ function changePassword() {
   ) {
     Swal.fire({
       title: 'Oops...',
-      text: 'Password and confirm password cannot be left blank',
-      footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+      text: 'Không được để trống các trường dử liệu',
+      footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
     })
     return
   }
@@ -40,8 +40,8 @@ function changePassword() {
   if (!isStrongPassword(password.trim())) {
     Swal.fire({
       title: 'Oops...',
-      text: 'Password must be at least 8 characters long and contain at least 3 of the following: uppercase letters, lowercase letters, numbers, and special characters',
-      footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+      text: 'Mật khẩu phải dài ít nhất 8 ký tự và chứa ít nhất 3 trong số các ký tự sau: chữ hoa, chữ thường, số và ký tự đặc biệt',
+      footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
     })
     return
   }
@@ -49,8 +49,8 @@ function changePassword() {
   if (password.trim() !== confirmPassword.trim()) {
     Swal.fire({
       title: 'Oops...',
-      text: 'Password and confirm password do not match',
-      footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+      text: 'Mật khẩu và xác nhận mật khẩu không trùng khớp',
+      footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
     })
     return
   }
@@ -75,26 +75,26 @@ function changePassword() {
       if (data === null || data === undefined) {
         Swal.fire({
           title: 'Oops...',
-          text: 'Error connecting to server',
-          footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+          text: 'Lỗi kết nối đến máy chủ',
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })
         return
       }
 
-      if (data.message === 'Input data error') {
+      if (data.message === 'Lỗi dữ liệu đầu vào') {
         for (const key in data.errors) {
           Swal.fire({
             title: 'Oops...',
             text: data.errors[key].msg,
-            footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+            footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
           })
         }
         return
       }
 
-      if (data.message == 'Password changed successfully! Please log in again') {
+      if (data.message == 'Thay đổi mật khẩu thành công! Vui lòng đăng nhập lại') {
         Swal.fire({
-          title: 'Good job!',
+          title: 'Thành công!',
           text: data.message
         }).then((result) => {
           if (result.dismiss === Swal.DismissReason.backdrop) {
@@ -107,8 +107,8 @@ function changePassword() {
       } else {
         Swal.fire({
           title: 'Oops...',
-          text: 'Error connecting to server',
-          footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+          text: 'Lỗi kết nối đến máy chủ',
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })
         return
       }

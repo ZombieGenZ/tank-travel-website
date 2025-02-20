@@ -108,8 +108,8 @@ function sendEmailVerify(btn) {
   if (email == null || email == undefined || email.trim() === '') {
     Swal.fire({
       title: 'Oops...',
-      text: 'You need to fill in your email before requesting to send verification code',
-      footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+      text: 'Vui lòng nhập email của bạn trước khi yêu cầu nhập mã xác nhận email',
+      footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
     })
     return
   }
@@ -117,8 +117,8 @@ function sendEmailVerify(btn) {
   if (!validateEmail(email.trim())) {
     Swal.fire({
       title: 'Oops...',
-      text: 'Invalid email!',
-      footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+      text: 'Địa chỉ email không hợp lệ',
+      footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
     })
     return
   }
@@ -141,21 +141,21 @@ function sendEmailVerify(btn) {
       if (data == null || data == undefined) {
         Swal.fire({
           title: 'Oops...',
-          text: 'Error connecting to server',
-          footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+          text: 'Không thể kết nối đến máy chủ',
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })
         return
       }
 
-      if (data.message === 'Input data error') {
+      if (data.message === 'Lỗi dữ liệu đầu vào') {
         for (const key in data.errors) {
-          if (data.errors[key].msg == 'Email has already been sent, please check your inbox') {
-            btn.innerText = 'ReSend Code?'
+          if (data.errors[key].msg == 'Email đã được gửi, vui lòng kiểm tra hộp thư của bạn') {
+            btn.innerText = 'Gửi lại?'
             btn.setAttribute('onclick', 'reSendEmail(this)')
             Swal.fire({
               title: 'Oops...',
               text: data.errors[key].msg,
-              footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+              footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
             })
             return
           }
@@ -163,26 +163,26 @@ function sendEmailVerify(btn) {
           Swal.fire({
             title: 'Oops...',
             text: data.errors[key].msg,
-            footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+            footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
           })
         }
         return
       }
 
-      if (data.message === 'Failed to resend email verification code') {
+      if (data.message === 'Gửi mã xác minh email thất bại') {
         Swal.fire({
           title: 'Oops...',
           text: data.message,
-          footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })
         return
       }
 
-      if (data.message === 'Email verification code resent successfully! Please check your inbox') {
-        btn.innerText = 'ReSend Code?'
+      if (data.message === 'Mã xác minh email đã được gửi thành công! Vui lòng kiểm tra hộp thư của bạn') {
+        btn.innerText = 'Gửi lại?'
         btn.setAttribute('onclick', 'reSendEmail(this)')
         Swal.fire({
-          title: 'Good job!',
+          title: 'Thành công!',
           text: data.message
         })
         return
@@ -190,7 +190,7 @@ function sendEmailVerify(btn) {
         Swal.fire({
           title: 'Oops...',
           text: data.message,
-          footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })
         return
       }
@@ -203,8 +203,8 @@ function reSendEmail(btn) {
   if (email == null || email == undefined || email.trim() === '') {
     Swal.fire({
       title: 'Oops...',
-      text: 'You need to fill in your email before requesting to resend verification code',
-      footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+      text: 'Vui lòng nhập địa chỉ eamil trước khi yêu cầu gửi lại mã xác nhận email',
+      footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
     })
     return
   }
@@ -212,8 +212,8 @@ function reSendEmail(btn) {
   if (!validateEmail(email.trim())) {
     Swal.fire({
       title: 'Oops...',
-      text: 'Invalid email!',
-      footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+      text: 'Địa chỉ email không hợp lệ',
+      footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
     })
     return
   }
@@ -236,21 +236,21 @@ function reSendEmail(btn) {
       if (data == null || data == undefined) {
         Swal.fire({
           title: 'Oops...',
-          text: 'Error connecting to server',
-          footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+          text: 'Lỗi kết nối đến máy chủ',
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })
         return
       }
 
-      if (data.message === 'Input data error') {
+      if (data.message === 'Lỗi dữ liệu đầu vào') {
         for (const key in data.errors) {
-          if (data.errors[key].msg == 'Email verification code has not been sent') {
-            btn.innerText = 'Send Code?'
+          if (data.errors[key].msg == 'Mã xác minh email chưa được gửi') {
+            btn.innerText = 'Gửi mã?'
             btn.setAttribute('onclick', 'sendEmailVerify(this)')
             Swal.fire({
               title: 'Oops...',
               text: data.errors[key].msg,
-              footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+              footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
             })
             return
           }
@@ -258,40 +258,32 @@ function reSendEmail(btn) {
           Swal.fire({
             title: 'Oops...',
             text: data.errors[key].msg,
-            footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+            footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
           })
         }
         return
       }
 
-      if (data.message === 'Failed to send email verification code') {
+      if (data.message === 'Gửi lại mã xác minh email thất bại') {
         Swal.fire({
           title: 'Oops...',
           text: data.message,
-          footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })
         return
       }
 
-      if (data.message === 'Email verification code resent successfully! Please check your inbox') {
-        btn.innerText = 'Send Code?'
-        btn.setAttribute('onclick', 'sendEmailVerify(this)')
+      if (data.message === 'Mã xác minh email đã được gửi lại thành công! Vui lòng kiểm tra hộp thư của bạn') {
         Swal.fire({
-          title: 'Good job!',
+          title: 'Thành công!',
           text: data.message
-        }).then((result) => {
-          if (result.dismiss === Swal.DismissReason.backdrop) {
-            location.reload()
-          } else {
-            location.reload()
-          }
         })
         return
       } else {
         Swal.fire({
           title: 'Oops...',
           text: data.message,
-          footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })
         return
       }
@@ -303,7 +295,7 @@ function register() {
   const email = document.getElementById('email_register').value
   const phone = document.getElementById('phone_register').value
   const password = document.getElementById('password_register').value
-  const comform_password = document.getElementById('comform_password_register').value
+  const comform_password = document.getElementById('comfirm_password_register').value
   const email_verify_code = document.getElementById('email_verify_code').value
 
   if (
@@ -328,8 +320,8 @@ function register() {
   ) {
     Swal.fire({
       title: 'Oops...',
-      text: 'Do not leave username, email, phone, password, comform password or email verify code blank!',
-      footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+      text: 'Không được bỏ trống các thông tin',
+      footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
     })
     return
   }
@@ -337,8 +329,8 @@ function register() {
   if (!validateEmail(email.trim())) {
     Swal.fire({
       title: 'Oops...',
-      text: 'Invalid email!',
-      footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+      text: 'Địa chỉ email không hợp lệ',
+      footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
     })
     return
   }
@@ -346,8 +338,8 @@ function register() {
   if (!isValidPhoneNumber(phone.trim())) {
     Swal.fire({
       title: 'Oops...',
-      text: 'Invalid phone number!',
-      footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+      text: 'Số điện thoại không hợp lệ',
+      footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
     })
     return
   }
@@ -355,8 +347,8 @@ function register() {
   if (!isStrongPassword(password.trim())) {
     Swal.fire({
       title: 'Oops...',
-      text: 'Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number and one special character!',
-      footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+      text: 'Mật khẩu phải dài ít nhất 8 ký tự, chứa ít nhất một chữ cái viết hoa, một chữ cái viết thường, một số và một ký tự đặc biệt',
+      footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
     })
     return
   }
@@ -364,8 +356,8 @@ function register() {
   if (password.trim() !== comform_password.trim()) {
     Swal.fire({
       title: 'Oops...',
-      text: 'Password and comform password do not match!',
-      footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+      text: 'Mật khẩu và mật khẩu đăng nhập không khớp',
+      footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
     })
     return
   }
@@ -393,26 +385,26 @@ function register() {
       if (data == null || data == undefined) {
         Swal.fire({
           title: 'Oops...',
-          text: 'Error connecting to server',
-          footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+          text: 'Lỗi khi kết nối đến máy chủ',
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })
         return
       }
 
-      if (data.message === 'Input data error') {
+      if (data.message === 'Lỗi dữ liệu đầu vào') {
         for (const key in data.errors) {
           Swal.fire({
             title: 'Oops...',
             text: data.errors[key].msg,
-            footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+            footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
           })
         }
         return
       }
 
-      if (data.message === 'Registration successful! Please log in again') {
+      if (data.message === 'Đăng ký thành công! Vui lòng đăng nhập lại') {
         Swal.fire({
-          title: 'Good job!',
+          title: 'Thành công!',
           text: data.message
         }).then((result) => {
           if (result.dismiss === Swal.DismissReason.backdrop) {
@@ -425,8 +417,8 @@ function register() {
       } else {
         Swal.fire({
           title: 'Oops...',
-          text: 'Error connecting to server',
-          footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+          text: 'Lỗi kết nối đến máy chủ',
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })
         return
       }
@@ -440,8 +432,8 @@ function login() {
   if (username.trim() === '' || password.trim() === '') {
     Swal.fire({
       title: 'Oops...',
-      text: 'Do not leave username or password blank!',
-      footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+      text: 'Không được để trống các trường dử liệu',
+      footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
     })
     return
   }
@@ -449,8 +441,8 @@ function login() {
   if (!validateEmail(username.trim())) {
     Swal.fire({
       title: 'Oops...',
-      text: 'Invalid email!',
-      footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+      text: 'Địa chỉ email không hợp lệ',
+      footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
     })
     return
   }
@@ -474,38 +466,38 @@ function login() {
       if (data == null || data == undefined) {
         Swal.fire({
           title: 'Oops...',
-          text: 'Error connecting to server',
-          footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+          text: 'Lỗi kết nối đến máy chủ',
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })
         return
       }
 
-      if (data.message === 'Input data error') {
+      if (data.message === 'Lỗi dữ liệu đầu vào') {
         for (const key in data.errors) {
           Swal.fire({
             title: 'Oops...',
             text: data.errors[key].msg,
-            footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+            footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
           })
         }
         return
       }
 
-      if (data.message === 'Please change your temporary password before logging in') {
+      if (data.message === 'Vui lòng thay đổi mật khẩu tạm thời trước khi đăng nhập') {
         Swal.fire({
           title: 'Oops...',
           text: data.message,
-          footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })
         return
       }
 
-      if (data.message === 'Login successful!') {
+      if (data.message === 'Đăng nhập thành công!') {
         localStorage.setItem('access_token', data.authenticate.access_token)
         localStorage.setItem('refresh_token', data.authenticate.refresh_token)
 
         Swal.fire({
-          title: 'Good job!',
+          title: 'Thành công!',
           text: data.message
         }).then((result) => {
           if (result.dismiss === Swal.DismissReason.backdrop) {
@@ -518,8 +510,8 @@ function login() {
       } else {
         Swal.fire({
           title: 'Oops...',
-          text: 'Error connecting to server',
-          footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+          text: 'Lỗi kết nối đến máy chủ',
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })
         return
       }

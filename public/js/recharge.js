@@ -26,8 +26,8 @@ recharge_button.addEventListener('click', () => {
   if (amount === '') {
     Swal.fire({
       title: 'Oops...',
-      text: 'Please enter the amount to deposit',
-      footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+      text: 'Vui lòng điền số tiền cần nạp',
+      footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
     })
     return
   }
@@ -35,8 +35,8 @@ recharge_button.addEventListener('click', () => {
   if (Number(amount) < 1000) {
     Swal.fire({
       title: 'Oops...',
-      text: 'The amount to be deposited must be greater than or equal to 1,000 VND',
-      footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+      text: 'Số tiền cần nạp phải lớn hơn hoặc bằng 1.000 VNĐ',
+      footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
     })
     return
   }
@@ -66,18 +66,18 @@ recharge_button.addEventListener('click', () => {
       if (data === null || data === undefined) {
         Swal.fire({
           title: 'Oops...',
-          text: 'Error connecting to server',
-          footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+          text: 'Lỗi kết nối đến máy chủ',
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })
         return
       }
 
-      if (data.message === 'Input data error') {
+      if (data.message === 'Lỗi dữ liệu đầu vào') {
         for (const key in data.errors) {
           Swal.fire({
             title: 'Oops...',
             text: data.errors[key].msg,
-            footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+            footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
           })
         }
         return
@@ -99,7 +99,7 @@ recharge_button.addEventListener('click', () => {
           document.getElementById('wallet_money').value = wallet + res.amount
 
           Swal.fire({
-            title: 'Good job!',
+            title: 'Thành công',
             text: 'Nạp tiền thành công!'
           })
         })
@@ -114,8 +114,8 @@ recharge_button.addEventListener('click', () => {
       } else {
         Swal.fire({
           title: 'Oops...',
-          text: 'Error connecting to server',
-          footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+          text: 'Lỗi kết nối đến máy chủ',
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })
         return
       }

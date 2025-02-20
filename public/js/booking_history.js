@@ -1,5 +1,5 @@
 const dropdown = document.querySelectorAll('dropdown');
-dropdown.forEach(drop => {
+dropdown.forEach((drop) => {
   drop.addEventListener('click', () => {
     drop.classList.add('active')
   })
@@ -101,4 +101,3 @@ document.getElementById('ticket-information').addEventListener('click', () => {
 document.getElementById('signup_business').addEventListener('click', () => {
   window.location.href = '/business_signup'
 })
-

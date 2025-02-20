@@ -54,8 +54,8 @@ export const USER_MESSAGE = {
   USER_IS_NOT_VERIFIED: 'Bạn phải xác minh email bỏ sử dụng chức năng này',
   USERS_NOT_FOUND: 'Không tìm thấy người dùng với email này',
   FORGOT_PASSWORD_SEND_EMAIL_SUCCESS:
-    'Email đặt lại mật khẩu đã được gửi thành công! Vui lòng kiểm tra hộp thư của bạn',
-  FORGOT_PASSWORD_SEND_EMAIL_FAILURE: 'Gửi email đặt lại mật khẩu thất bại',
+    'Email yêu cầu đặt lại mật khẩu đã được gửi thành công! Vui lòng kiểm tra hộp thư của bạn',
+  FORGOT_PASSWORD_SEND_EMAIL_FAILURE: 'Gửi email yêu cầu đặt lại mật khẩu thất bại',
   TOKEN_IS_REQUESTED: 'Mã xác thực thay đổi mật khẩu là bắt buộc',
   TOKEN_MUST_BE_A_STRING: 'Mã xác thực thay đổi mật khẩu phải là một chuỗi ký tự',
   TOKEN_INVALID: 'Mã xác thực thay đổi mật khẩu không hợp lệ',
