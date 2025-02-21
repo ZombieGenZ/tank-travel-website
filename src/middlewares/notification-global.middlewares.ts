@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import { ObjectId } from 'mongodb'
 import { UserPermission } from '~/constants/enum'
 import HTTPSTATUS from '~/constants/httpStatus'
-import { AUTHENTICATION_MESSAGE, NOTIFICATION_MESSAGE } from '~/constants/message'
+import { AUTHENTICATION_MESSAGE, NOTIFICATION_MESSAGE, SYSTEM_MESSAGE } from '~/constants/message'
 import { TokenPayload } from '~/models/requests/user.requests'
 import User from '~/models/schemas/users.schemas'
 import databaseService from '~/services/database.services'
@@ -201,7 +201,9 @@ export const setNotificationGlobalValidator = async (req: Request, res: Response
       const errors = validationResult(req)
       if (!errors.isEmpty()) {
         deleteTemporaryFile(req.files)
-        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        res
+          .status(HTTPSTATUS.UNPROCESSABLE_ENTITY)
+          .json({ message: SYSTEM_MESSAGE.VALIDATION_ERROR, errors: errors.mapped(), authenticate })
         return
       }
       next()

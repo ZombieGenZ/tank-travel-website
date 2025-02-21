@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import { ImageType } from '~/constants/image'
 import { checkSchema, validationResult } from 'express-validator'
 import { SeatType, UserPermission, VehicleTypeEnum } from '~/constants/enum'
-import { VEHICLE_MESSGAE, AUTHENTICATION_MESSAGE } from '~/constants/message'
+import { VEHICLE_MESSGAE, AUTHENTICATION_MESSAGE, SYSTEM_MESSAGE } from '~/constants/message'
 import fs from 'fs'
 import User from '~/models/schemas/users.schemas'
 import path from 'path'
@@ -276,7 +276,9 @@ export const createValidator = (req: Request, res: Response, next: NextFunction)
       const errors = validationResult(req)
       if (!errors.isEmpty()) {
         deleteTemporaryFile(req.files)
-        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        res
+          .status(HTTPSTATUS.UNPROCESSABLE_ENTITY)
+          .json({ message: SYSTEM_MESSAGE.VALIDATION_ERROR, errors: errors.mapped(), authenticate })
         return
       }
       next()
@@ -358,7 +360,7 @@ export const setupCreateImage = async (req: Request, res: Response, next: NextFu
                   url: `${process.env.APP_URL}/images/upload/vehicle/${user._id}/${file.filename}`,
                   size: file.size
                 }
-                resolve(img)
+        resolve(img)
               })
           })
           .catch((err) => {
@@ -621,7 +623,9 @@ export const vehicleIdValidator = (req: Request, res: Response, next: NextFuncti
     .then(() => {
       const errors = validationResult(req)
       if (!errors.isEmpty()) {
-        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        res
+          .status(HTTPSTATUS.UNPROCESSABLE_ENTITY)
+          .json({ message: SYSTEM_MESSAGE.VALIDATION_ERROR, errors: errors.mapped(), authenticate })
         return
       }
       next()
@@ -676,7 +680,9 @@ export const getVehicleValidator = (req: Request, res: Response, next: NextFunct
     .then(() => {
       const errors = validationResult(req)
       if (!errors.isEmpty()) {
-        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        res
+          .status(HTTPSTATUS.UNPROCESSABLE_ENTITY)
+          .json({ message: SYSTEM_MESSAGE.VALIDATION_ERROR, errors: errors.mapped(), authenticate })
         return
       }
       next()
@@ -709,7 +715,9 @@ export const findVehicleValidator = (req: Request, res: Response, next: NextFunc
     .then(() => {
       const errors = validationResult(req)
       if (!errors.isEmpty()) {
-        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        res
+          .status(HTTPSTATUS.UNPROCESSABLE_ENTITY)
+          .json({ message: SYSTEM_MESSAGE.VALIDATION_ERROR, errors: errors.mapped(), authenticate })
         return
       }
       next()
@@ -744,7 +752,9 @@ export const censorVehicleValidator = (req: Request, res: Response, next: NextFu
     .then(() => {
       const errors = validationResult(req)
       if (!errors.isEmpty()) {
-        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        res
+          .status(HTTPSTATUS.UNPROCESSABLE_ENTITY)
+          .json({ message: SYSTEM_MESSAGE.VALIDATION_ERROR, errors: errors.mapped(), authenticate })
         return
       }
       next()
@@ -799,7 +809,9 @@ export const getVehicleRegistrationValidator = (req: Request, res: Response, nex
     .then(() => {
       const errors = validationResult(req)
       if (!errors.isEmpty()) {
-        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        res
+          .status(HTTPSTATUS.UNPROCESSABLE_ENTITY)
+          .json({ message: SYSTEM_MESSAGE.VALIDATION_ERROR, errors: errors.mapped(), authenticate })
         return
       }
       next()

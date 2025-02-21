@@ -3,7 +3,7 @@ import { checkSchema, validationResult } from 'express-validator'
 import { ObjectId } from 'mongodb'
 import { UserPermission, VehicleStatus, VehicleTypeEnum } from '~/constants/enum'
 import HTTPSTATUS from '~/constants/httpStatus'
-import { BUSROUTE_MESSAGE, VEHICLE_MESSGAE } from '~/constants/message'
+import { BUSROUTE_MESSAGE, SYSTEM_MESSAGE, VEHICLE_MESSGAE } from '~/constants/message'
 import BusRoute from '~/models/schemas/busRoute.schemas'
 import User from '~/models/schemas/users.schemas'
 import databaseService from '~/services/database.services'
@@ -201,7 +201,9 @@ export const createValidator = (req: Request, res: Response, next: NextFunction)
     .then(() => {
       const errors = validationResult(req)
       if (!errors.isEmpty()) {
-        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        res
+          .status(HTTPSTATUS.UNPROCESSABLE_ENTITY)
+          .json({ message: SYSTEM_MESSAGE.VALIDATION_ERROR, errors: errors.mapped(), authenticate })
         return
       }
       next()
@@ -454,7 +456,9 @@ export const updateValidator = (req: Request, res: Response, next: NextFunction)
     .then(() => {
       const errors = validationResult(req)
       if (!errors.isEmpty()) {
-        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        res
+          .status(HTTPSTATUS.UNPROCESSABLE_ENTITY)
+          .json({ message: SYSTEM_MESSAGE.VALIDATION_ERROR, errors: errors.mapped(), authenticate })
         return
       }
       next()
@@ -547,7 +551,9 @@ export const deleteValidator = (req: Request, res: Response, next: NextFunction)
     .then(() => {
       const errors = validationResult(req)
       if (!errors.isEmpty()) {
-        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        res
+          .status(HTTPSTATUS.UNPROCESSABLE_ENTITY)
+          .json({ message: SYSTEM_MESSAGE.VALIDATION_ERROR, errors: errors.mapped(), authenticate })
         return
       }
       next()
@@ -603,7 +609,9 @@ export const getBusRouteValidator = (req: Request, res: Response, next: NextFunc
     .then(() => {
       const errors = validationResult(req)
       if (!errors.isEmpty()) {
-        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        res
+          .status(HTTPSTATUS.UNPROCESSABLE_ENTITY)
+          .json({ message: SYSTEM_MESSAGE.VALIDATION_ERROR, errors: errors.mapped(), authenticate })
         return
       }
       next()
@@ -665,7 +673,9 @@ export const findBusRouteValidator = (req: Request, res: Response, next: NextFun
     .then(() => {
       const errors = validationResult(req)
       if (!errors.isEmpty()) {
-        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        res
+          .status(HTTPSTATUS.UNPROCESSABLE_ENTITY)
+          .json({ message: SYSTEM_MESSAGE.VALIDATION_ERROR, errors: errors.mapped(), authenticate })
         return
       }
       next()

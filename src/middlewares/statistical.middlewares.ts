@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import { checkSchema, validationResult } from 'express-validator'
 import HTTPSTATUS from '~/constants/httpStatus'
-import { STATISTICS_MESSAGE } from '~/constants/message'
+import { STATISTICS_MESSAGE, SYSTEM_MESSAGE } from '~/constants/message'
 
 export const findStatisticalValidator = (req: Request, res: Response, next: NextFunction) => {
   const { access_token, refresh_token } = req
@@ -52,7 +52,9 @@ export const findStatisticalValidator = (req: Request, res: Response, next: Next
     .then(() => {
       const errors = validationResult(req)
       if (!errors.isEmpty()) {
-        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        res
+          .status(HTTPSTATUS.UNPROCESSABLE_ENTITY)
+          .json({ message: SYSTEM_MESSAGE.VALIDATION_ERROR, errors: errors.mapped(), authenticate })
         return
       }
       next()

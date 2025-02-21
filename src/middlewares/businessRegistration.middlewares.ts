@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import { checkSchema, validationResult } from 'express-validator'
 import { ObjectId } from 'mongodb'
 import HTTPSTATUS from '~/constants/httpStatus'
-import { BUSINESS_REGISTRATION_MESSAGE } from '~/constants/message'
+import { BUSINESS_REGISTRATION_MESSAGE, SYSTEM_MESSAGE } from '~/constants/message'
 import databaseService from '~/services/database.services'
 import UserServices from '~/services/user.services'
 import { getEmailInfomation } from '~/utils/email'
@@ -220,7 +220,9 @@ export const getBusinessRegistrationValidator = (req: Request, res: Response, ne
     .then(() => {
       const errors = validationResult(req)
       if (!errors.isEmpty()) {
-        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        res
+          .status(HTTPSTATUS.UNPROCESSABLE_ENTITY)
+          .json({ message: SYSTEM_MESSAGE.VALIDATION_ERROR, errors: errors.mapped(), authenticate })
         return
       }
       next()

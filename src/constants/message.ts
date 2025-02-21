@@ -1,3 +1,7 @@
+export const SYSTEM_MESSAGE = {
+  VALIDATION_ERROR: 'Lỗi dữ liệu đầu vào'
+} as const
+
 export const USER_MESSAGE = {
   VALIDATION_ERROR: 'Lỗi dữ liệu đầu vào',
   DISPLAY_NAME_IS_REQUIRED: 'Không được bỏ trống tên hiển thị',

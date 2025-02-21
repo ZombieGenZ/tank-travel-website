@@ -5,7 +5,7 @@ import { ObjectId } from 'mongodb'
 import sharp from 'sharp'
 import { UserStatus } from '~/constants/enum'
 import HTTPSTATUS from '~/constants/httpStatus'
-import { AUTHENTICATION_MESSAGE, USER_MESSAGE } from '~/constants/message'
+import { AUTHENTICATION_MESSAGE, SYSTEM_MESSAGE, USER_MESSAGE } from '~/constants/message'
 import { ErrorWithStatus } from '~/models/errors'
 import { MulterFile } from '~/models/multerfile'
 import { TokenPayload } from '~/models/requests/user.requests'
@@ -689,7 +689,9 @@ export const changePasswordValidator = async (req: Request, res: Response, next:
     .then(() => {
       const errors = validationResult(req)
       if (!errors.isEmpty()) {
-        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        res
+          .status(HTTPSTATUS.UNPROCESSABLE_ENTITY)
+          .json({ message: SYSTEM_MESSAGE.VALIDATION_ERROR, errors: errors.mapped(), authenticate })
         return
       }
       next()
@@ -774,7 +776,9 @@ export const changeEmailValidator = async (req: Request, res: Response, next: Ne
     .then(() => {
       const errors = validationResult(req)
       if (!errors.isEmpty()) {
-        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        res
+          .status(HTTPSTATUS.UNPROCESSABLE_ENTITY)
+          .json({ message: SYSTEM_MESSAGE.VALIDATION_ERROR, errors: errors.mapped(), authenticate })
         return
       }
       next()
@@ -831,7 +835,9 @@ export const changePhoneValidator = (req: Request, res: Response, next: NextFunc
     .then(() => {
       const errors = validationResult(req)
       if (!errors.isEmpty()) {
-        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        res
+          .status(HTTPSTATUS.UNPROCESSABLE_ENTITY)
+          .json({ message: SYSTEM_MESSAGE.VALIDATION_ERROR, errors: errors.mapped(), authenticate })
         return
       }
       next()
@@ -1161,7 +1167,9 @@ export const changePasswordTemporaryValidator = (req: Request, res: Response, ne
     .then(() => {
       const errors = validationResult(req)
       if (!errors.isEmpty()) {
-        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ errors: errors.mapped(), authenticate })
+        res
+          .status(HTTPSTATUS.UNPROCESSABLE_ENTITY)
+          .json({ message: SYSTEM_MESSAGE.VALIDATION_ERROR, errors: errors.mapped(), authenticate })
         return
       }
       next()
