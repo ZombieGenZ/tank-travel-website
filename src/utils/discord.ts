@@ -9,7 +9,7 @@ export const startBot = async (): Promise<void> => {
     await client.login(process.env.DISCORD_BOT_TOKEN)
     console.log('\x1b[33mBot Discord đã được bật!\x1b[0m')
 
-    client.user?.setActivity('http://tank-travel.io.vn/', { type: 2 })
+    client.user?.setActivity(`${process.env.APP_URL}/`, { type: 2 })
   } catch (error) {
     console.error('Lỗi khi khởi động bot:', error)
   }

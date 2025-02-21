@@ -1,4 +1,4 @@
-const server_url = 'http://tank-travel.io.vn'
+const server_url = 'https://tank-travel.io.vn'
 function formatNumber(number) {
   const formattedNumber = number.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')
   return formattedNumber
