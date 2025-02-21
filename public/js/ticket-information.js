@@ -1,5 +1,5 @@
 let user = null
-const access_token = localStorage.getItem('access_token')
+const access_token = localStorage.getItem('access_token') 
 const refresh_token = localStorage.getItem('refresh_token')
 
 function formatDate(dateString) {
@@ -11,6 +11,19 @@ function formatDate(dateString) {
   const year = date.getFullYear()
   return `${hours}:${minutes} ${day}/${month}/${year}`
 }
+
+document.getElementById('Contact_us').addEventListener('click', () => {
+  Swal.fire({
+    title: "Liên hệ chúng tôi",
+    icon: 'info',
+    html: `<div>
+            <ul class="ul_contact">
+              <li>Số điện thoại: 0908651852</li>
+              <li>Email: namndtb00921@fpt.edu.vn</li>
+            </ul>
+           </div>`,
+  });
+})
 
 const session_time = new Date().toISOString()
 let current = 0
@@ -148,65 +161,69 @@ window.addEventListener('load', () => {
           const list = document.getElementById('list_ticket')
           const busRoute = data.result.busRoute
 
-          for (const key in busRoute) {
+          for (let i = 0; i < busRoute.length; i++) {
+            const route = busRoute[i];
             list.innerHTML += `
                 <li class="each_ticket">
                   <div class="information">
-                      <h3>${busRoute[key].start_point} to ${busRoute[key].end_point}</h3>
+                      <h3>${route.start_point} to ${route.end_point}</h3>
                       <hr>
                       <div class="date_local">
                           <div class="detail_ticket start_point">
                               <h4>Departure:</h4>
-                              <p>${busRoute[key].start_point}</p>
+                              <p>${route.start_point}</p>
                           </div>
                           <div class="detail_ticket end_point">
                               <h4>Destination:</h4>
-                              <p>${busRoute[key].end_point}</p>
+                              <p>${route.end_point}</p>
                           </div>
                           <div class="detail_ticket date_begin">
                               <h4>Date-time:</h4>
-                              <p>${formatDate(busRoute[key].departure_time)}</p>
+                              <p>${formatDate(route.departure_time)}</p>
                           </div>
                           <div class="detail_ticket price">
                               <h4>Phương tiện:</h4>
-                              <p>${busRoute[key].vehicle.vehicle_type == "0" ? "Xe khách" : "Tàu hỏa"}</p>
+                              <p>${route.vehicle.vehicle_type == "0" ? "Xe khách" : "Tàu hỏa"}</p>
                           </div>
                           <div class="detail_ticket price">
                               <h4>Giá tiền:</h4>
-                              <p>${busRoute[key].price.toLocaleString('vi-VN')} VNĐ</p>
+                              <p>${route.price.toLocaleString('vi-VN')} VNĐ</p>
                           </div>
                       </div>
                       <div class="morinfor_bookbutton">
-                          <button class="btn moreinfor_ticket">More information</button>
-                          <button class="btn book_ticket">Book</button>    
+                          <button class="btn moreinfor_ticket" data-index="${i}">More information</button>
+                          <button class="btn book_ticket" data-index="${i}">Book</button>    
                       </div>
                   </div>    
               </li>
             `
-            const moreinfor_ticket = document.querySelectorAll('.moreinfor_ticket')
+          }
+
+          const moreinfor_ticket = document.querySelectorAll('.moreinfor_ticket')
             moreinfor_ticket.forEach((moreinfor) => {
               moreinfor.addEventListener('click', () => {
-                console.log(busRoute[key])
+                const index = moreinfor.dataset.index;
+                console.log(busRoute[index]);
                   Swal.fire({
                     title: 'Thông tin chi tiết vé xe',
                     html: `<div class="input__group">
-                            <input type="input" class="form__field" placeholder="Name" value="${busRoute[key].start_point}" readOnly>
+                            <input type="input" class="form__field" placeholder="Name" value="${busRoute[index].start_point}" readOnly>
                             <label for="name" class="form__label">Nơi đi:</label>
                         </div>
                         <div class="input__group">
-                            <input type="input" class="form__field" placeholder="Name" value="${busRoute[key].end_point}" readOnly>
+                            <input type="input" class="form__field" placeholder="Name" value="${busRoute[index].end_point}" readOnly>
                             <label for="name" class="form__label">Nơi đến:</label>
                         </div>
                         <div class="input__group">
-                            <input type="input" class="form__field" placeholder="Name" value="${formatDate(busRoute[key].departure_time)}" readOnly>
+                            <input type="input" class="form__field" placeholder="Name" value="${formatDate(busRoute[index].departure_time)}" readOnly>
                             <label for="name" class="form__label">Thời gian đi:</label>
                         </div>
                         <div class="input__group">
-                            <input type="input" class="form__field" placeholder="Name" value="${busRoute[key].price.toLocaleString('vi-VN')}" readOnly>
+                            <input type="input" class="form__field" placeholder="Name" value="${busRoute[index].price.toLocaleString('vi-VN')}" readOnly>
                             <label for="name" class="form__label">Giá vé (VNĐ):</label>
                         </div>
                         <div class="input__group">
-                            <input type="input" class="form__field" placeholder="Name" value="${busRoute[key].vehicle.vehicle_type == "0" ? "Xe khách" : "Tàu hỏa"}" readOnly>
+                            <input type="input" class="form__field" placeholder="Name" value="${busRoute[index].vehicle.vehicle_type == "0" ? "Xe khách" : "Tàu hỏa"}" readOnly>
                             <label for="name" class="form__label">Phương tiện:</label>
                         </div>`,
                     focusConfirm: false,
@@ -228,18 +245,26 @@ window.addEventListener('load', () => {
                     title: 'Oops...',
                     icon: 'error',
                     text: `Vui lòng đăng nhập để có thể đặt vé`,
+                    showConfirmButton: true,
+                    showDenyButton: true,
+                    denyButtonText: `Thoát`,
+                    confirmButtonText: 'Đăng nhập',
                     footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
-                  }).then(() => {
-                    window.location.href = '/login'
+                  }).then((result) => {
+                    if(result.isConfirmed) {
+                      window.location.href = '/login'
+                    }
                   })
                 })
               })
             } else if (user != null) {
               const book_ticket = document.querySelectorAll('.book_ticket')
               book_ticket.forEach((book) => {
-                book.addEventListener('click', async () => {
-                  const { value: formValues } = await Swal.fire({
-                    icon: 'infor',
+                book.addEventListener('click',() => {
+                  const index = book.dataset.index;
+                  console.log(busRoute[index])
+                  Swal.fire({
+                    icon: 'info',
                     title: 'Thông tin đặt vé',
                     html: `
                       <div class="input__group">
@@ -255,19 +280,19 @@ window.addEventListener('load', () => {
                           <label for="name" class="form__label">Số điện thoại:</label>
                       </div>
                       <div class="input__group">
-                          <input type="input" class="form__field" placeholder="Name" value="${busRoute[key].start_point}" readOnly>
+                          <input type="input" class="form__field" placeholder="Name" value="${busRoute[index].start_point}" readOnly>
                           <label for="name" class="form__label">Nơi đi:</label>
                       </div>
                       <div class="input__group">
-                          <input type="input" class="form__field" placeholder="Name" value="${busRoute[key].end_point}" readOnly>
+                          <input type="input" class="form__field" placeholder="Name" value="${busRoute[index].end_point}" readOnly>
                           <label for="name" class="form__label">Nơi đến:</label>
                       </div>
                       <div class="input__group">
-                          <input type="input" class="form__field" placeholder="Name" value="${formatDate(busRoute[key].departure_time)}" readOnly>
+                          <input type="input" class="form__field" placeholder="Name" value="${formatDate(busRoute[index].departure_time)}" readOnly>
                           <label for="name" class="form__label">Thời gian đi:</label>
                       </div>
                       <div class="input__group">
-                          <input type="input" class="form__field" placeholder="Name" value="${busRoute[key].price.toLocaleString('vi-VN')}" readOnly>
+                          <input type="input" class="form__field" placeholder="Name" value="${busRoute[index].price.toLocaleString('vi-VN')}" readOnly>
                           <label for="name" class="form__label">Giá vé:</label>
                       </div>
                     `,
@@ -276,13 +301,9 @@ window.addEventListener('load', () => {
                     cancelButtonColor: '#d33',
                     confirmButtonText: 'Đặt vé',
                   })
-                  if (formValues) {
-                    Swal.fire(JSON.stringify(formValues));
-                  }
                 })
               })
             }
-          }
 
           current = data.result.current
           if (!data.result.continued) {

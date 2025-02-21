@@ -63,6 +63,13 @@ body {
     z-index: 999;
   }
 
+  .ul_contact {
+    display: flex;
+    justify-content: start;
+    list-style: none;
+    flex-direction: column;
+  }
+
   .ul_links {
     list-style: none;
     display: flex;

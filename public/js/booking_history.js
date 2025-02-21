@@ -5,6 +5,19 @@ dropdown.forEach((drop) => {
   })
 })
 
+document.getElementById('Contact_us').addEventListener('click', () => {
+  Swal.fire({
+    title: "Liên hệ chúng tôi",
+    icon: 'info',
+    html: `<div>
+            <ul class="ul_contact">
+              <li>Số điện thoại: 0908651852</li>
+              <li>Email: namndtb00921@fpt.edu.vn</li>
+            </ul>
+           </div>`,
+  });
+})
+
 let user = null
 const access_token = localStorage.getItem('access_token')
 const refresh_token = localStorage.getItem('refresh_token')
@@ -97,6 +110,7 @@ document.getElementById('a_logout').addEventListener('click', () => {
       if (data === null || data === undefined) {
         Swal.fire({
           title: 'Oops...',
+          icon: 'error',
           text: 'Lỗi kết nối đến máy chủ',
           footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })
@@ -108,6 +122,7 @@ document.getElementById('a_logout').addEventListener('click', () => {
         localStorage.removeItem('refresh_token')
         Swal.fire({
           title: 'Thành công',
+          icon: 'success',
           text: data.message
         }).then((result) => {
           if (result.dismiss === Swal.DismissReason.backdrop) {
@@ -120,6 +135,7 @@ document.getElementById('a_logout').addEventListener('click', () => {
       } else {
         Swal.fire({
           title: 'Oops...',
+          icon: 'error',
           text: 'Error connecting to server',
           footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })

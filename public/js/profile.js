@@ -109,6 +109,7 @@ document.getElementById('a_logout').addEventListener('click', () => {
         localStorage.removeItem('refresh_token')
         Swal.fire({
           title: 'Thành công',
+          icon: 'success',
           text: data.message
         }).then((result) => {
           if (result.dismiss === Swal.DismissReason.backdrop) {
@@ -121,12 +122,26 @@ document.getElementById('a_logout').addEventListener('click', () => {
       } else {
         Swal.fire({
           title: 'Oops...',
+          icon: 'error',
           text: 'Error connecting to server',
           footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })
         return
       }
     })
+})
+
+document.getElementById('Contact_us').addEventListener('click', () => {
+  Swal.fire({
+    title: "Liên hệ chúng tôi",
+    icon: 'info',
+    html: `<div>
+            <ul class="ul_contact">
+              <li>Số điện thoại: 0908651852</li>
+              <li>Email: namndtb00921@fpt.edu.vn</li>
+            </ul>
+           </div>`,
+  });
 })
 
 document.getElementById('nav_logo').addEventListener('click', () => {

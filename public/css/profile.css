@@ -70,6 +70,13 @@ body {
   width: 100%;
 }
 
+.ul_contact {
+  display: flex;
+  justify-content: start;
+  list-style: none;
+  flex-direction: column;
+}
+
 .profile_big_infor {
   display: flex;
   width: 100%;

@@ -98,6 +98,19 @@ document.getElementById('signup_business').addEventListener('click', () => {
   window.location.href = '/business_signup'
 })
 
+document.getElementById('Contact_us').addEventListener('click', () => {
+  Swal.fire({
+    title: "Liên hệ chúng tôi",
+    icon: 'info',
+    html: `<div>
+            <ul class="ul_contact">
+              <li>Số điện thoại: 0908651852</li>
+              <li>Email: namndtb00921@fpt.edu.vn</li>
+            </ul>
+           </div>`,
+  });
+})
+
 document.getElementById('a_logout').addEventListener('click', () => {
   const refresh_token = localStorage.getItem('refresh_token')
 

@@ -55,8 +55,6 @@ button.addEventListener('click', () => {
           icon: 'success',
           text: data.message,
           footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
-        }).then(() => {
-          window.location.href = '/forgot_password'
         })
         return
       } else {

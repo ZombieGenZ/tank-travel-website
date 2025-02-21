@@ -13,7 +13,6 @@ function isStrongPassword(password) {
   if (requiredTypes < 3) {
     return false
   }
-
   return true
 }
 
@@ -31,6 +30,7 @@ function changePassword() {
   ) {
     Swal.fire({
       title: 'Oops...',
+      icon: 'error',
       text: 'Không được để trống các trường dử liệu',
       footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
     })
@@ -40,6 +40,7 @@ function changePassword() {
   if (!isStrongPassword(password.trim())) {
     Swal.fire({
       title: 'Oops...',
+      icon: 'error',
       text: 'Mật khẩu phải dài ít nhất 8 ký tự và chứa ít nhất 3 trong số các ký tự sau: chữ hoa, chữ thường, số và ký tự đặc biệt',
       footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
     })
@@ -49,12 +50,40 @@ function changePassword() {
   if (password.trim() !== confirmPassword.trim()) {
     Swal.fire({
       title: 'Oops...',
+      icon: 'error',
       text: 'Mật khẩu và xác nhận mật khẩu không trùng khớp',
       footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
     })
     return
   }
 
+  const close_pass = document.querySelectorAll('.close_pass')
+  const open_pass = document.querySelectorAll('.open_pass')
+  const new_password = document.getElementById('password_register')
+  close_pass[0].addEventListener('click', () => {
+    close_pass[0].classList.add('off')
+    open_pass[0].classList.add('on')
+    new_password.type = 'text'
+  })
+
+  open_pass[0].addEventListener('click', () => {
+    close_pass[0].classList.remove('off')
+    open_pass[0].classList.remove('on')
+    new_password.type = 'password'
+  })
+
+  const confirm_pass = document.getElementById('comfirm_password_register')
+  close_pass[1].addEventListener('click', () => {
+    close_pass[1].classList.add('off')
+    open_pass[1].classList.add('on')
+    confirm_pass.type = 'text'
+  })
+
+  open_pass[1].addEventListener('click', () => {
+    close_pass[1].classList.remove('off')
+    open_pass[1].classList.remove('on')
+    confirm_pass.type = 'password'
+  })
   const urlParams = new URLSearchParams(window.location.search)
   const token = urlParams.get('token')
   const body = {
@@ -75,6 +104,7 @@ function changePassword() {
       if (data === null || data === undefined) {
         Swal.fire({
           title: 'Oops...',
+          icon: 'error',
           text: 'Lỗi kết nối đến máy chủ',
           footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })
@@ -85,6 +115,7 @@ function changePassword() {
         for (const key in data.errors) {
           Swal.fire({
             title: 'Oops...',
+            icon: 'error',
             text: data.errors[key].msg,
             footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
           })
@@ -95,6 +126,7 @@ function changePassword() {
       if (data.message == 'Thay đổi mật khẩu thành công! Vui lòng đăng nhập lại') {
         Swal.fire({
           title: 'Thành công!',
+          icon: 'success',
           text: data.message
         }).then((result) => {
           if (result.dismiss === Swal.DismissReason.backdrop) {
@@ -107,6 +139,7 @@ function changePassword() {
       } else {
         Swal.fire({
           title: 'Oops...',
+          icon: 'error',
           text: 'Lỗi kết nối đến máy chủ',
           footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })

@@ -4,6 +4,10 @@ function formatNumber(number) {
   return formattedNumber
 }
 
+let user = null
+const access_token = localStorage.getItem('access_token')
+const refresh_token = localStorage.getItem('refresh_token')
+
 const button_data = document.querySelectorAll('.btn_toview')
 const money_view = document.getElementById('money_view')
 button_data.forEach((button) => {
@@ -17,6 +21,19 @@ button_data.forEach((button) => {
     const price_information = document.getElementById('price_information')
     price_information.innerText = `Price: ${formatNumber(Number(data_view))} VNĐ`
   })
+})
+
+document.getElementById('Contact_us').addEventListener('click', () => {
+  Swal.fire({
+    title: "Liên hệ chúng tôi",
+    icon: 'info',
+    html: `<div>
+            <ul class="ul_contact">
+              <li>Số điện thoại: 0908651852</li>
+              <li>Email: namndtb00921@fpt.edu.vn</li>
+            </ul>
+           </div>`,
+  });
 })
 
 const recharge_grid = document.getElementById('recharge_container')
@@ -110,6 +127,7 @@ recharge_button.addEventListener('click', () => {
 
           Swal.fire({
             title: 'Thành công',
+            icon: 'success',
             text: 'Nạp tiền thành công!'
           })
         })

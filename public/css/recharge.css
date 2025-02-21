@@ -152,6 +152,13 @@ body {
     gap: 1.5rem;
   }
 
+  .ul_contact {
+    display: flex;
+    justify-content: start;
+    list-style: none;
+    flex-direction: column;
+  }
+
   .ul_links {
     list-style: none;
     display: flex;
