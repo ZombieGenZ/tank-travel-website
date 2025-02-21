@@ -187,7 +187,6 @@ window.addEventListener('load', () => {
             moreinfor_ticket.forEach((moreinfor) => {
               moreinfor.addEventListener('click', () => {
                 console.log(busRoute[key])
-                for (const key in busRoute) {
                   Swal.fire({
                     title: 'Thông tin chi tiết vé xe',
                     html: `<div class="input__group">
@@ -218,7 +217,6 @@ window.addEventListener('load', () => {
                     cancelButtonText: 'Thoát',
                     footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
                   })
-                }
               })
             })
 
