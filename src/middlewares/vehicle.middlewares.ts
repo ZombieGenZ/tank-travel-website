@@ -560,7 +560,9 @@ export const updateValidator = async (req: Request, res: Response, next: NextFun
     .then(() => {
       const errors = validationResult(req)
       if (!errors.isEmpty()) {
-        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ message: errors.mapped(), authenticate })
+        res
+          .status(HTTPSTATUS.UNPROCESSABLE_ENTITY)
+          .json({ message: SYSTEM_MESSAGE.VALIDATION_ERROR, errors: errors.mapped(), authenticate })
         return
       }
       next()
