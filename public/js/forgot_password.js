@@ -5,6 +5,7 @@ button.addEventListener('click', () => {
   if (!validateEmail(email)) {
     Swal.fire({
       title: 'Oops...',
+      icon: 'error',
       text: 'Vui lòng điền đầy đủ các thông tin',
       footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
     })
@@ -29,6 +30,7 @@ button.addEventListener('click', () => {
       if (data == null || data == undefined) {
         Swal.fire({
           title: 'Oops...',
+          icon: 'error',
           text: 'Lỗi kết nối đến máy chủ',
           footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })
@@ -39,6 +41,7 @@ button.addEventListener('click', () => {
         for (const key in data.errors) {
           Swal.fire({
             title: 'Oops...',
+            icon: 'error',
             text: data.errors[key].msg,
             footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
           })
@@ -48,14 +51,18 @@ button.addEventListener('click', () => {
 
       if (data.message == 'Email yêu cầu đặt lại mật khẩu đã được gửi thành công! Vui lòng kiểm tra hộp thư của bạn') {
         Swal.fire({
-          title: 'Oops...',
+          title: 'Emil được gửi thành công',
+          icon: 'success',
           text: data.message,
           footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
+        }).then(() => {
+          window.location.href = '/forgot_password'
         })
         return
       } else {
         Swal.fire({
           title: 'Oops...',
+          icon: 'error',
           text: 'Lỗi kết nối đến máy chủ',
           footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })

@@ -2,78 +2,86 @@ let user = null
 const access_token = localStorage.getItem('access_token')
 const refresh_token = localStorage.getItem('refresh_token')
 
-if (
-  access_token !== null &&
-  access_token !== undefined &&
-  access_token !== '' &&
-  refresh_token !== null &&
-  refresh_token !== undefined &&
-  refresh_token !== ''
-) {
-  const body = {
-    refresh_token: refresh_token
-  }
+function getUserInfo() {
+  return new Promise((resolve) => {
+    if (!refresh_token) {
+      resolve(null)
+      return
+    }
 
-  fetch('/api/users/get-user-infomation', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${access_token}`
-    },
-    body: JSON.stringify(body)
+    const body = {
+      refresh_token: refresh_token
+    }
+
+    fetch('/api/users/get-user-infomation', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${access_token}`
+      },
+      body: JSON.stringify(body)
+      })
+      .then((response) => {
+        return response.json()
+      })
+      .then((data) => {
+        if (data !== null && data !== undefined) {
+          if (data.user !== null && data.user !== undefined) {
+            user = data.user
+            localStorage.setItem('access_token', data.authenticate.access_token)
+            localStorage.setItem('refresh_token', data.authenticate.refresh_token)
+          }
+          if (user != null) {
+            const buttonlogin = document.getElementById('btn_login')
+            const ul = document.getElementById('ul_links')
+            const personal = document.createElement('div')
+            const booking_history = document.createElement('li')
+            const recharge = document.createElement('li')
+            const personal_infor = document.getElementById('personal_infor')
+            const dropdown_personal = document.getElementById('dropdown_personal')
+            const So_du = document.createElement('div')
+            So_du.classList.add('So_du')
+            recharge.classList.add('link')
+            recharge.innerHTML = '<a href="#"><i class="ri-money-dollar-circle-line"></i> Recharge</a>'
+            recharge.id = 'recharge_money'
+            booking_history.classList.add('link')
+            booking_history.innerHTML = '<a href="#"><i class="ri-history-line"></i> Booking history</a>'
+            booking_history.id = 'booking_history'
+            personal.id = 'personal'
+            personal.innerHTML = '<i class="ri-user-3-line"></i>'
+            So_du.innerText = `Số dư: ${user.balance} VNĐ`
+            buttonlogin.style.display = 'none'
+            buttonlogin.disabled = true
+            personal_infor.appendChild(So_du)
+            personal_infor.appendChild(personal)
+            ul.appendChild(recharge)
+            ul.appendChild(booking_history)
+
+            personal.addEventListener('click', () => {
+              dropdown_personal.classList.toggle('active')
+            })
+
+            recharge.addEventListener('click', () => {
+              window.location.href = '/recharge'
+            })
+
+            booking_history.addEventListener('click', () => {
+              window.location.href = '/booking_history'
+            })
+          }
+          resolve()
+        }
+      })
   })
-    .then((response) => {
-      return response.json()
-    })
-    .then((data) => {
-      if (data !== null && data !== undefined) {
-        if (data.user !== null && data.user !== undefined) {
-          user = data.user
-          localStorage.setItem('access_token', data.authenticate.access_token)
-          localStorage.setItem('refresh_token', data.authenticate.refresh_token)
-        }
-
-        if (user != null) {
-          const buttonlogin = document.getElementById('btn_login')
-          const ul = document.getElementById('ul_links')
-          const personal = document.createElement('div')
-          const booking_history = document.createElement('li')
-          const recharge = document.createElement('li')
-          const personal_infor = document.getElementById('personal_infor')
-          const dropdown_personal = document.getElementById('dropdown_personal')
-          const So_du = document.createElement('div')
-          So_du.classList.add('So_du')
-          recharge.classList.add('link')
-          recharge.innerHTML = '<a href="#"><i class="ri-money-dollar-circle-line"></i> Recharge</a>'
-          recharge.id = 'recharge_money'
-          booking_history.classList.add('link')
-          booking_history.innerHTML = '<a href="#"><i class="ri-history-line"></i> Booking history</a>'
-          booking_history.id = 'booking_history'
-          personal.id = 'personal'
-          personal.innerHTML = '<i class="ri-user-3-line"></i>'
-          So_du.innerText = `Số dư: ${0} VNĐ`
-          buttonlogin.style.display = 'none'
-          buttonlogin.disabled = true
-          personal_infor.appendChild(So_du)
-          personal_infor.appendChild(personal)
-          ul.appendChild(recharge)
-          ul.appendChild(booking_history)
-
-          personal.addEventListener('click', () => {
-            dropdown_personal.classList.toggle('active')
-          })
-
-          recharge.addEventListener('click', () => {
-            window.location.href = '/recharge'
-          })
-
-          booking_history.addEventListener('click', () => {
-            window.location.href = '/booking_history'
-          })
-        }
-      }
-    })
 }
+
+window.addEventListener('load', () => {
+  getUserInfo().then(() => {
+    console.log(user)
+    document.getElementById('img_infor_1').src = user.avatar.url
+    document.getElementById('displayname').value = user.display_name
+  })
+})
 
 document.getElementById('a_logout').addEventListener('click', () => {
   const refresh_token = localStorage.getItem('refresh_token')
@@ -141,7 +149,3 @@ document.getElementById('signup_business').addEventListener('click', () => {
   window.location.href = '/business_signup'
 })
 
-window.addEventListener('load', () => {
-  document.getElementById('img_infor_1').src = user.user.avatar.url
-  document.getElementById('displayname').value = user.user.display_name
-})
