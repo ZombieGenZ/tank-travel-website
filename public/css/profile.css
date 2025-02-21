@@ -54,6 +54,7 @@ body {
 
 .profile_form h1 {
   font-size: 3rem;
+  margin-bottom: 2rem;
 }
 
 .img_infor {
@@ -71,6 +72,7 @@ body {
 
 .profile_big_infor {
   display: flex;
+  width: 100%;
   gap: 5rem;
 }
 

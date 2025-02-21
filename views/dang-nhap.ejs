@@ -20,9 +20,11 @@
                     <input type="input" class="form__field" id="username_register" placeholder="Name" required="">
                     <label class="form__label">Fullname</label>
                 </div>
-                <div class="input__group">
-                    <input type="input" class="form__field" placeholder="Name" required="" id="email_register">
-                    <label class="form__label">Email</label>
+                <div class="input__group group_email">
+                    <div>
+                        <input type="input" class="form__field" placeholder="Name" required="" id="email_register">
+                        <label class="form__label">Email</label>
+                    </div>
                     <button class="send_button" id="send_code_to_verify_email_register" onclick="sendEmailVerify(this)">Send code</button>
                 </div>
                 <div class="input__group">
@@ -45,7 +47,7 @@
                     <input type="password" class="form__field" id="email_verify_code" placeholder="Name" required="">
                     <label class="form__label">Verification code</label>
                 </div>
-                <span>Already have an account? <a id="open_login">Login</a></span>
+                <span class="have_account">Already have an account? <a id="open_login">Login</a></span>
                 <button class="btn" onclick="register()">Sign up</button>
             </div>
         </div>
