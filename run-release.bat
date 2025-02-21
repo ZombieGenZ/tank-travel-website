@@ -1,6 +1,16 @@
 @echo off
 chcp 65001 > nul
-title Khởi động dự án TANK TRAVEL (Release)
+NET SESSION >nul 2>&1
+if %errorlevel% neq 0 (
+    echo !ESC![1;31m[CẢNH BÁO]!ESC![0m Script cần quyền quản trị để chạy!
+    echo !ESC![1;34m[HÀNH ĐỘNG]!ESC![0m Đang yêu cầu quyền quản trị...
+    PowerShell Start-Process "%~f0" -Verb RunAs
+    exit /b
+)
+
+@echo off
+chcp 65001 > nul
+title Khởi động dự án TANK TRAVEL (Development)
 
 setlocal EnableDelayedExpansion
 set "ESC="
