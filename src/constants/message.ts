@@ -115,7 +115,7 @@ export const VEHICLE_MESSGAE = {
   EMAIL_LENGTH_MUST_BE_FROM_10_TO_2000: 'Quy định trên xe phải có độ dài từ 10 đến 2000 ký tự',
   AMENITIES_IS_REQUIRED: 'Không được bỏ trống tiện nghi trên phương tiện',
   AMENITIES_IS_MUST_BE_A_STRING: 'Tiện nghi trên phương tiện phải là một chuỗi',
-  AMENITIES_LENGTH_MUST_BE_FROM_0_TO_500: 'Tiện nghi trên phương tiện phải có độ dài từ 0 đến 500 ký tự',
+  AMENITIES_LENGTH_MUST_BE_FROM_10_TO_500: 'Tiện nghi trên phương tiện phải có độ dài từ 10 đến 500 ký tự',
   LICENSE_PLATE_IS_REQUIRED: 'Không được bỏ trống biển số xe',
   LICENSE_PLATE_IS_MUST_BE_A_STRING: 'Biển số xe phải là một chuỗi ký tự',
   LICENSE_PLATE_LENGTH_MUST_BE_FROM_8_TO_9: 'Biển số xe phải có độ dài từ 8 đến 9 ký tự',

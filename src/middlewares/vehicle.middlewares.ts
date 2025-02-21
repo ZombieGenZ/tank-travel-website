@@ -219,7 +219,7 @@ export const createValidator = (req: Request, res: Response, next: NextFunction)
         trim: true,
         isLength: {
           options: {
-            min: 0,
+            min: 10,
             max: 2000
           },
           errorMessage: VEHICLE_MESSGAE.EMAIL_LENGTH_MUST_BE_FROM_10_TO_2000
@@ -238,7 +238,7 @@ export const createValidator = (req: Request, res: Response, next: NextFunction)
             min: 0,
             max: 500
           },
-          errorMessage: VEHICLE_MESSGAE.AMENITIES_LENGTH_MUST_BE_FROM_0_TO_500
+          errorMessage: VEHICLE_MESSGAE.AMENITIES_LENGTH_MUST_BE_FROM_10_TO_500
         }
       },
       license_plate: {
@@ -518,7 +518,7 @@ export const updateValidator = async (req: Request, res: Response, next: NextFun
             min: 0,
             max: 500
           },
-          errorMessage: VEHICLE_MESSGAE.AMENITIES_LENGTH_MUST_BE_FROM_0_TO_500
+          errorMessage: VEHICLE_MESSGAE.AMENITIES_LENGTH_MUST_BE_FROM_10_TO_500
         }
       },
       license_plate: {
