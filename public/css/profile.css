@@ -40,21 +40,54 @@ body {
 
 .profile_form {
   width: 60%;
+  position: relative;
+  overflow: hidden;
   height: auto;
   border-radius: 1rem;
-  background-color: white;
+  background: #07182E;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  gap: 3rem;
+  gap: 2rem;
   padding: 5rem 2.5rem;
+  z-index: 1;
   box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.1);
 }
+
+.profile_form::before {
+  content: '';
+  position: absolute;
+  width: 100px;
+  background-image: linear-gradient(180deg, rgb(0, 183, 255), rgb(255, 48, 255));
+  height: 130%;
+  animation: rotBGimg 3s linear infinite;
+  transition: all 0.2s linear;
+}
+
+@keyframes rotBGimg {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.profile_form::after {
+  content: '';
+  position: absolute;
+  background-color: white;
+  inset: 5px;
+  border-radius: 15px;
+}  
 
 .profile_form h1 {
   font-size: 3rem;
   margin-bottom: 2rem;
+  z-index: 1;
+  color: var(--primary-color);
 }
 
 .img_infor {
@@ -81,6 +114,7 @@ body {
   display: flex;
   width: 100%;
   gap: 5rem;
+  z-index: 1;
 }
 
 .profile_information {
