@@ -106,9 +106,11 @@ window.addEventListener('load', () => {
         return response.json()
       })
       .then((data) => {
+        console.log(data)
         if (data == null || data == undefined) {
           Swal.fire({
             title: 'Oops...',
+            icon: 'error',
             text: 'Lỗi kết nối đến máy chủ',
             footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
           })
@@ -118,6 +120,7 @@ window.addEventListener('load', () => {
         if (data.result.message == 'Lấy thông tin tuyến thất bại') {
           Swal.fire({
             title: 'Oops...',
+            icon: 'error',
             text: 'Lỗi kết nối đến máy chủ',
             footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
           })
@@ -128,6 +131,7 @@ window.addEventListener('load', () => {
           for (const key in data.errors) {
             Swal.fire({
               title: 'Oops...',
+              icon: 'error',
               text: data.errors[key].msg,
               footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
             })
@@ -149,6 +153,7 @@ window.addEventListener('load', () => {
                 <li class="each_ticket">
                   <div class="information">
                       <h3>${busRoute[key].start_point} to ${busRoute[key].end_point}</h3>
+                      <hr>
                       <div class="date_local">
                           <div class="detail_ticket start_point">
                               <h4>Departure:</h4>
@@ -159,12 +164,16 @@ window.addEventListener('load', () => {
                               <p>${busRoute[key].end_point}</p>
                           </div>
                           <div class="detail_ticket date_begin">
-                              <h4>Date:</h4>
+                              <h4>Date-time:</h4>
                               <p>${formatDate(busRoute[key].departure_time)}</p>
                           </div>
                           <div class="detail_ticket price">
-                              <h4>Price:</h4>
-                              <p>${busRoute[key].price.toLocaleString('vi-VN')} VND</p>
+                              <h4>Phương tiện:</h4>
+                              <p>${busRoute[key].vehicle.vehicle_type == "0" ? "Xe khách" : "Tàu hỏa"}</p>
+                          </div>
+                          <div class="detail_ticket price">
+                              <h4>Giá tiền:</h4>
+                              <p>${busRoute[key].price.toLocaleString('vi-VN')} VNĐ</p>
                           </div>
                       </div>
                       <div class="morinfor_bookbutton">
@@ -177,32 +186,39 @@ window.addEventListener('load', () => {
             const moreinfor_ticket = document.querySelectorAll('.moreinfor_ticket')
             moreinfor_ticket.forEach((moreinfor) => {
               moreinfor.addEventListener('click', () => {
-                Swal.fire({
-                  title: 'Thông tin chi tiết vé xe',
-                  html: `<div class="input__group">
-                          <input type="input" class="form__field" placeholder="Name" value="${busRoute[key].start_point}" readOnly>
-                          <label for="name" class="form__label">Nơi đi:</label>
-                      </div>
-                      <div class="input__group">
-                          <input type="input" class="form__field" placeholder="Name" value="${busRoute[key].end_point}" readOnly>
-                          <label for="name" class="form__label">Nơi đến:</label>
-                      </div>
-                      <div class="input__group">
-                          <input type="input" class="form__field" placeholder="Name" value="${formatDate(busRoute[key].departure_time)}" readOnly>
-                          <label for="name" class="form__label">Thời gian đi:</label>
-                      </div>
-                      <div class="input__group">
-                          <input type="input" class="form__field" placeholder="Name" value="${busRoute[key].price.toLocaleString('vi-VN')}" readOnly>
-                          <label for="name" class="form__label">Giá vé:</label>
-                      </div>`,
-                  focusConfirm: false,
-                  showCancelButton: true,
-                  icon: 'info',
-                  cancelButtonColor: '#d33',
-                  cancelButtonText: 'Thoát',
-                  confirmButtonText: 'Đặt vé',
-                  footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
-                })
+                console.log(busRoute[key])
+                for (const key in busRoute) {
+                  Swal.fire({
+                    title: 'Thông tin chi tiết vé xe',
+                    html: `<div class="input__group">
+                            <input type="input" class="form__field" placeholder="Name" value="${busRoute[key].start_point}" readOnly>
+                            <label for="name" class="form__label">Nơi đi:</label>
+                        </div>
+                        <div class="input__group">
+                            <input type="input" class="form__field" placeholder="Name" value="${busRoute[key].end_point}" readOnly>
+                            <label for="name" class="form__label">Nơi đến:</label>
+                        </div>
+                        <div class="input__group">
+                            <input type="input" class="form__field" placeholder="Name" value="${formatDate(busRoute[key].departure_time)}" readOnly>
+                            <label for="name" class="form__label">Thời gian đi:</label>
+                        </div>
+                        <div class="input__group">
+                            <input type="input" class="form__field" placeholder="Name" value="${busRoute[key].price.toLocaleString('vi-VN')}" readOnly>
+                            <label for="name" class="form__label">Giá vé (VNĐ):</label>
+                        </div>
+                        <div class="input__group">
+                            <input type="input" class="form__field" placeholder="Name" value="${busRoute[key].vehicle.vehicle_type == "0" ? "Xe khách" : "Tàu hỏa"}" readOnly>
+                            <label for="name" class="form__label">Phương tiện:</label>
+                        </div>`,
+                    focusConfirm: false,
+                    showConfirmButton: false,
+                    showCancelButton: true,
+                    icon: 'info',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Thoát',
+                    footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
+                  })
+                }
               })
             })
 
@@ -212,8 +228,11 @@ window.addEventListener('load', () => {
                 book.addEventListener('click', () => {
                   Swal.fire({
                     title: 'Oops...',
+                    icon: 'error',
                     text: `Vui lòng đăng nhập để có thể đặt vé`,
                     footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
+                  }).then(() => {
+                    window.location.href = '/login'
                   })
                 })
               })
@@ -222,7 +241,7 @@ window.addEventListener('load', () => {
               book_ticket.forEach((book) => {
                 book.addEventListener('click', async () => {
                   const { value: formValues } = await Swal.fire({
-                    icon: 'question',
+                    icon: 'infor',
                     title: 'Thông tin đặt vé',
                     html: `
                       <div class="input__group">
@@ -319,6 +338,7 @@ document.getElementById('a_logout').addEventListener('click', () => {
       if (data === null || data === undefined) {
         Swal.fire({
           title: 'Oops...',
+          icon: 'error',
           text: 'Lỗi kết nối đến máy chủ',
           footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })
@@ -343,6 +363,7 @@ document.getElementById('a_logout').addEventListener('click', () => {
       } else {
         Swal.fire({
           title: 'Oops...',
+          icon: 'error',
           text: 'Error connecting to server',
           footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })

@@ -59,7 +59,7 @@ h3 {
     font-weight: bold;
 }
 
-span {
+.have_account {
     margin: .5rem;
 }
 
@@ -67,6 +67,15 @@ span {
     margin: 1rem;
     position: relative;
     width: 100%;
+}
+
+.group_email {
+  display: flex;
+  gap: 1rem;
+}
+
+.group_email div {
+  width: 70%;
 }
 
 .signup_form {
@@ -79,14 +88,18 @@ span {
     height: 500px;
     background-color: white;
     border-radius: 10px;
-    padding: .5rem 1rem;
+    padding: .5rem 2rem;
     box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.1);
-    transform: translateY(50px);
+    transform: translateY(100px);
     transition: .9s ease-in-out;
 }
 
+.login_form h3 {
+  margin-top: 3rem;
+}
+
 .open_form {
-    transform: translateY(-500px);
+    transform: translateY(-470px);
 }
 
 .btn {
@@ -166,6 +179,7 @@ span {
     position: absolute;
     top: 0;
     left: 0;
+    margin: 1rem;
     cursor: pointer;
     border-radius: 10px;
     padding: .5rem 1rem;
@@ -179,10 +193,7 @@ span {
   }
 
   .send_button {
-    position: absolute;
-    width: 7rem;
-    right: 0;
-    bottom: .4rem;
+    width: 30%;
     outline: none;
     color: white;
     border: none;

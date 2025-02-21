@@ -10,6 +10,10 @@ button_data.forEach((button) => {
   button.addEventListener('click', () => {
     const data_view = button.textContent
     money_view.value = data_view
+    money_view.readOnly = true
+    button_data.forEach((button_disabled) => {
+      button_disabled.disabled = true
+    })
     const price_information = document.getElementById('price_information')
     price_information.innerText = `Price: ${formatNumber(Number(data_view))} VNĐ`
   })
@@ -22,7 +26,11 @@ let socket
 
 recharge_button.addEventListener('click', () => {
   const amount = document.getElementById('money_view').value
+  const button_data = document.querySelectorAll('.btn_toview')
   recharge_button.disabled = true
+  button_data.forEach((button_disabled) => {
+    button_disabled.disabled = true
+  })
   // amount.readOnly = true
   if (amount === '') {
     Swal.fire({
@@ -129,79 +137,85 @@ recharge_button.addEventListener('click', () => {
   })
 })
 
-let user = null
-const access_token = localStorage.getItem('access_token')
-const refresh_token = localStorage.getItem('refresh_token')
+function getUserInfo() {
+  return new Promise((resolve) => {
+    if (!refresh_token) {
+      resolve(null)
+      return
+    }
 
-if (
-  refresh_token !== null &&
-  refresh_token !== undefined &&
-  refresh_token !== ''
-) {
-  const body = {
-    refresh_token: refresh_token
-  }
+    const body = {
+      refresh_token: refresh_token
+    }
 
-  fetch('/api/users/get-user-infomation', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${access_token}`
-    },
-    body: JSON.stringify(body)
+    fetch('/api/users/get-user-infomation', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${access_token}`
+      },
+      body: JSON.stringify(body)
+      })
+      .then((response) => {
+        return response.json()
+      })
+      .then((data) => {
+        if (data !== null && data !== undefined) {
+          if (data.user !== null && data.user !== undefined) {
+            user = data.user
+            localStorage.setItem('access_token', data.authenticate.access_token)
+            localStorage.setItem('refresh_token', data.authenticate.refresh_token)
+          }
+          if (user != null) {
+            const buttonlogin = document.getElementById('btn_login')
+            const ul = document.getElementById('ul_links')
+            const personal = document.createElement('div')
+            const booking_history = document.createElement('li')
+            const recharge = document.createElement('li')
+            const personal_infor = document.getElementById('personal_infor')
+            const dropdown_personal = document.getElementById('dropdown_personal')
+            const So_du = document.createElement('div')
+            So_du.classList.add('So_du')
+            recharge.classList.add('link')
+            recharge.innerHTML = '<a href="#"><i class="ri-money-dollar-circle-line"></i> Recharge</a>'
+            recharge.id = 'recharge_money'
+            booking_history.classList.add('link')
+            booking_history.innerHTML = '<a href="#"><i class="ri-history-line"></i> Booking history</a>'
+            booking_history.id = 'booking_history'
+            personal.id = 'personal'
+            personal.innerHTML = '<i class="ri-user-3-line"></i>'
+            So_du.innerText = `Số dư: ${0} VNĐ`
+            buttonlogin.style.display = 'none'
+            buttonlogin.disabled = true
+            personal_infor.appendChild(So_du)
+            personal_infor.appendChild(personal)
+            ul.appendChild(recharge)
+            ul.appendChild(booking_history)
+
+            personal.addEventListener('click', () => {
+              dropdown_personal.classList.toggle('active')
+            })
+
+            recharge.addEventListener('click', () => {
+              window.location.href = '/recharge'
+            })
+
+            booking_history.addEventListener('click', () => {
+              window.location.href = '/booking_history'
+            })
+          }
+          resolve()
+        }
+      })
   })
-    .then((response) => {
-      return response.json()
-    })
-    .then((data) => {
-      if (data !== null && data !== undefined) {
-        if (data.user !== null && data.user !== undefined) {
-          user = data.user
-          localStorage.setItem('access_token', data.authenticate.access_token)
-          localStorage.setItem('refresh_token', data.authenticate.refresh_token)
-        }
-
-        if (user != null) {
-          const buttonlogin = document.getElementById('btn_login')
-          const ul = document.getElementById('ul_links')
-          const personal = document.createElement('div')
-          const booking_history = document.createElement('li')
-          const recharge = document.createElement('li')
-          const personal_infor = document.getElementById('personal_infor')
-          const dropdown_personal = document.getElementById('dropdown_personal')
-          const So_du = document.createElement('div')
-          So_du.classList.add('So_du')
-          recharge.classList.add('link')
-          recharge.innerHTML = '<a href="#"><i class="ri-money-dollar-circle-line"></i> Recharge</a>'
-          recharge.id = 'recharge_money'
-          booking_history.classList.add('link')
-          booking_history.innerHTML = '<a href="#"><i class="ri-history-line"></i> Booking history</a>'
-          booking_history.id = 'booking_history'
-          personal.id = 'personal'
-          personal.innerHTML = '<i class="ri-user-3-line"></i>'
-          So_du.innerText = `Số dư: ${0} VNĐ`
-          buttonlogin.style.display = 'none'
-          buttonlogin.disabled = true
-          personal_infor.appendChild(So_du)
-          personal_infor.appendChild(personal)
-          ul.appendChild(recharge)
-          ul.appendChild(booking_history)
-
-          personal.addEventListener('click', () => {
-            dropdown_personal.classList.toggle('active')
-          })
-
-          recharge.addEventListener('click', () => {
-            window.location.href = '/recharge'
-          })
-
-          booking_history.addEventListener('click', () => {
-            window.location.href = '/booking_history'
-          })
-        }
-      }
-    })
 }
+
+window.addEventListener('load', () => {
+  getUserInfo().then(() => {
+    const my_wallet = document.getElementById('wallet_money')
+    my_wallet.value = user.balance
+  })
+})
 
 document.getElementById('a_logout').addEventListener('click', () => {
   const refresh_token = localStorage.getItem('refresh_token')
@@ -218,6 +232,7 @@ document.getElementById('a_logout').addEventListener('click', () => {
       if (data === null || data === undefined) {
         Swal.fire({
           title: 'Oops...',
+          icon: 'error',
           text: 'Lỗi kết nối đến máy chủ',
           footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })
@@ -229,6 +244,7 @@ document.getElementById('a_logout').addEventListener('click', () => {
         localStorage.removeItem('refresh_token')
         Swal.fire({
           title: 'Thành công',
+          icon: 'success',
           text: data.message
         }).then((result) => {
           if (result.dismiss === Swal.DismissReason.backdrop) {
@@ -241,6 +257,7 @@ document.getElementById('a_logout').addEventListener('click', () => {
       } else {
         Swal.fire({
           title: 'Oops...',
+          icon: 'error',
           text: 'Error connecting to server',
           footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })

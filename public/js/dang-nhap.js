@@ -52,7 +52,7 @@ document.getElementById('nav_logo').addEventListener('click', () => {
 })
 
 forgot_pass.addEventListener('click', () => {
-  window.location.href = 'forgot_pass'
+  window.location.href = '/forgot_pass'
 })
 
 openlogin.addEventListener('click', () => {
