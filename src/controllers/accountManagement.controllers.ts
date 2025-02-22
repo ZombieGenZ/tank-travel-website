@@ -16,7 +16,7 @@ export const getAccountController = async (
   req: Request<ParamsDictionary, any, GetAccountRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -49,7 +49,7 @@ export const findAccountController = async (
   req: Request<ParamsDictionary, any, FindAccountRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -84,7 +84,7 @@ export const banAccountController = async (
   req: Request<ParamsDictionary, any, BanAccountRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -117,7 +117,7 @@ export const unBanAccountController = async (
   req: Request<ParamsDictionary, any, UnBanAccountRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -150,7 +150,7 @@ export const sendNotificationController = async (
   req: Request<ParamsDictionary, any, SendNotificationRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {

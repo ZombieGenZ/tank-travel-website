@@ -19,7 +19,7 @@ export const createController = async (
   req: Request<ParamsDictionary, any, CreateBusRouteRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -50,7 +50,7 @@ export const updateController = async (
   req: Request<ParamsDictionary, any, UpdateBusRouteRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -85,7 +85,7 @@ export const deleteController = async (
   req: Request<ParamsDictionary, any, DeleteBusRouteRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const busRoute = req.bus_route as BusRoute
   const user = req.user as User
   const { access_token, refresh_token } = req
@@ -121,7 +121,7 @@ export const getBusRouteController = async (
   req: Request<ParamsDictionary, any, GetBusRouteRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -152,7 +152,7 @@ export const findBusRouteController = async (
   req: Request<ParamsDictionary, any, FindBusRouteRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -187,7 +187,7 @@ export const getBusRouteListController = async (
   req: Request<ParamsDictionary, any, GetBusRouteListRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
 
   try {
     const result = await BusRouteService.getBusRouteList(req.body)
@@ -210,7 +210,7 @@ export const findBusRouteListController = async (
   req: Request<ParamsDictionary, any, FindBusRouteListRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
 
   try {
     const result = await BusRouteService.findBusRouteList(req.body)

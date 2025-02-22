@@ -10,7 +10,7 @@ export const createBankOrderController = async (
   req: Request<ParamsDictionary, any, CreateBankOrderRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip as string
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -43,7 +43,7 @@ export const checkoutBankOrderController = async (
   req: Request<ParamsDictionary, any, CheckoutBankOrderRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip as string
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
 
   try {
     await RevenueService.checkoutBankOrder(req.body)

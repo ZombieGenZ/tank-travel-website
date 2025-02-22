@@ -26,7 +26,7 @@ export const sendEmailController = async (
   req: Request<ParamsDictionary, any, EmailVerifyRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip as string
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
 
   try {
     await UserServices.sendEmailVerify(req.body)
@@ -47,7 +47,7 @@ export const reSendEmailController = async (
   req: Request<ParamsDictionary, any, EmailVerifyRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip as string
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
 
   try {
     await UserServices.reSendEmailVerify(req.body)
@@ -65,7 +65,7 @@ export const reSendEmailController = async (
 }
 
 export const registerController = async (req: Request<ParamsDictionary, any, RegisterRequestBody>, res: Response) => {
-  const ip = req.ip as string
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
 
   try {
     await UserServices.register(req.body)
@@ -85,7 +85,7 @@ export const registerController = async (req: Request<ParamsDictionary, any, Reg
 }
 
 export const loginController = async (req: Request, res: Response) => {
-  const ip = req.ip as string
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const user_id = user._id as ObjectId
 
@@ -108,7 +108,7 @@ export const loginController = async (req: Request, res: Response) => {
 }
 
 export const logoutController = async (req: Request<ParamsDictionary, any, LogoutRequestBody>, res: Response) => {
-  const ip = req.ip as string
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const { decoded_refresh_token } = req
 
   try {
@@ -136,7 +136,7 @@ export const sendEmailForgotPasswordController = async (
   req: Request<ParamsDictionary, any, SendForgotPasswordRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip as string
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
 
   try {
     const user = req.user as User
@@ -163,7 +163,7 @@ export const forgotPasswordController = async (
   req: Request<ParamsDictionary, any, ForgotPasswordRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip as string
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const { user_id } = req.decoded_forgot_password_token as TokenPayload
 
   try {
@@ -191,7 +191,7 @@ export const changePasswordController = async (
   req: Request<ParamsDictionary, any, ChangePasswordRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip as string
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
 
   try {
@@ -215,7 +215,7 @@ export const sendEmailVerifyController = async (
   req: Request<ParamsDictionary, any, SendEmailVerifyChangeEmailRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip as string
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
 
   try {
@@ -243,7 +243,7 @@ export const reSendEmailVerifyController = async (
   req: Request<ParamsDictionary, any, SendEmailVerifyChangeEmailRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip as string
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
 
   try {
@@ -271,7 +271,7 @@ export const changeEmailController = async (
   req: Request<ParamsDictionary, any, ChangeEmailRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip as string
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
 
   try {
@@ -297,7 +297,7 @@ export const changePhoneController = async (
   req: Request<ParamsDictionary, any, ChangePhoneRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip as string
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -330,7 +330,7 @@ export const changeAvatarController = async (
   req: Request<ParamsDictionary, any, ChangeAvatarRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip as string
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -363,7 +363,7 @@ export const setDefaultAvatarController = async (
   req: Request<ParamsDictionary, any, ChangeAvatarRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip as string
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -396,7 +396,7 @@ export const changePasswordTemporaryController = async (
   req: Request<ParamsDictionary, any, ChangePasswordTemporaryRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip as string
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
 
   try {
@@ -419,7 +419,7 @@ export const changePasswordTemporaryController = async (
 }
 
 export const getUserInfomationController = async (req: Request, res: Response) => {
-  const ip = req.ip as string
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {

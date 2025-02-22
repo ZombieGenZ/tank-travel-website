@@ -1,5 +1,4 @@
 import { Request, Response } from 'express'
-import path from 'path'
 
 export const downloadAppController = async (req: Request, res: Response) => {
   res.send(`

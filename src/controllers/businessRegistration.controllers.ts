@@ -8,7 +8,7 @@ import BusinessRegistrationService from '~/services/businessRegistration.service
 import { writeInfoLog, writeErrorLog } from '~/utils/log'
 
 export const registerController = async (req: Request<ParamsDictionary, any, RegisterRequestBody>, res: Response) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
 
   try {
     await BusinessRegistrationService.register(req.body)
@@ -28,7 +28,7 @@ export const registerController = async (req: Request<ParamsDictionary, any, Reg
 }
 
 export const censorController = async (req: Request<ParamsDictionary, any, CensorRequestBody>, res: Response) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const businessRegistration = req.business_registration as BusinessRegistration
   const { access_token, refresh_token } = req
@@ -61,7 +61,7 @@ export const censorController = async (req: Request<ParamsDictionary, any, Censo
 }
 
 export const getBusinessRegistrationController = async (req: Request, res: Response) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {

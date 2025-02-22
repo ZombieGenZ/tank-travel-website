@@ -14,7 +14,7 @@ import OrderService from '~/services/order.services'
 import { writeInfoLog, writeErrorLog } from '~/utils/log'
 
 export const orderController = async (req: Request<ParamsDictionary, any, OrderRequestBody>, res: Response) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const busRoute = req.bus_route as BusRoute
   const { access_token, refresh_token } = req
@@ -50,7 +50,7 @@ export const getOrderListController = async (
   req: Request<ParamsDictionary, any, GetOrderRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -83,7 +83,7 @@ export const getOrderDetailListController = async (
   req: Request<ParamsDictionary, any, GetOrderDetailRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -113,7 +113,7 @@ export const getOrderDetailListController = async (
 }
 
 export const getOrderController = async (req: Request<ParamsDictionary, any, GetOrderRequestBody>, res: Response) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -144,7 +144,7 @@ export const cancelTicketController = async (
   req: Request<ParamsDictionary, any, CancelTicketRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const billDetail = req.billDetail as BillDetail
 

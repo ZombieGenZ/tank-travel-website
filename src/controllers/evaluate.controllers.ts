@@ -21,7 +21,7 @@ export const createEvaluateController = async (
   req: Request<ParamsDictionary, any, CreateEvaluateRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const vehicle = req.vehicle as Vehicle
   const { access_token, refresh_token } = req
@@ -57,7 +57,7 @@ export const updateEvaluateController = async (
   req: Request<ParamsDictionary, any, UpdateEvaluateRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const evaluate = req.evaluate as Evaluate
   const { access_token, refresh_token } = req
@@ -93,7 +93,7 @@ export const deleteEvaluateController = async (
   req: Request<ParamsDictionary, any, DeleteEvaluateRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const evaluate = req.evaluate as Evaluate
   const user = req.user as User
   const { access_token, refresh_token } = req
@@ -129,7 +129,7 @@ export const getEvaluateController = async (
   req: Request<ParamsDictionary, any, GetEvaluateRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const evaluate = req.evaluate as Evaluate
   const { access_token, refresh_token } = req
@@ -161,7 +161,7 @@ export const createFeedbackController = async (
   req: Request<ParamsDictionary, any, CreateFeedbackRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const evaluate = req.evaluate as Evaluate
   const { access_token, refresh_token } = req
@@ -197,7 +197,7 @@ export const updateFeedbackController = async (
   req: Request<ParamsDictionary, any, UpdateFeedbackRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const evaluate = req.evaluate as Evaluate
   const { access_token, refresh_token } = req
@@ -233,7 +233,7 @@ export const deleteFeedbackController = async (
   req: Request<ParamsDictionary, any, DeleteFeedbackRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const evaluate = req.evaluate as Evaluate
   const { access_token, refresh_token } = req
@@ -269,7 +269,7 @@ export const getEvaluateListController = async (
   req: Request<ParamsDictionary, any, GetEvaluateListRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const vehicle = req.vehicle as Vehicle
 
   try {

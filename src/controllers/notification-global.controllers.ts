@@ -13,7 +13,7 @@ export const setNotificationGlobalController = async (
   req: Request<ParamsDictionary, any, SetNotificationRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -53,7 +53,7 @@ export const setNotificationGlobalController = async (
 }
 
 export const removeNotificationGlobalController = async (req: Request, res: Response) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -83,7 +83,7 @@ export const removeNotificationGlobalController = async (req: Request, res: Resp
 }
 
 export const getNotificationGlobalController = async (req: Request, res: Response) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
 
   try {
     const jsonPath = path.join(__dirname, '../../data/notification.json')

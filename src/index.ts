@@ -46,6 +46,7 @@ const io = new Server(server, {
     methods: ['GET', 'POST', 'PUT', 'DELETE']
   }
 })
+app.set('trust proxy', true)
 
 databaseService.connect()
 

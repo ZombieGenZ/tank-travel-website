@@ -10,7 +10,7 @@ export const getRevenueStatisticsController = async (
   req: Request<ParamsDictionary, any, GetStatisticsRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -41,7 +41,7 @@ export const findRevenueStatisticsController = async (
   req: Request<ParamsDictionary, any, FindStatisticsRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -76,7 +76,7 @@ export const getOrderStatisticsController = async (
   req: Request<ParamsDictionary, any, GetStatisticsRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -107,7 +107,7 @@ export const findOrderStatisticsController = async (
   req: Request<ParamsDictionary, any, FindStatisticsRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -140,7 +140,7 @@ export const getDealtatisticsController = async (
   req: Request<ParamsDictionary, any, GetStatisticsRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -171,7 +171,7 @@ export const findDealStatisticsController = async (
   req: Request<ParamsDictionary, any, FindStatisticsRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {

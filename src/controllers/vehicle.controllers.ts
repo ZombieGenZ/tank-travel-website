@@ -18,7 +18,7 @@ import VehicleService from '~/services/vehicle.services'
 import { writeInfoLog, writeErrorLog } from '~/utils/log'
 
 export const getVehicleType = async (req: Request<ParamsDictionary, any, GetVehicleInfoRequestBody>, res: Response) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const { access_token, refresh_token } = req
   const authenticate = {
     access_token,
@@ -40,7 +40,7 @@ export const getVehicleType = async (req: Request<ParamsDictionary, any, GetVehi
 }
 
 export const getSeatType = async (req: Request<ParamsDictionary, any, GetVehicleInfoRequestBody>, res: Response) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const { access_token, refresh_token } = req
   const authenticate = {
     access_token,
@@ -65,7 +65,7 @@ export const createController = async (
   req: Request<ParamsDictionary, any, CreateVehicleRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -98,7 +98,7 @@ export const updateController = async (
   req: Request<ParamsDictionary, any, UpdateVehicleRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -164,7 +164,7 @@ export const getVehicleController = async (
   req: Request<ParamsDictionary, any, GetVehicleRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -195,7 +195,7 @@ export const findVehicleController = async (
   req: Request<ParamsDictionary, any, FindVehicleRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -230,7 +230,7 @@ export const getVehiclePreviewController = async (
   req: Request<ParamsDictionary, any, VehicleIdRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const vehicle = req.vehicle as Vehicle
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -265,7 +265,7 @@ export const censorVehicleController = async (
   req: Request<ParamsDictionary, any, CensorVehicleRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const vehicle = req.vehicle as Vehicle
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -298,7 +298,7 @@ export const getVehicleListController = async (
   req: Request<ParamsDictionary, any, GetVehicleListRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
@@ -331,7 +331,7 @@ export const getVehicleRegistrationController = async (
   req: Request<ParamsDictionary, any, GetVehicleRequestBody>,
   res: Response
 ) => {
-  const ip = req.ip
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const { access_token, refresh_token } = req
   const authenticate = {
