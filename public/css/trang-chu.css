@@ -18,6 +18,7 @@
 
 body {
   font-family: "Roboto", serif;
+  -ms-overflow-style: none;
 }
 
 .section_container {
@@ -38,7 +39,7 @@ body {
     font-weight: 500;
     color: white;
     background-color: var(--primary-color);
-    border-radius: 2rem;
+    border-radius: 10px;
     cursor: pointer;
     transition: 0.3s;
   }
@@ -59,7 +60,9 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    background-color: var(--extra-light);
+    backdrop-filter: blur(10px);
+    background: var(--extra-light);
+    border-radius: 0 0 1rem 1rem;
     z-index: 999;
   }
 
@@ -124,7 +127,8 @@ body {
     gap: 1rem;
     border-radius: 10px;
     padding: .5rem 1rem;
-    background-color: var(--extra-light);
+    color: var(--extra-light);
+    background-color: var(--primary-color);
     cursor: pointer;
     box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.1);
   }
@@ -136,7 +140,8 @@ body {
     gap: 1rem;
     border-radius: 10px;
     padding: .5rem 1rem;
-    background-color: var(--extra-light);
+    color: var(--extra-light);
+    background-color: var(--primary-color);
     cursor: pointer;
     box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.1);
   }
@@ -163,11 +168,24 @@ body {
     text-align: center;
     font-size: 3rem;
     line-height: 4rem;
+    animation: fade-in 1s ease-in-out;
+  }
+
+  @keyframes fade-in {
+    0%{
+      opacity: 0;
+      transform: translateY(200px);
+    }
+    100%{
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .section_header img {
     max-width: 100%;
     border-radius: 2rem;
+    animation: fade-in 1.5s ease-in-out;
   }
 
   .booking_container {

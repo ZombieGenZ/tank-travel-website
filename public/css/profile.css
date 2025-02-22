@@ -218,7 +218,7 @@ input[type="file"]::file-selector-button {
     font-weight: 500;
     color: white;
     background-color: var(--primary-color);
-    border-radius: 2rem;
+    border-radius: 10px;
     cursor: pointer;
     transition: 0.3s;
   }
@@ -246,7 +246,7 @@ input[type="file"]::file-selector-button {
 
   .personal_login {
     display: flex;
-    height: 10%;
+    flex-direction: row;
     gap: 1rem;
   }
 
@@ -279,6 +279,11 @@ input[type="file"]::file-selector-button {
     transform: translateY(0);
   }
 
+  #signup_business{
+    width: 100%;
+    padding: .2rem 0;
+  }
+
   #personal {
     display: flex;
     justify-content: center;
@@ -286,19 +291,22 @@ input[type="file"]::file-selector-button {
     gap: 1rem;
     border-radius: 10px;
     padding: .5rem 1rem;
-    background-color: var(--extra-light);
+    color: var(--extra-light);
+    background-color: var(--primary-color);
     cursor: pointer;
     box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.1);
   }
 
   .So_du {
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 1rem;
     border-radius: 10px;
     padding: .5rem 1rem;
-    background-color: var(--extra-light);
+    color: var(--extra-light);
+    background-color: var(--primary-color);
     cursor: pointer;
     box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.1);
   }

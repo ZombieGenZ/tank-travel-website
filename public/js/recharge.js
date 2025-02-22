@@ -14,12 +14,6 @@ button_data.forEach((button) => {
   button.addEventListener('click', () => {
     const data_view = button.textContent
     money_view.value = data_view
-    money_view.readOnly = true
-    button_data.forEach((button_disabled) => {
-      button_disabled.disabled = true
-    })
-    const price_information = document.getElementById('price_information')
-    price_information.innerText = `Price: ${formatNumber(Number(data_view))} VNĐ`
   })
 })
 
@@ -39,8 +33,10 @@ document.getElementById('Contact_us').addEventListener('click', () => {
 const recharge_grid = document.getElementById('recharge_container')
 const recharge_payment = document.querySelectorAll('.recharge_payment')
 const recharge_button = document.getElementById('recharge_button')
+const amount1 = document.getElementById('money_view')
+const loader = document.getElementById('loader')
 let socket
-
+recharge_grid.style.animation = 'fade-Y 1s ease-in-out'
 recharge_button.addEventListener('click', () => {
   const amount = document.getElementById('money_view').value
   const button_data = document.querySelectorAll('.btn_toview')
@@ -61,11 +57,19 @@ recharge_button.addEventListener('click', () => {
     })
     return
   } else {
-    recharge_button.disabled = true
-    button_data.forEach((button_disabled) => {
+    recharge_button.style.backgroundColor = 'gray'
+    recharge_grid.style.animation = 'width-out 1.5s ease-in-out'
+    recharge_grid.style.width = '70%'
+    recharge_grid.style.gridTemplateColumns = '1fr 1fr 1fr'
+    recharge_payment.forEach((dis) => {
+      dis.style.display = 'flex'
+      dis.style.animation = 'fade-in 1.5s ease-in-out'
+    })
+    amount1.readOnly = true
+    button_data.forEach(button_disabled => {
       button_disabled.disabled = true
     })
-    amount.readOnly = true
+    recharge_button.disabled = true
   }
   const price_information = document.getElementById('price_information')
   price_information.innerText = `Price: ${formatNumber(Number(amount.value))} VNĐ`
@@ -127,6 +131,12 @@ recharge_button.addEventListener('click', () => {
 
           document.getElementById('wallet_money').value = wallet + res.amount
 
+          loader.classList.remove('loader')
+          loader.classList.add('Success')
+          const Success = document.createElement('h2')
+          Success.innerText = 'Thành công'
+          loader.appendChild(Success)
+
           Swal.fire({
             title: 'Thành công',
             icon: 'success',
@@ -146,15 +156,16 @@ recharge_button.addEventListener('click', () => {
           title: 'Oops...',
           text: 'Lỗi kết nối đến máy chủ',
           footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
+        }).then(() => {
+          loader.classList.remove('loader')
+          loader.classList.add('Failed')
+          const Failed = document.createElement('h2')
+          Success.innerText = 'Thất bại'
+          loader.appendChild(Failed)
         })
         return
       }
     })
-
-  recharge_grid.style.gridTemplateColumns = '1fr 1fr 1fr'
-  recharge_payment.forEach((dis) => {
-    dis.style.display = 'flex'
-  })
 })
 
 function getUserInfo() {

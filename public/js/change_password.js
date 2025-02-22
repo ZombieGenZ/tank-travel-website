@@ -59,7 +59,7 @@ function changePassword() {
 
   const close_pass = document.querySelectorAll('.close_pass')
   const open_pass = document.querySelectorAll('.open_pass')
-  const new_password = document.getElementById('password_register')
+  const new_password = document.getElementById('new_password')
   close_pass[0].addEventListener('click', () => {
     close_pass[0].classList.add('off')
     open_pass[0].classList.add('on')
@@ -72,7 +72,7 @@ function changePassword() {
     new_password.type = 'password'
   })
 
-  const confirm_pass = document.getElementById('comfirm_password_register')
+  const confirm_pass = document.getElementById('confirm_new_password')
   close_pass[1].addEventListener('click', () => {
     close_pass[1].classList.add('off')
     open_pass[1].classList.add('on')

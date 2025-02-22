@@ -162,7 +162,7 @@ window.addEventListener('load', () => {
           const busRoute = data.result.busRoute
 
           for (let i = 0; i < busRoute.length; i++) {
-            const route = busRoute[i];
+            const route = busRoute[i]
             list.innerHTML += `
                 <li class="each_ticket">
                   <div class="information">
@@ -198,6 +198,11 @@ window.addEventListener('load', () => {
               </li>
             `
           }
+
+          const each_ticket = document.querySelectorAll('.each_ticket');
+          each_ticket.forEach((ticket, index) => {
+              ticket.style.animation = `fade-in ${index * 0.1 + 0.8}s ease-in-out`;
+          });
 
           const moreinfor_ticket = document.querySelectorAll('.moreinfor_ticket')
             moreinfor_ticket.forEach((moreinfor) => {
