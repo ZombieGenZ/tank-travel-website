@@ -47,6 +47,8 @@ const io = new Server(server, {
   }
 })
 
+databaseService.connect()
+
 // realtime middleware
 app.use((req, res, next) => {
   ;(req as any).io = io
@@ -351,7 +353,6 @@ server.listen(port, async () => {
   console.log()
   console.log(`\x1b[33mThời gian chạy máy chủ \x1b[36m${formatDateFull2(serverRunningTime)}\x1b[0m`)
   console.log()
-  await databaseService.connect()
   await startBot()
   console.log()
   console.log(`\x1b[33mMáy chủ đang chạy trên port \x1b[36m${port}\x1b[0m`)
