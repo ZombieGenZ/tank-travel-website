@@ -39,6 +39,7 @@ document.getElementById('btn').addEventListener('click', () => {
   ) {
     Swal.fire({
       title: 'Oops...',
+      icon: 'error',
       text: 'Không được để trống các trường dử liệu',
       footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
     })
@@ -48,6 +49,7 @@ document.getElementById('btn').addEventListener('click', () => {
   if (!isValidPhoneNumber(phoneNumber.trim())) {
     Swal.fire({
       title: 'Oops...',
+      icon: 'error',
       text: 'Số điện thoại không hợp lệ',
       footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
     })
@@ -57,6 +59,7 @@ document.getElementById('btn').addEventListener('click', () => {
   if (!validateEmail(email.trim())) {
     Swal.fire({
       title: 'Oops...',
+      icon: 'error',
       text: 'Email không hợp lệ',
       footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
     })
@@ -84,6 +87,7 @@ document.getElementById('btn').addEventListener('click', () => {
       if (data == null || data == undefined) {
         Swal.fire({
           title: 'Oops...',
+          icon: 'error',
           text: 'Lỗi kết nối đến máy chủ',
           footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })
@@ -94,6 +98,7 @@ document.getElementById('btn').addEventListener('click', () => {
         for (const key in data.errors) {
           Swal.fire({
             title: 'Oops...',
+            icon: 'error',
             text: data.errors[key].msg,
             footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
           })
@@ -104,6 +109,7 @@ document.getElementById('btn').addEventListener('click', () => {
       if (data.message === 'Business registration successful!') {
         Swal.fire({
           title: 'Thành công',
+          icon: 'success',
           text: data.message
         }).then((willRedirect) => {
           if (willRedirect) {
@@ -114,6 +120,7 @@ document.getElementById('btn').addEventListener('click', () => {
       } else {
         Swal.fire({
           title: 'Oops...',
+          icon: 'error',
           text: data.message,
           footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })

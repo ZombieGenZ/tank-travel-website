@@ -191,8 +191,8 @@ window.addEventListener('load', () => {
                           </div>
                       </div>
                       <div class="morinfor_bookbutton">
-                          <button class="btn moreinfor_ticket" data-index="${i}">More information</button>
-                          <button class="btn book_ticket" data-index="${i}">Book</button>    
+                          <button class="btn moreinfor_ticket" data-index="${i}">Thông tin chi tiết</button>
+                          <button class="btn book_ticket" data-index="${i}">Đặt ngay</button>    
                       </div>
                   </div>    
               </li>

@@ -30,6 +30,18 @@ body {
   font-size: 1rem;
 }
 
+nav {
+  max-width: var(--max-width);
+  margin: auto;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background-color: var(--extra-light);
+  z-index: 999;
+}
+
 .profile_container {
   margin-top: 4rem;
   width: 100%;
@@ -198,7 +210,7 @@ input[type="file"]::file-selector-button {
 }
 
 .btn {
-    padding: 0.75rem 2rem;
+    padding: 0;
     width: 100%;
     outline: none;
     border: none;
@@ -219,18 +231,6 @@ input[type="file"]::file-selector-button {
     text-decoration: none;
   }
 
-  nav {
-    max-width: var(--max-width);
-    margin: auto;
-    padding: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    background-color: var(--extra-light);
-    z-index: 999;
-  }
-
   .ul_links {
     list-style: none;
     display: flex;
@@ -246,6 +246,7 @@ input[type="file"]::file-selector-button {
 
   .personal_login {
     display: flex;
+    height: 10%;
     gap: 1rem;
   }
 
@@ -308,6 +309,7 @@ input[type="file"]::file-selector-button {
 
   .nav_logo {
     font-size: 1.5rem;
+    padding: 0;
     font-weight: 500;
     cursor: pointer;
   }
