@@ -7,7 +7,7 @@ import cors from 'cors'
 import bodyParser from 'body-parser'
 import databaseService from './services/database.services'
 import { defaultErrorHandler } from './middlewares/error.middlewares'
-import { formatDateFull } from '~/utils/date'
+import { formatDateFull, formatDateFull2 } from '~/utils/date'
 import { startBot, stopBot } from './utils/discord'
 import { TokenPayload } from './models/requests/user.requests'
 import { verifyToken } from './utils/jwt'
@@ -38,7 +38,8 @@ import testApi from '~/routes/test.routes'
 
 const app = express()
 const server = createServer(app)
-const runningTime = formatDateFull(new Date())
+const serverRunningTime = new Date()
+const runningTime = formatDateFull(serverRunningTime)
 const io = new Server(server, {
   cors: {
     origin: '*',
@@ -58,8 +59,6 @@ app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.set('view engine', 'ejs')
 app.set('trust proxy', true)
-
-databaseService.connect()
 
 app.get('/', (req: Request, res: Response) => {
   res.render('trang-chu')
@@ -348,6 +347,11 @@ io.on('connection', (socket: Socket) => {
 })
 
 server.listen(port, async () => {
+  await writeInfoLog(`Thời gian chạy máy chủ ${formatDateFull2(serverRunningTime)}`)
+  console.log()
+  console.log(`\x1b[33mThời gian chạy máy chủ \x1b[36m${formatDateFull2(serverRunningTime)}\x1b[0m`)
+  console.log()
+  await databaseService.connect()
   await startBot()
   console.log()
   console.log(`\x1b[33mMáy chủ đang chạy trên port \x1b[36m${port}\x1b[0m`)
@@ -356,10 +360,14 @@ server.listen(port, async () => {
 })
 
 process.on('SIGINT', async () => {
+  const date = new Date()
   console.log()
   console.log(`\x1b[33mMáy chủ đã ngừng hoạt động\x1b[0m`)
   console.log()
   await stopBot()
+  await writeInfoLog(`Thời gian tắt máy chủ ${formatDateFull2(date)}`)
+  console.log()
+  console.log(`\x1b[33mThời gian tắt máy chủ \x1b[36m${formatDateFull2(date)}\x1b[0m`)
   console.log()
   process.exit(0)
 })
