@@ -75,7 +75,7 @@ function getUserInfo() {
             booking_history.id = 'booking_history'
             personal.id = 'personal'
             personal.innerHTML = '<i class="ri-user-3-line"></i>'
-            So_du.innerText = `Số dư: ${0} VNĐ`
+            So_du.innerText = `Số dư: ${user.balance} VNĐ`
             buttonlogin.style.display = 'none'
             buttonlogin.disabled = true
             personal_infor.appendChild(So_du)

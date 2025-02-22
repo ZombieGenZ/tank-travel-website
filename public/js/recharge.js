@@ -44,27 +44,28 @@ let socket
 recharge_button.addEventListener('click', () => {
   const amount = document.getElementById('money_view').value
   const button_data = document.querySelectorAll('.btn_toview')
-  recharge_button.disabled = true
-  button_data.forEach((button_disabled) => {
-    button_disabled.disabled = true
-  })
-  // amount.readOnly = true
-  if (amount === '') {
+  if (amount.value === '') {
     Swal.fire({
       title: 'Oops...',
+      icon: 'error',
       text: 'Vui lòng điền số tiền cần nạp',
       footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
     })
     return
-  }
-
-  if (Number(amount) < 1000) {
+  } else if (Number(amount) < 1000) {
     Swal.fire({
       title: 'Oops...',
+      icon: 'error',
       text: 'Số tiền cần nạp phải lớn hơn hoặc bằng 1.000 VNĐ',
       footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
     })
     return
+  } else {
+    recharge_button.disabled = true
+    button_data.forEach((button_disabled) => {
+      button_disabled.disabled = true
+    })
+    amount.readOnly = true
   }
   const price_information = document.getElementById('price_information')
   price_information.innerText = `Price: ${formatNumber(Number(amount.value))} VNĐ`
@@ -89,10 +90,10 @@ recharge_button.addEventListener('click', () => {
       return response.json()
     })
     .then((data) => {
-      console.log(data)
       if (data === null || data === undefined) {
         Swal.fire({
           title: 'Oops...',
+          icon: 'error',
           text: 'Lỗi kết nối đến máy chủ',
           footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         })
@@ -103,6 +104,7 @@ recharge_button.addEventListener('click', () => {
         for (const key in data.errors) {
           Swal.fire({
             title: 'Oops...',
+            icon: 'error',
             text: data.errors[key].msg,
             footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
           })
@@ -202,7 +204,7 @@ function getUserInfo() {
             booking_history.id = 'booking_history'
             personal.id = 'personal'
             personal.innerHTML = '<i class="ri-user-3-line"></i>'
-            So_du.innerText = `Số dư: ${0} VNĐ`
+            So_du.innerText = `Số dư: ${user.balance} VNĐ`
             buttonlogin.style.display = 'none'
             buttonlogin.disabled = true
             personal_infor.appendChild(So_du)

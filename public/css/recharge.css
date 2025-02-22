@@ -125,7 +125,6 @@ body {
   .recharge_payment {
     display: none;
   }
-
   .active {
     transform: translateX(0);
   }

@@ -28,6 +28,7 @@ function getUserInfo() {
         if (data !== null && data !== undefined) {
           if (data.user !== null && data.user !== undefined) {
             user = data.user
+            console.log(user)
             localStorage.setItem('access_token', data.authenticate.access_token)
             localStorage.setItem('refresh_token', data.authenticate.refresh_token)
           }
@@ -80,6 +81,8 @@ window.addEventListener('load', () => {
     console.log(user)
     document.getElementById('img_infor_1').src = user.avatar.url
     document.getElementById('displayname').value = user.display_name
+    document.getElementById('email_user').value = user.email
+    document.getElementById('phone_user').value = user.phone
   })
 })
 
