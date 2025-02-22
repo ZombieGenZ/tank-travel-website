@@ -31,6 +31,7 @@ document.getElementById('Contact_us').addEventListener('click', () => {
 })
 
 const recharge_grid = document.getElementById('recharge_container')
+const recharge_choose = document.getElementById('recharge_choose')
 const recharge_payment = document.querySelectorAll('.recharge_payment')
 const recharge_button = document.getElementById('recharge_button')
 const amount1 = document.getElementById('money_view')
@@ -57,6 +58,7 @@ recharge_button.addEventListener('click', () => {
     })
     return
   } else {
+    recharge_choose.style.animation = 'fade-in 1.5s ease-in-out'
     recharge_button.style.backgroundColor = 'gray'
     recharge_grid.style.animation = 'width-out 1.5s ease-in-out'
     recharge_grid.style.width = '70%'
