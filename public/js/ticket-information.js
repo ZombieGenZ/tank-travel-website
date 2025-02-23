@@ -1,5 +1,5 @@
 let user = null
-const access_token = localStorage.getItem('access_token') 
+const access_token = localStorage.getItem('access_token')
 const refresh_token = localStorage.getItem('refresh_token')
 
 function formatDate(dateString) {
@@ -14,16 +14,38 @@ function formatDate(dateString) {
 
 document.getElementById('Contact_us').addEventListener('click', () => {
   Swal.fire({
-    title: "Liên hệ chúng tôi",
+    title: 'Liên hệ chúng tôi',
     icon: 'info',
     html: `<div>
             <ul class="ul_contact">
               <li>Số điện thoại: 0908651852</li>
               <li>Email: namndtb00921@fpt.edu.vn</li>
             </ul>
-           </div>`,
-  });
+           </div>`
+  })
 })
+
+function validateEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return emailRegex.test(email)
+}
+
+function isValidPhoneNumber(phoneNumber) {
+  const cleanedPhoneNumber = phoneNumber.replace(/\D/g, '')
+  if (cleanedPhoneNumber.length !== 10) {
+    return false
+  }
+
+  if (cleanedPhoneNumber[0] !== '0') {
+    return false
+  }
+
+  if (/[^0-9]/.test(cleanedPhoneNumber)) {
+    return false
+  }
+
+  return true
+}
 
 const session_time = new Date().toISOString()
 let current = 0
@@ -46,7 +68,7 @@ function getUserInfo() {
         Authorization: `Bearer ${access_token}`
       },
       body: JSON.stringify(body)
-      })
+    })
       .then((response) => {
         return response.json()
       })
@@ -183,7 +205,7 @@ window.addEventListener('load', () => {
                           </div>
                           <div class="detail_ticket price">
                               <h4>Phương tiện:</h4>
-                              <p>${route.vehicle.vehicle_type == "0" ? "Xe khách" : "Tàu hỏa"}</p>
+                              <p>${route.vehicle.vehicle_type == '0' ? 'Xe khách' : 'Tàu hỏa'}</p>
                           </div>
                           <div class="detail_ticket price">
                               <h4>Giá tiền:</h4>
@@ -199,19 +221,19 @@ window.addEventListener('load', () => {
             `
           }
 
-          const each_ticket = document.querySelectorAll('.each_ticket');
+          const each_ticket = document.querySelectorAll('.each_ticket')
           each_ticket.forEach((ticket, index) => {
-              ticket.style.animation = `fade-in ${index * 0.1 + 0.8}s ease-in-out`;
-          });
+            ticket.style.animation = `fade-in ${index * 0.1 + 0.8}s ease-in-out`
+          })
 
           const moreinfor_ticket = document.querySelectorAll('.moreinfor_ticket')
-            moreinfor_ticket.forEach((moreinfor) => {
-              moreinfor.addEventListener('click', () => {
-                const index = moreinfor.dataset.index;
-                console.log(busRoute[index]);
-                  Swal.fire({
-                    title: 'Thông tin chi tiết vé xe',
-                    html: `<div class="input__group">
+          moreinfor_ticket.forEach((moreinfor) => {
+            moreinfor.addEventListener('click', () => {
+              const index = moreinfor.dataset.index
+              console.log(busRoute[index])
+              Swal.fire({
+                title: 'Thông tin chi tiết vé xe',
+                html: `<div class="input__group">
                             <input type="input" class="form__field" placeholder="Name" value="${busRoute[index].start_point}" readOnly>
                             <label for="name" class="form__label">Nơi đi:</label>
                         </div>
@@ -228,61 +250,64 @@ window.addEventListener('load', () => {
                             <label for="name" class="form__label">Giá vé (VNĐ):</label>
                         </div>
                         <div class="input__group">
-                            <input type="input" class="form__field" placeholder="Name" value="${busRoute[index].vehicle.vehicle_type == "0" ? "Xe khách" : "Tàu hỏa"}" readOnly>
+                            <input type="input" class="form__field" placeholder="Name" value="${busRoute[index].vehicle.vehicle_type == '0' ? 'Xe khách' : 'Tàu hỏa'}" readOnly>
                             <label for="name" class="form__label">Phương tiện:</label>
                         </div>`,
-                    focusConfirm: false,
-                    showConfirmButton: false,
-                    showCancelButton: true,
-                    icon: 'info',
-                    cancelButtonColor: '#d33',
-                    cancelButtonText: 'Thoát',
-                    footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
-                  })
+                focusConfirm: false,
+                showConfirmButton: false,
+                showCancelButton: true,
+                icon: 'info',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Thoát',
+                footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
               })
             })
+          })
 
-            if (user == null) {
-              const book_ticket = document.querySelectorAll('.book_ticket')
-              book_ticket.forEach((book) => {
-                book.addEventListener('click', () => {
-                  Swal.fire({
-                    title: 'Oops...',
-                    icon: 'error',
-                    text: `Vui lòng đăng nhập để có thể đặt vé`,
-                    showConfirmButton: true,
-                    showDenyButton: true,
-                    denyButtonText: `Thoát`,
-                    confirmButtonText: 'Đăng nhập',
-                    footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
-                  }).then((result) => {
-                    if(result.isConfirmed) {
-                      window.location.href = '/login'
-                    }
-                  })
+          if (user == null) {
+            const book_ticket = document.querySelectorAll('.book_ticket')
+            book_ticket.forEach((book) => {
+              book.addEventListener('click', () => {
+                Swal.fire({
+                  title: 'Oops...',
+                  icon: 'error',
+                  text: `Vui lòng đăng nhập để có thể đặt vé`,
+                  showConfirmButton: true,
+                  showDenyButton: true,
+                  denyButtonText: `Thoát`,
+                  confirmButtonText: 'Đăng nhập',
+                  footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    window.location.href = '/login'
+                  }
                 })
               })
-            } else if (user != null) {
-              const book_ticket = document.querySelectorAll('.book_ticket')
-              book_ticket.forEach((book) => {
-                book.addEventListener('click',() => {
-                  const index = book.dataset.index;
-                  console.log(busRoute[index])
-                  Swal.fire({
-                    icon: 'info',
-                    title: 'Thông tin đặt vé',
-                    html: `
+            })
+          } else if (user != null) {
+            const book_ticket = document.querySelectorAll('.book_ticket')
+            book_ticket.forEach((book) => {
+              book.addEventListener('click', () => {
+                const index = book.dataset.index
+                Swal.fire({
+                  icon: 'info',
+                  title: 'Thông tin đặt vé',
+                  html: `
                       <div class="input__group">
-                          <input type="input" class="form__field" id="fullname_booking" placeholder="Name" required="">
+                          <input type="input" class="form__field" id="fullname_booking" value="${user.display_name}" placeholder="Name" required="">
                           <label for="name" class="form__label">Họ và tên:</label>
                       </div>
                       <div class="input__group">
-                          <input type="email" class="form__field" id="email_booking" placeholder="Name" required="">
+                          <input type="email" class="form__field" id="email_booking" value="${user.email}" placeholder="Name" required="">
                           <label for="name" class="form__label">Email:</label>
                       </div>
                       <div class="input__group">
-                          <input type="input" class="form__field" id="phone_booking" placeholder="Name" required="">
+                          <input type="input" class="form__field" id="phone_booking" value="${user.phone}" placeholder="Name" required="">
                           <label for="name" class="form__label">Số điện thoại:</label>
+                      </div>
+                      <div class="input__group">
+                          <input type="input" class="form__field" id="ticket_booking" value="1" placeholder="Name" required="">
+                          <label for="name" class="form__label">Số vé:</label>
                       </div>
                       <div class="input__group">
                           <input type="input" class="form__field" placeholder="Name" value="${busRoute[index].start_point}" readOnly>
@@ -301,14 +326,131 @@ window.addEventListener('load', () => {
                           <label for="name" class="form__label">Giá vé:</label>
                       </div>
                     `,
-                    focusConfirm: false,
-                    showCancelButton: true,
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Đặt vé',
-                  })
+                  focusConfirm: false,
+                  showCancelButton: true,
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: 'Đặt vé',
+                  preConfirm: async () => {
+                    const fullname = document.getElementById('fullname_booking').value
+                    const email = document.getElementById('email_booking').value
+                    const phone = document.getElementById('phone_booking').value
+                    const quantity = document.getElementById('ticket_booking').value
+
+                    if (
+                      fullname == null ||
+                      fullname == undefined ||
+                      fullname.trim() == '' ||
+                      email == null ||
+                      email == undefined ||
+                      email.trim() == '' ||
+                      phone == null ||
+                      phone == undefined ||
+                      phone.trim() == '' ||
+                      quantity == null ||
+                      quantity == undefined ||
+                      quantity.trim() == ''
+                    ) {
+                      Swal.showValidationMessage('Vui lòng điền đầy đủ thông tin')
+                      return false
+                    }
+
+                    if (Number(quantity.trim()) < 1 || Number(quantity.trim()) > 999) {
+                      Swal.showValidationMessage('Số lượng vé phải lớn hơn 0 và bé hơn 1000')
+                      return false
+                    }
+
+                    if (!validateEmail(email.trim())) {
+                      Swal.showValidationMessage('Email không hợp lệ')
+                      return false
+                    }
+
+                    if (!isValidPhoneNumber(phone.trim())) {
+                      Swal.showValidationMessage('Số điện thoại không hợp lệ')
+                      return false
+                    }
+
+                    const orderBody = {
+                      refresh_token: refresh_token,
+                      bus_route_id: busRoute[index]._id,
+                      name: fullname.trim(),
+                      email: email.trim(),
+                      phone: phone.trim(),
+                      quantity: Number(quantity.trim())
+                    }
+
+                    try {
+                      const response = await fetch('/api/order', {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                          Authorization: `Bearer ${access_token}`
+                        },
+                        body: JSON.stringify(orderBody)
+                      })
+
+                      if (!response.ok) {
+                        const errorData = await response.json()
+                        if (errorData.message === 'Lỗi dữ liệu đầu vào' && errorData.errors) {
+                          let errorMessages = ''
+                          for (const key in errorData.errors) {
+                            errorMessages += errorData.errors[key].msg + '<br>'
+                          }
+                          Swal.showValidationMessage(errorMessages)
+                        } else {
+                          Swal.showValidationMessage(errorData.message || 'Lỗi từ máy chủ')
+                        }
+                        return false
+                      }
+
+                      const data = await response.json()
+
+                      if (data == null || data == undefined) {
+                        Swal.showValidationMessage('Lỗi kết nối đến máy chủ')
+                        return false
+                      }
+
+                      if (
+                        data.message == 'Bạn phải đăng nhập bỏ sử dụng chức năng này' ||
+                        data.message == 'Refresh token không hợp lệ' ||
+                        data.message == 'Bạn không có quyền thực hiện hành động này'
+                      ) {
+                        Swal.showValidationMessage(data.message)
+                        return false
+                      }
+
+                      localStorage.setItem('refresh_token', data.authenticate.refresh_token)
+                      localStorage.setItem('access_token', data.authenticate.access_token)
+
+                      if (
+                        data.message == 'Số lượng vé phải là một số nguyên' ||
+                        data.message == 'Số dư của bạn không đủ bỏ hoàn thành giao dịch này'
+                      ) {
+                        Swal.showValidationMessage(data.message)
+                        return false
+                      }
+
+                      if (data.message === 'Đặt vé thành công!') {
+                        await Swal.fire({
+                          title: 'Thành công!',
+                          icon: 'success',
+                          text: data.message
+                        })
+                        return true
+                      } else {
+                        Swal.showValidationMessage(data.message)
+                        return false
+                      }
+                    } catch (error) {
+                      Swal.showValidationMessage('Lỗi kết nối đến máy chủ')
+                      return false
+                    }
+                  }
+                }).then((result) => {
+                  // gì đó
                 })
               })
-            }
+            })
+          }
 
           current = data.result.current
           if (!data.result.continued) {

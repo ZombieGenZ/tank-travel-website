@@ -107,8 +107,8 @@ document.getElementById('Contact_us').addEventListener('click', () => {
               <li>Số điện thoại: 0908651852</li>
               <li>Email: namndtb00921@fpt.edu.vn</li>
             </ul>
-           </div>`,
-  });
+           </div>`
+  })
 })
 
 document.getElementById('a_logout').addEventListener('click', () => {
@@ -120,9 +120,11 @@ document.getElementById('a_logout').addEventListener('click', () => {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
-  }).then((response) => {
+  })
+    .then((response) => {
       return response.json()
-  }).then((data) => {
+    })
+    .then((data) => {
       if (data === null || data === undefined) {
         Swal.fire({
           title: 'Oops...',
@@ -161,11 +163,8 @@ document.getElementById('a_logout').addEventListener('click', () => {
 })
 
 const typed = new Typed('#text', {
-  strings: [
-    document.getElementById('text').textContent, 'A trip to healing. ' , 'A memorable trip. '
-  ],
+  strings: [document.getElementById('text').textContent, 'A trip to healing. ', 'A memorable trip. '],
   typeSpeed: 100,
   backSpeed: 100,
   loop: true
-});
-
+})
