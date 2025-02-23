@@ -1,8 +1,4 @@
 const server_url = 'https://tank-travel.io.vn'
-function formatNumber(number) {
-  const formattedNumber = number.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')
-  return formattedNumber
-}
 
 let user = null
 const access_token = localStorage.getItem('access_token')
@@ -58,14 +54,14 @@ recharge_button.addEventListener('click', () => {
     })
     return
   } else {
-    recharge_choose.style.animation = 'fade-in 1.5s ease-in-out'
+    recharge_choose.style.animation = 'fade-in .5s ease-in-out'
     recharge_button.style.backgroundColor = 'gray'
-    recharge_grid.style.animation = 'width-out 1.5s ease-in-out'
+    recharge_grid.style.animation = 'width-out .5s ease-in-out'
     recharge_grid.style.width = '70%'
     recharge_grid.style.gridTemplateColumns = '1fr 1fr 1fr'
     recharge_payment.forEach((dis) => {
       dis.style.display = 'flex'
-      dis.style.animation = 'fade-in 1.5s ease-in-out'
+      dis.style.animation = 'fade-in .5s ease-in-out'
     })
     amount1.readOnly = true
     button_data.forEach(button_disabled => {
@@ -74,7 +70,7 @@ recharge_button.addEventListener('click', () => {
     recharge_button.disabled = true
   }
   const price_information = document.getElementById('price_information')
-  price_information.innerText = `Price: ${formatNumber(Number(amount.value))} VNĐ`
+  price_information.innerText = `Price: ${Number(amount.value).toLocaleString('vi-VN')} VNĐ`
 
   const access_token = document.getElementById('access_token')
   const refresh_token = localStorage.getItem('refresh_token')
@@ -217,7 +213,7 @@ function getUserInfo() {
             booking_history.id = 'booking_history'
             personal.id = 'personal'
             personal.innerHTML = '<i class="ri-user-3-line"></i>'
-            So_du.innerText = `Số dư: ${user.balance} VNĐ`
+            So_du.innerText = `Số dư: ${user.balance.toLocaleString('vi-VN')} VNĐ`
             buttonlogin.style.display = 'none'
             buttonlogin.disabled = true
             personal_infor.appendChild(So_du)
@@ -305,6 +301,10 @@ document.getElementById('nav_logo').addEventListener('click', () => {
 
 document.getElementById('img_trangchu').addEventListener('click', () => {
   window.location.href = '/'
+})
+
+document.getElementById('bill_information').addEventListener('click', () => {
+  window.location.href = '/bill_information'
 })
 
 document.getElementById('profile').addEventListener('click', () => {

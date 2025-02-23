@@ -117,6 +117,10 @@ app.get('/profile', (req: Request, res: Response) => {
   res.render('profile')
 })
 
+app.get('/bill_information', (req: Request, res: Response) => {
+  res.render('bill_information')
+})
+
 // download router
 app.use('/download', downloadApi)
 

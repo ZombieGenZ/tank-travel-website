@@ -50,7 +50,7 @@ function getUserInfo() {
             booking_history.id = 'booking_history'
             personal.id = 'personal'
             personal.innerHTML = '<i class="ri-user-3-line"></i>'
-            So_du.innerText = `Số dư: ${user.balance} VNĐ`
+            So_du.innerText = `Số dư: ${user.balance.toLocaleString('vi-VN')} VNĐ`
             buttonlogin.style.display = 'none'
             buttonlogin.disabled = true
             personal_infor.appendChild(So_du)
@@ -153,6 +153,10 @@ document.getElementById('nav_logo').addEventListener('click', () => {
 
 document.getElementById('img_trangchu').addEventListener('click', () => {
   window.location.href = '/'
+})
+
+document.getElementById('bill_information').addEventListener('click', () => {
+  window.location.href = '/bill_information'
 })
 
 document.getElementById('btn_login').addEventListener('click', () => {

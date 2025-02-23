@@ -153,6 +153,10 @@ body {
     cursor: pointer;
   }
 
+  .preview_img {
+    width: 100%;
+  }
+
   footer {
     background-color: var(--primary-color);
   }

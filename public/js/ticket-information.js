@@ -97,7 +97,7 @@ function getUserInfo() {
             booking_history.id = 'booking_history'
             personal.id = 'personal'
             personal.innerHTML = '<i class="ri-user-3-line"></i>'
-            So_du.innerText = `Số dư: ${user.balance} VNĐ`
+            So_du.innerText = `Số dư: ${user.balance.toLocaleString('vi-VN')} VNĐ`
             buttonlogin.style.display = 'none'
             buttonlogin.disabled = true
             personal_infor.appendChild(So_du)
@@ -234,6 +234,9 @@ window.addEventListener('load', () => {
               Swal.fire({
                 title: 'Thông tin chi tiết vé xe',
                 html: `<div class="input__group">
+                            <img src="${busRoute[index].vehicle.preview[1].url}" class="preview_img">
+                        </div>
+                        <div class="input__group">
                             <input type="input" class="form__field" placeholder="Name" value="${busRoute[index].start_point}" readOnly>
                             <label for="name" class="form__label">Nơi đi:</label>
                         </div>
@@ -256,7 +259,6 @@ window.addEventListener('load', () => {
                 focusConfirm: false,
                 showConfirmButton: false,
                 showCancelButton: true,
-                icon: 'info',
                 cancelButtonColor: '#d33',
                 cancelButtonText: 'Thoát',
                 footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
@@ -290,7 +292,6 @@ window.addEventListener('load', () => {
               book.addEventListener('click', () => {
                 const index = book.dataset.index
                 Swal.fire({
-                  icon: 'info',
                   title: 'Thông tin đặt vé',
                   html: `
                       <div class="input__group">
@@ -434,6 +435,8 @@ window.addEventListener('load', () => {
                           title: 'Thành công!',
                           icon: 'success',
                           text: data.message
+                        }).then(() => {
+                          location.reload();
                         })
                         return true
                       } else {
@@ -444,9 +447,8 @@ window.addEventListener('load', () => {
                       Swal.showValidationMessage('Lỗi kết nối đến máy chủ')
                       return false
                     }
-                  }
-                }).then((result) => {
-                  // gì đó
+                  },
+                  footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
                 })
               })
             })
@@ -469,6 +471,10 @@ document.getElementById('nav_logo').addEventListener('click', () => {
 
 document.getElementById('img_trangchu').addEventListener('click', () => {
   window.location.href = '/'
+})
+
+document.getElementById('bill_information').addEventListener('click', () => {
+  window.location.href = '/bill_information'
 })
 
 document.getElementById('profile').addEventListener('click', () => {
