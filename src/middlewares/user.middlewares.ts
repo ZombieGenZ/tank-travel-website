@@ -1020,7 +1020,7 @@ export const image3x4Validator = async (req: Request, res: Response, next: NextF
     const avatar: ImageType = {
       path: `public/images/upload/avatar/${user._id}${fileExt}`,
       type: file.mimetype,
-      url: `${process.env.APP_URL}/images/upload/avatar/${user._id}${fileExt}`,
+      url: `${process.env.IMAGE_URL}/images/upload/avatar/${user._id}${fileExt}`,
       size: file.size
     }
 

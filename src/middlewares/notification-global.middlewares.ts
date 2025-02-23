@@ -258,7 +258,7 @@ export const setupNotificationGlobal = async (req: Request, res: Response, next:
     return {
       path: `public/images/upload/notification/${file.filename}`,
       type: file.mimetype,
-      url: `${process.env.APP_URL}/images/upload/notification/${file.filename}`,
+      url: `${process.env.IMAGE_URL}/images/upload/notification/${file.filename}`,
       size: file.size
     } as ImageType
   })

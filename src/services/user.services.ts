@@ -669,7 +669,7 @@ class UserService {
     const avatarImage: ImageType = {
       type: 'image/png',
       path: 'publc/images/system/avatar.png',
-      url: `${process.env.APP_URL}/images/system/avatar.png`,
+      url: `${process.env.IMAGE_URL}/images/system/avatar.png`,
       size: 36634
     }
 

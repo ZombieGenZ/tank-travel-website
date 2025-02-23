@@ -357,10 +357,10 @@ export const setupCreateImage = async (req: Request, res: Response, next: NextFu
                 const img: ImageType = {
                   path: `public/images/upload/vehicle/${user._id}/${file.filename}`,
                   type: file.mimetype,
-                  url: `${process.env.APP_URL}/images/upload/vehicle/${user._id}/${file.filename}`,
+                  url: `${process.env.IMAGE_URL}/images/upload/vehicle/${user._id}/${file.filename}`,
                   size: file.size
                 }
-        resolve(img)
+                resolve(img)
               })
           })
           .catch((err) => {
