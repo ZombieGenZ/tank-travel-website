@@ -654,7 +654,7 @@ class VehicleService {
   async getVehicleList(user: User) {
     if (user.permission == UserPermission.ADMINISTRATOR) {
       const vehicle = await databaseService.vehicles
-        .find({})
+        .find({ status: 1 })
         .project({ license_plate: 1, _id: 1 })
         .sort({ created_at: -1 })
         .toArray()
@@ -671,7 +671,7 @@ class VehicleService {
       }
     } else {
       const vehicle = await databaseService.vehicles
-        .find({ user: user._id })
+        .find({ user: user._id, status: 1 })
         .project({ license_plate: 1, _id: 1 })
         .sort({ created_at: -1 })
         .toArray()
