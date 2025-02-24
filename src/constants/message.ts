@@ -381,3 +381,13 @@ export const REVENUE_MESSAGE = {
   CHECKOUT_ORDER_SUCCESS: 'Thanh toán đơn hàng thành công!',
   CHECKOUT_ORDER_FAILURE: 'Thanh toán đơn hàng thất bại'
 } as const
+
+export const NOTIFICATION_PRIATE_MESSAGE = {
+  SESSION_TIME_IS_REQUIRED: 'Không được bỏ trống thời gian của phiên',
+  SESSION_TIME_IS_MUST_BE_A_DATE: 'Thời gian phiên không đúng định dạng',
+  CURRENT_IS_REQUIRED: 'Không được bỏ trống số trang hiện tại',
+  CURRENT_IS_MUST_BE_A_NUMBER: 'Số trang hiện tại phải là một số',
+  CURRENT_IS_MUST_BE_GREATER_THAN_0: 'Số trang hiện tại phải lớn hơn 0',
+  NOTIFICATION_NOT_FOUND: 'Không tìm thấy thông báo nào phù hợp',
+  GET_NOTIFICATION_FAILURE: 'Lấy thông báo thất bại'
+} as const

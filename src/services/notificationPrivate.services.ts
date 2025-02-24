@@ -4,6 +4,8 @@ import { ObjectId } from 'mongodb'
 import User from '~/models/schemas/users.schemas'
 import { db } from './firebase.services'
 import { io } from '~/index'
+import { GetNotificatonRequestBody } from '~/models/requests/notification-priate.requests'
+import { NOTIFICATION_PRIATE_MESSAGE } from '~/constants/message'
 
 class NotificationPrivateService {
   async createNotification(receiver_id: ObjectId, message: string, sender?: User) {
@@ -28,6 +30,43 @@ class NotificationPrivateService {
         message
       })
     ])
+  }
+  async getNotification(payload: GetNotificatonRequestBody, user: User) {
+    const limit = Number(process.env.LOAD_QUANTITY_LIMIT as string)
+    const next = limit + 1
+
+    const result = await databaseService.notificationPrivate
+      .aggregate([
+        {
+          $match: {
+            created_at: { $lt: new Date(payload.session_time) },
+            receiver: user._id
+          }
+        },
+        { $sort: { created_at: -1 } },
+        { $skip: payload.current },
+        { $limit: next }
+      ])
+      .toArray()
+
+    const continued = result.length > limit
+    const notification = result.slice(0, limit)
+    const current = payload.current + notification.length
+
+    if (notification.length === 0) {
+      return {
+        message: NOTIFICATION_PRIATE_MESSAGE.NOTIFICATION_NOT_FOUND,
+        current: payload.current,
+        continued: false,
+        notification: []
+      }
+    } else {
+      return {
+        current,
+        continued,
+        notification
+      }
+    }
   }
 }
 
