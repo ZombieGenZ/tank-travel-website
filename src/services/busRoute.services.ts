@@ -259,12 +259,41 @@ class BusRouteService {
 
     if (user.permission == UserPermission.ADMINISTRATOR) {
       const result = await databaseService.busRoute
-        .find({
-          created_at: { $lt: new Date(payload.session_time) }
-        })
-        .sort({ created_at: -1 })
-        .skip(payload.current)
-        .limit(next)
+        .aggregate([
+          {
+            $match: {
+              created_at: { $lt: new Date(payload.session_time) }
+            }
+          },
+          {
+            $lookup: {
+              from: process.env.DATABASE_VEHICLE_COLLECTION,
+              localField: 'vehicle',
+              foreignField: '_id',
+              as: 'vehicle'
+            }
+          },
+          {
+            $unwind: {
+              path: '$vehicle',
+              preserveNullAndEmptyArrays: false
+            }
+          },
+          {
+            $project: {
+              'vehicle.preview': 0
+            }
+          },
+          {
+            $sort: { created_at: -1 }
+          },
+          {
+            $skip: payload.current
+          },
+          {
+            $limit: next
+          }
+        ])
         .toArray()
 
       const continued = result.length > limit
@@ -300,21 +329,21 @@ class BusRouteService {
               from: process.env.DATABASE_VEHICLE_COLLECTION,
               localField: 'vehicle',
               foreignField: '_id',
-              as: 'vehicle_info'
+              as: 'vehicle'
             }
           },
           {
             $unwind: {
-              path: '$vehicle_info',
+              path: '$vehicle',
               preserveNullAndEmptyArrays: false
             }
           },
           {
-            $match: { 'vehicle_info.user': user._id }
+            $match: { 'vehicle.user': user._id }
           },
           {
             $project: {
-              vehicle_info: 0
+              'vehicle.preview': 0
             }
           },
           {
@@ -359,9 +388,43 @@ class BusRouteService {
     if (user.permission == UserPermission.ADMINISTRATOR) {
       const keywords = payload.keywords.split(' ')
 
-      const searchQuery = {
-        $and: [
-          {
+      // const searchQuery = {
+      //   $and: [
+      //     {
+      //       $or: keywords.map((key) => ({
+      //         $or: [
+      //           { start_point: { $regex: key, $options: 'i' } },
+      //           { end_point: { $regex: key, $options: 'i' } },
+      //           ...(isNaN(Number(key)) ? [] : [{ price: Number(key) }, { quantity: Number(key) }])
+      //         ]
+      //       }))
+      //     },
+      //     { created_at: { $lt: new Date(payload.session_time) } }
+      //   ]
+      // }
+
+      const pipeline = [
+        {
+          $match: {
+            created_at: { $lt: new Date(payload.session_time) }
+          }
+        },
+        {
+          $lookup: {
+            from: process.env.DATABASE_VEHICLE_COLLECTION,
+            localField: 'vehicle',
+            foreignField: '_id',
+            as: 'vehicle'
+          }
+        },
+        {
+          $unwind: {
+            path: '$vehicle',
+            preserveNullAndEmptyArrays: false
+          }
+        },
+        {
+          $match: {
             $or: keywords.map((key) => ({
               $or: [
                 { start_point: { $regex: key, $options: 'i' } },
@@ -369,17 +432,25 @@ class BusRouteService {
                 ...(isNaN(Number(key)) ? [] : [{ price: Number(key) }, { quantity: Number(key) }])
               ]
             }))
-          },
-          { created_at: { $lt: new Date(payload.session_time) } }
-        ]
-      }
+          }
+        },
+        {
+          $project: {
+            'vehicle.preview': 0
+          }
+        },
+        {
+          $sort: { created_at: -1 }
+        },
+        {
+          $skip: payload.current
+        },
+        {
+          $limit: next
+        }
+      ]
 
-      const result = await databaseService.busRoute
-        .find(searchQuery)
-        .sort({ created_at: -1 })
-        .skip(payload.current)
-        .limit(next)
-        .toArray()
+      const result = await databaseService.busRoute.aggregate(pipeline).toArray()
 
       const continued = result.length > limit
 
@@ -415,18 +486,18 @@ class BusRouteService {
             from: process.env.DATABASE_VEHICLE_COLLECTION,
             localField: 'vehicle',
             foreignField: '_id',
-            as: 'vehicle_info'
+            as: 'vehicle'
           }
         },
         {
           $unwind: {
-            path: '$vehicle_info',
+            path: '$vehicle',
             preserveNullAndEmptyArrays: false
           }
         },
         {
           $match: {
-            'vehicle_info.user': user._id,
+            'vehicle.user': user._id,
             $or: keywords.map((key) => ({
               $or: [
                 { start_point: { $regex: key, $options: 'i' } },
@@ -438,7 +509,7 @@ class BusRouteService {
         },
         {
           $project: {
-            vehicle_info: 0
+            'vehicle.preview': 0
           }
         },
         {
