@@ -307,7 +307,7 @@ class BusRouteService {
           message: BUSROUTE_MESSAGE.NO_MATCHING_RESULTS_FOUND,
           current: payload.current,
           continued: false,
-          vehicle: []
+          busRoute: []
         }
       } else {
         return {
@@ -369,7 +369,7 @@ class BusRouteService {
           message: BUSROUTE_MESSAGE.NO_MATCHING_RESULTS_FOUND,
           current: payload.current,
           continued: false,
-          vehicle: []
+          busRoute: []
         }
       } else {
         return {
@@ -463,7 +463,7 @@ class BusRouteService {
           message: BUSROUTE_MESSAGE.NO_MATCHING_RESULTS_FOUND,
           current: payload.current,
           continued: false,
-          vehicle: []
+          busRoute: []
         }
       } else {
         return {
@@ -536,7 +536,7 @@ class BusRouteService {
           message: BUSROUTE_MESSAGE.NO_MATCHING_RESULTS_FOUND,
           current: payload.current,
           continued: false,
-          vehicle: []
+          busRoute: []
         }
       } else {
         return {
