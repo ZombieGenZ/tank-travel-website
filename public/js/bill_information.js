@@ -87,6 +87,61 @@ function getUserInfo() {
             booking_history.addEventListener('click', () => {
               window.location.href = '/booking_history'
             })
+
+            document.getElementById('profile').addEventListener('click', () => {
+              window.location.href = '/profile'
+            })
+
+            document.getElementById('logout').addEventListener('click', () => {
+              const refresh_token = localStorage.getItem('refresh_token')
+            
+              const body = { refresh_token: refresh_token }
+            
+              fetch('/api/users/logout', {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+              })
+                .then((response) => {
+                  return response.json()
+                })
+                .then((data) => {
+                  if (data === null || data === undefined) {
+                    Swal.fire({
+                      title: 'Oops...',
+                      icon: 'error',
+                      text: 'Lỗi kết nối đến máy chủ',
+                      footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
+                    })
+                    return
+                  }
+            
+                  if (data.message == 'Đăng xuất thành công!') {
+                    localStorage.removeItem('access_token')
+                    localStorage.removeItem('refresh_token')
+                    Swal.fire({
+                      title: 'Thành công',
+                      icon: 'success',
+                      text: data.message
+                    }).then((result) => {
+                      if (result.dismiss === Swal.DismissReason.backdrop) {
+                        window.location.href = '/'
+                      } else {
+                        window.location.href = '/'
+                      }
+                    })
+                    return
+                  } else {
+                    Swal.fire({
+                      title: 'Oops...',
+                      icon: 'error',
+                      text: 'Error connecting to server',
+                      footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
+                    })
+                    return
+                  }
+                })
+            })
           }
           resolve()
         }
@@ -103,14 +158,6 @@ getUserInfo().then(() => {
       window.location.href = '/'
     })
     
-    document.getElementById('bill_information').addEventListener('click', () => {
-      window.location.href = '/bill_information'
-    })
-    
-    document.getElementById('profile').addEventListener('click', () => {
-      window.location.href = '/profile'
-    })
-    
     document.getElementById('btn_login').addEventListener('click', () => {
       window.location.href = '/login'
     })
@@ -121,56 +168,5 @@ getUserInfo().then(() => {
     
     document.getElementById('signup_business').addEventListener('click', () => {
       window.location.href = '/business_signup'
-    })
-  
-    document.getElementById('logout').addEventListener('click', () => {
-      const refresh_token = localStorage.getItem('refresh_token')
-    
-      const body = { refresh_token: refresh_token }
-    
-      fetch('/api/users/logout', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      })
-        .then((response) => {
-          return response.json()
-        })
-        .then((data) => {
-          if (data === null || data === undefined) {
-            Swal.fire({
-              title: 'Oops...',
-              icon: 'error',
-              text: 'Lỗi kết nối đến máy chủ',
-              footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
-            })
-            return
-          }
-    
-          if (data.message == 'Đăng xuất thành công!') {
-            localStorage.removeItem('access_token')
-            localStorage.removeItem('refresh_token')
-            Swal.fire({
-              title: 'Thành công',
-              icon: 'success',
-              text: data.message
-            }).then((result) => {
-              if (result.dismiss === Swal.DismissReason.backdrop) {
-                window.location.href = '/'
-              } else {
-                window.location.href = '/'
-              }
-            })
-            return
-          } else {
-            Swal.fire({
-              title: 'Oops...',
-              icon: 'error',
-              text: 'Error connecting to server',
-              footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
-            })
-            return
-          }
-        })
     })
 })

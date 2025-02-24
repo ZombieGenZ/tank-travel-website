@@ -42,10 +42,10 @@ function getUserInfo() {
             const So_du = document.createElement('div')
             So_du.classList.add('So_du')
             recharge.classList.add('link')
-            recharge.innerHTML = '<a href="#"><i class="ri-money-dollar-circle-line"></i> Recharge</a>'
+            recharge.innerHTML = '<a href="#"><i class="ri-money-dollar-circle-line"></i> Nạp tiền</a>'
             recharge.id = 'recharge_money'
             booking_history.classList.add('link')
-            booking_history.innerHTML = '<a href="#"><i class="ri-history-line"></i> Booking history</a>'
+            booking_history.innerHTML = '<a href="#"><i class="ri-history-line"></i> Lịch sử đặt vé</a>'
             booking_history.id = 'booking_history'
             personal.classList.add('menu')
             personal.innerHTML = `<div class="item">
@@ -67,9 +67,6 @@ function getUserInfo() {
                                       <div class="submenu-item">
                                         <a href="#" id="logout" class="submenu-link"> Đăng xuất </a>
                                       </div>
-                                      <div class="submenu-item">
-                                        <a href="#" id="bill_information" class="submenu-link"> Hoá đơn tổng </a>
-                                      </div>
                                     </div>
                                   </div>`
             So_du.innerText = `Số dư: ${user.balance.toLocaleString('vi-VN')} VNĐ`
@@ -87,6 +84,61 @@ function getUserInfo() {
             booking_history.addEventListener('click', () => {
               window.location.href = '/booking_history'
             })
+
+            document.getElementById('profile').addEventListener('click', () => {
+              window.location.href = '/profile'
+            })
+
+            document.getElementById('logout').addEventListener('click', () => {
+              const refresh_token = localStorage.getItem('refresh_token')
+            
+              const body = { refresh_token: refresh_token }
+            
+              fetch('/api/users/logout', {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+              })
+                .then((response) => {
+                  return response.json()
+                })
+                .then((data) => {
+                  if (data === null || data === undefined) {
+                    Swal.fire({
+                      title: 'Oops...',
+                      icon: 'error',
+                      text: 'Lỗi kết nối đến máy chủ',
+                      footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
+                    })
+                    return
+                  }
+            
+                  if (data.message == 'Đăng xuất thành công!') {
+                    localStorage.removeItem('access_token')
+                    localStorage.removeItem('refresh_token')
+                    Swal.fire({
+                      title: 'Thành công',
+                      icon: 'success',
+                      text: data.message
+                    }).then((result) => {
+                      if (result.dismiss === Swal.DismissReason.backdrop) {
+                        window.location.href = '/'
+                      } else {
+                        window.location.href = '/'
+                      }
+                    })
+                    return
+                  } else {
+                    Swal.fire({
+                      title: 'Oops...',
+                      icon: 'error',
+                      text: 'Error connecting to server',
+                      footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
+                    })
+                    return
+                  }
+                })
+            })
           }
           resolve()
         }
@@ -103,14 +155,6 @@ getUserInfo().then(() => {
     window.location.href = '/'
   })
   
-  document.getElementById('bill_information').addEventListener('click', () => {
-    window.location.href = '/bill_information'
-  })
-  
-  document.getElementById('profile').addEventListener('click', () => {
-    window.location.href = '/profile'
-  })
-  
   document.getElementById('btn_login').addEventListener('click', () => {
     window.location.href = '/login'
   })
@@ -121,57 +165,6 @@ getUserInfo().then(() => {
   
   document.getElementById('signup_business').addEventListener('click', () => {
     window.location.href = '/business_signup'
-  })
-
-  document.getElementById('logout').addEventListener('click', () => {
-    const refresh_token = localStorage.getItem('refresh_token')
-  
-    const body = { refresh_token: refresh_token }
-  
-    fetch('/api/users/logout', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    })
-      .then((response) => {
-        return response.json()
-      })
-      .then((data) => {
-        if (data === null || data === undefined) {
-          Swal.fire({
-            title: 'Oops...',
-            icon: 'error',
-            text: 'Lỗi kết nối đến máy chủ',
-            footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
-          })
-          return
-        }
-  
-        if (data.message == 'Đăng xuất thành công!') {
-          localStorage.removeItem('access_token')
-          localStorage.removeItem('refresh_token')
-          Swal.fire({
-            title: 'Thành công',
-            icon: 'success',
-            text: data.message
-          }).then((result) => {
-            if (result.dismiss === Swal.DismissReason.backdrop) {
-              window.location.href = '/'
-            } else {
-              window.location.href = '/'
-            }
-          })
-          return
-        } else {
-          Swal.fire({
-            title: 'Oops...',
-            icon: 'error',
-            text: 'Error connecting to server',
-            footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
-          })
-          return
-        }
-      })
   })
 })
 
@@ -190,7 +183,7 @@ document.getElementById('Contact_us').addEventListener('click', () => {
 
 
 const typed = new Typed('#text', {
-  strings: [document.getElementById('text').textContent, 'A trip to healing. ', 'A memorable trip. '],
+  strings: [document.getElementById('text').textContent, 'Một chuyến đi để chữa lành. ', 'Một kỷ niệm đáng nhớ. '],
   typeSpeed: 100,
   backSpeed: 100,
   loop: true

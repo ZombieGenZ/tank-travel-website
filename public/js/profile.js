@@ -42,10 +42,10 @@ function getUserInfo() {
             const So_du = document.createElement('div')
             So_du.classList.add('So_du')
             recharge.classList.add('link')
-            recharge.innerHTML = '<a href="#"><i class="ri-money-dollar-circle-line"></i> Recharge</a>'
+            recharge.innerHTML = '<a href="#"><i class="ri-money-dollar-circle-line"></i> Nạp tiền</a>'
             recharge.id = 'recharge_money'
             booking_history.classList.add('link')
-            booking_history.innerHTML = '<a href="#"><i class="ri-history-line"></i> Booking history</a>'
+            booking_history.innerHTML = '<a href="#"><i class="ri-history-line"></i> Lịch sử đặt vé</a>'
             booking_history.id = 'booking_history'
             personal.classList.add('menu')
             personal.innerHTML = `<div class="item">
@@ -67,9 +67,6 @@ function getUserInfo() {
                                       <div class="submenu-item">
                                         <a href="#" id="logout" class="submenu-link"> Đăng xuất </a>
                                       </div>
-                                      <div class="submenu-item">
-                                        <a href="#" id="bill_information" class="submenu-link"> Hoá đơn tổng </a>
-                                      </div>
                                     </div>
                                   </div>`
             So_du.innerText = `Số dư: ${user.balance.toLocaleString('vi-VN')} VNĐ`
@@ -86,6 +83,10 @@ function getUserInfo() {
 
             booking_history.addEventListener('click', () => {
               window.location.href = '/booking_history'
+            })
+
+            document.getElementById('profile').addEventListener('click', () => {
+              window.location.href = '/profile'
             })
           }
           resolve()
@@ -169,10 +170,6 @@ window.addEventListener('load', () => {
     
     document.getElementById('img_trangchu').addEventListener('click', () => {
       window.location.href = '/'
-    })
-    
-    document.getElementById('bill_information').addEventListener('click', () => {
-      window.location.href = '/bill_information'
     })
     
     document.getElementById('btn_login').addEventListener('click', () => {
