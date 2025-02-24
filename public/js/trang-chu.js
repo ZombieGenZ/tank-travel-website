@@ -32,7 +32,6 @@ function getUserInfo() {
             localStorage.setItem('refresh_token', data.authenticate.refresh_token)
           }
           if (user != null) {
-            console.log(user)
             const buttonlogin = document.getElementById('btn_login')
             const ul = document.getElementById('ul_links')
             const personal = document.createElement('div')
@@ -143,6 +142,22 @@ function getUserInfo() {
           resolve()
         }
       })
+
+      fetch('https://provinces.open-api.vn/api/?depth=1').then((response) => {
+        return response.json()
+      })
+      .then((data) => {
+        const list_province_go = document.getElementById('provinces_go')
+        const list_province_arrive = document.getElementById('provinces_arrive')
+        data.forEach(province => {
+            const option_value = `<option value="${province.name}">`
+            list_province_go.innerHTML += option_value
+            list_province_arrive.innerHTML += option_value
+        });
+    })
+    .catch((error) => {
+        console.error('Lỗi:', error);
+    });
   })
 }
 

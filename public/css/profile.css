@@ -210,7 +210,7 @@ input[type="file"]::file-selector-button {
 }
 
 .btn {
-    padding: 0;
+    padding: 1.5rem;
     width: 100%;
     outline: none;
     border: none;
@@ -225,6 +225,10 @@ input[type="file"]::file-selector-button {
   
   .btn:hover {
     background-color: var(--primary-dark-color);
+  }
+
+  #btn_safe_infor {
+    height: 5rem;
   }
 
   a {
