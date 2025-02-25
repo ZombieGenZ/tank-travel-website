@@ -53,11 +53,35 @@ body {
     background-color: var(--primary-color);
     border-radius: 10px;
     cursor: pointer;
-    transition: 0.3s;
+    transition: 0.2s;
   }
   
   .btn:hover {
     background-color: var(--primary-dark-color);
+    color: var(--extra-light);
+  }
+
+  .btn_cancel_ticket {
+    background-color: red;
+    padding: 0.5rem 1rem;
+  }
+
+  .btn_cancel_ticket:hover {
+    background-color: darkred;
+    color: var(--extra-light);
+  }
+
+  .status_ticket {
+    background-color: #d4edda; 
+    color: #155724;
+    padding: 0.75rem 2rem;
+    outline: none;
+    border: none;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
   }
 
   a {
@@ -87,6 +111,7 @@ body {
     list-style: none;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 2rem;
   }
 
@@ -175,6 +200,8 @@ body {
   .header_history h2 {
     text-align: center;
     width: 50%;
+    font-size: 3rem;
+    color: var(--primary-color);
   }
 
   .fucntion_search {
@@ -440,6 +467,32 @@ body {
   color: #ffffff;
 }
 
+.accordion-item {
+  margin: 2rem 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 2px solid rgb(140 140 140);
+  font-family: sans-serif;
+  font-size: 1rem;
+  letter-spacing: 1px;
+}
+
+thead {
+  background-color: rgb(228 240 245);
+}
+
+th, td {
+  border: 1px solid rgb(160 160 160);
+  padding: 8px 10px;
+  text-align: center;
+}
+
+tbody > tr:nth-of-type(even) {
+  background-color: rgb(237 238 242);
+}
 
   footer {
     background-color: var(--primary-color);

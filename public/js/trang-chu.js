@@ -162,6 +162,23 @@ function getUserInfo() {
 }
 
 getUserInfo().then(() => {
+  const Xe_Khach = document.querySelector('.booking_nav button:nth-child(1)')
+  const Tau_Hoa = document.querySelector('.booking_nav button:nth-child(2)')
+
+  Xe_Khach.addEventListener('click', () => {
+    Xe_Khach.style.backgroundColor = '#3d5cb8'
+    Xe_Khach.style.color = 'white'
+    Tau_Hoa.style.backgroundColor = '#f1f5f9'
+    Tau_Hoa.style.color = '#64748b'
+  })
+
+  Tau_Hoa.addEventListener('click', () => {
+    Tau_Hoa.style.backgroundColor = '#3d5cb8'
+    Tau_Hoa.style.color = 'white'
+    Xe_Khach.style.backgroundColor = '#f1f5f9'
+    Xe_Khach.style.color = '#64748b'
+  })
+
   document.getElementById('nav_logo').addEventListener('click', () => {
     window.location.href = '/'
   })
@@ -198,8 +215,8 @@ document.getElementById('Contact_us').addEventListener('click', () => {
 
 
 const typed = new Typed('#text', {
-  strings: [document.getElementById('text').textContent, 'Một chuyến đi để chữa lành. ', 'Một kỷ niệm đáng nhớ. '],
-  typeSpeed: 100,
-  backSpeed: 100,
+  strings: [document.getElementById('text').textContent, 'An tâm tuyệt đối, hành trình trọn vẹn.', 'Nhanh chóng, đúng giờ, không lo trễ hẹn.'],
+  typeSpeed: 50,
+  backSpeed: 50,
   loop: true
 })

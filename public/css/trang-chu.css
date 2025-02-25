@@ -144,6 +144,7 @@ body {
     border-radius: 4px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     font-size: 16px;
+    background-color: var(--primary-color);
     overflow-y: auto; /* Thêm thanh cuộn khi cần */
     max-height: 200px; /* Chiều cao tối đa */
   }
@@ -193,18 +194,23 @@ body {
     margin: auto;
     display: flex;
     align-items: center;
-    background-color: var(--extra-light);
+    gap: 2rem;
     border-radius: 5px;
   }
 
-  .booking_nav span {
+  .booking_nav button {
     flex: 1;
     padding: 1rem 2rem;
-    font-weight: 500;
+    font-weight: bold;
+    font-size: 1rem;
+    border: none;
+    outline: none;
     color: var(--text-light);
+    background-color: var(--extra-light);
     text-align: center;
     border-radius: 5px;
     cursor: pointer;
+    transition: .2s ease-in-out;
   }
 
   .booking_nav span:nth-child(1) {
@@ -448,7 +454,6 @@ body {
 .submenu .submenu-link:hover {
   color: #ffffff;
 }
-
 
   footer {
     background-color: var(--primary-color);
