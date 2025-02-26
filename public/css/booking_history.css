@@ -471,6 +471,12 @@ body {
   margin: 2rem 0;
 }
 
+.accordion-button{
+  background-color: rgb(228 240 245);
+  border-radius: 10px;
+  font-weight: bold;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -481,17 +487,14 @@ table {
 }
 
 thead {
-  background-color: rgb(228 240 245);
+  background-color: var(--primary-color);
+  color: var(--white);
 }
 
 th, td {
   border: 1px solid rgb(160 160 160);
   padding: 8px 10px;
   text-align: center;
-}
-
-tbody > tr:nth-of-type(even) {
-  background-color: rgb(237 238 242);
 }
 
   footer {

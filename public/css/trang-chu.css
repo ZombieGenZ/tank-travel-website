@@ -213,7 +213,7 @@ body {
     transition: .2s ease-in-out;
   }
 
-  .booking_nav span:nth-child(1) {
+  .booking_nav button:nth-child(1) {
     color: white;
     background-color: var(--primary-color);
   }
