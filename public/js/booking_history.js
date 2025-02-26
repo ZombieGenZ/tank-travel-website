@@ -138,6 +138,118 @@ function getUserInfo() {
                   }
                 })
             })
+            let number = 0;
+            const date = new Date();
+            const body1 = {
+              refresh_token: refresh_token,
+              session_time: date,
+              current: number
+            }
+
+            fetch('/api/order/get-order-list', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${access_token}`
+              },
+              body: JSON.stringify(body1)
+            })
+              .then((response) => {
+                if (!response.ok) {
+                  throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+              })
+              .then((data) => {
+                console.log(data);
+                const container_hienthi = document.getElementById('accordionExample');
+                if(data != null) {
+                  const dodai = data.result.bill.length;
+                  console.log(data.result.bill.length);
+                  for(let i = 0; i < dodai; i++) {
+                    const index = data.result.bill[i]
+                    container_hienthi.innerHTML += `<div class="accordion-item">
+                                                  <h4 class="accordion-header">
+                                                    <div class="each_ticket">
+                                                        <div class="information">
+                                                            <h3>Đà Lạt - Sài Gòn</h3>
+                                                            <div class="date_local">
+                                                                <div class="detail_ticket start_point">
+                                                                    <h4>Điểm đi:</h4>
+                                                                    <p>${index.bus_route.start_point}</p>
+                                                                </div>
+                                                                <div class="detail_ticket end_point">
+                                                                    <h4>Điểm đến:</h4>
+                                                                    <p>${index.bus_route.end_point}</p>
+                                                                </div>
+                                                                <div class="detail_ticket date_begin">
+                                                                    <h4>Ngày - giờ đi:</h4>
+                                                                    <p>${index.bus_route.arrival_time}</p>
+                                                                </div>
+                                                                <div class="detail_ticket price">
+                                                                    <h4>Số lượng vé:</h4>
+                                                                    <p>${index.quantity} vé</p>
+                                                                </div>
+                                                                <div class="detail_ticket price">
+                                                                    <h4>Tổng tiền:</h4>
+                                                                    <p>${index.totalPrice} VNĐ</p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="morinfor_bookbutton">
+                                                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                                    Chi tiết tuyến xe đã đặt
+                                                                </button>
+                                                            </div>                    
+                                                        </div>
+                                                    </div>
+                                                  </h4>
+                                                  <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                                                    <div class="accordion-body">
+                                                        <table>
+                                                            <thead>
+                                                              <tr>
+                                                                <th scope="col">Số thứ tự vé</th>
+                                                                <th scope="col">Trạng thái</th>
+                                                                <th scope="col">Giá vé</th>
+                                                                <th scope="col">Huỷ vé</th>
+                                                              </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                              <tr>
+                                                                <th scope="row">1</th>
+                                                                <td><span class="status_ticket">Thành công</span></td>
+                                                                <td>5,000 VNĐ</td>
+                                                                <td><button class="btn btn_cancel_ticket"><i class="ri-close-circle-fill"></i> Huỷ vé</button></td>
+                                                              </tr>
+                                                              <tr>
+                                                                <th scope="row">2</th>
+                                                                <td><span class="status_ticket">Thành công</span></td>
+                                                                <td>5,000 VNĐ</td>
+                                                                <td><button class="btn btn_cancel_ticket"><i class="ri-close-circle-fill"></i> Huỷ vé</button></td>
+                                                              </tr>
+                                                              <tr>
+                                                                <th scope="row">3</th>
+                                                                <td><span class="status_ticket">Thành công</span></td>
+                                                                <td>5,000 VNĐ</td>
+                                                                <td><button class="btn btn_cancel_ticket"><i class="ri-close-circle-fill"></i> Huỷ vé</button></td>
+                                                              </tr>
+                                                              <tr>
+                                                                <th scope="row">4</th>
+                                                                <td><span class="status_ticket">Thành công</span></td>
+                                                                <td>5,000 VNĐ</td>
+                                                                <td><button class="btn btn_cancel_ticket"><i class="ri-close-circle-fill"></i> Huỷ vé</button></td>
+                                                              </tr>
+                                                            </tbody>
+                                                        </table>                
+                                                    </div>
+                                                </div>
+                                              </div>`
+                  }
+                }
+              })
+              .catch((error) => {
+                console.error('Lỗi khi lấy API:', error);
+            });
           }
           resolve()
         }

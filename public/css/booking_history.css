@@ -497,6 +497,16 @@ th, td {
   text-align: center;
 }
 
+.detail_ticket {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.detail_ticket p{
+  font-size: 1rem;
+}
+
   footer {
     background-color: var(--primary-color);
   }
