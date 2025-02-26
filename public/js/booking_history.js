@@ -138,140 +138,6 @@ function getUserInfo() {
                   }
                 })
             })
-            let number = 0;
-            const date = new Date();
-            const body1 = {
-              refresh_token: refresh_token,
-              session_time: date,
-              current: number
-            }
-
-            fetch('/api/order/get-order-list', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${access_token}`
-              },
-              body: JSON.stringify(body1)
-            })
-              .then((response) => {
-                if (!response.ok) {
-                  throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-              })
-              .then((data) => {
-                console.log(data);
-                const container_hienthi = document.getElementById('accordionExample');
-                if(data != null) {
-                  const dodai = data.result.bill.length;
-                  const number = {
-                    Num: ["One", "Two", "Three", "Four", "Five"]
-                  }
-                  for(let i = 0; i < dodai; i++) {
-                    const index = data.result.bill[i]
-                    const number1 = number.Num[i] 
-                    console.log(index._id)
-                    container_hienthi.innerHTML += `<div class="accordion-item">
-                                                  <h4 class="accordion-header">
-                                                    <div class="each_ticket">
-                                                        <div class="information">
-                                                            <h3>${index.bus_route.start_point} - ${index.bus_route.end_point}</h3>
-                                                            <div class="date_local">
-                                                                <div class="detail_ticket start_point">
-                                                                    <h4>Điểm đi:</h4>
-                                                                    <p>${index.bus_route.start_point}</p>
-                                                                </div>
-                                                                <div class="detail_ticket end_point">
-                                                                    <h4>Điểm đến:</h4>
-                                                                    <p>${index.bus_route.end_point}</p>
-                                                                </div>
-                                                                <div class="detail_ticket date_begin">
-                                                                    <h4>Ngày - giờ đi:</h4>
-                                                                    <p>${index.bus_route.arrival_time}</p>
-                                                                </div>
-                                                                <div class="detail_ticket price">
-                                                                    <h4>Số lượng vé:</h4>
-                                                                    <p>${index.quantity} vé</p>
-                                                                </div>
-                                                                <div class="detail_ticket price">
-                                                                    <h4>Tổng tiền:</h4>
-                                                                    <p>${index.totalPrice.toLocaleString('vi-VN')} VNĐ</p>
-                                                                </div>
-                                                            </div>
-                                                            <div class="morinfor_bookbutton">
-                                                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${number1}" aria-expanded="true" aria-controls="collapse${number1}">
-                                                                    Chi tiết tuyến xe đã đặt
-                                                                </button>
-                                                            </div>                    
-                                                        </div>
-                                                    </div>
-                                                  </h4>
-                                                  <div id="collapse${number1}" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
-                                                    <div class="accordion-body">
-                                                        <table>
-                                                            <thead>
-                                                              <tr>
-                                                                <th scope="col">Số thứ tự vé</th>
-                                                                <th scope="col">Trạng thái</th>
-                                                                <th scope="col">Giá vé</th>
-                                                                <th scope="col">Huỷ vé</th>
-                                                              </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                              <tr>
-                                                                <th scope="row">1</th>
-                                                                <td><span class="status_ticket">Thành công</span></td>
-                                                                <td>5,000 VNĐ</td>
-                                                                <td><button class="btn btn_cancel_ticket"><i class="ri-close-circle-fill"></i> Huỷ vé</button></td>
-                                                              </tr>
-                                                              <tr>
-                                                                <th scope="row">2</th>
-                                                                <td><span class="status_ticket">Thành công</span></td>
-                                                                <td>5,000 VNĐ</td>
-                                                                <td><button class="btn btn_cancel_ticket"><i class="ri-close-circle-fill"></i> Huỷ vé</button></td>
-                                                              </tr>
-                                                              <tr>
-                                                                <th scope="row">3</th>
-                                                                <td><span class="status_ticket">Thành công</span></td>
-                                                                <td>5,000 VNĐ</td>
-                                                                <td><button class="btn btn_cancel_ticket"><i class="ri-close-circle-fill"></i> Huỷ vé</button></td>
-                                                              </tr>
-                                                              <tr>
-                                                                <th scope="row">4</th>
-                                                                <td><span class="status_ticket">Thành công</span></td>
-                                                                <td>5,000 VNĐ</td>
-                                                                <td><button class="btn btn_cancel_ticket"><i class="ri-close-circle-fill"></i> Huỷ vé</button></td>
-                                                              </tr>
-                                                            </tbody>
-                                                        </table>                
-                                                    </div>
-                                                </div>
-                                              </div>`
-                  const body2 = {
-                    refresh_token: refresh_token,
-                    order_id: index._id,
-                    current: number
-                  }
-                                  
-                  fetch('/api/order/get-order-detail-list', {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                     Authorization: `Bearer ${access_token}`
-                    },
-                    body: JSON.stringify(body2)
-                  }).then((response) => {
-                    return response.json();
-                  }).then((data) => {
-                      console.log(data);
-                    })
-                  }
-                }
-              })
-              .catch((error) => {
-                console.error('Lỗi khi lấy API:', error);
-            });
           }
           resolve()
         }
@@ -356,6 +222,140 @@ getUserInfo().then(() => {
   document.getElementById('signup_business').addEventListener('click', () => {
     window.location.href = '/business_signup'
   })
+
+  let number = 0;
+  const date = new Date();
+  const body1 = {
+    refresh_token: refresh_token,
+    session_time: date,
+    current: number
+  }
+
+  fetch('/api/order/get-order-list', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${access_token}`
+    },
+    body: JSON.stringify(body1)
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data)
+      const container_hienthi = document.getElementById('accordionExample');
+      if(data != null) {
+        const dodai = data.result.bill.length;
+        const number = {
+          Num: ["One", "Two", "Three", "Four", "Five"]
+        }
+        for(let i = 0; i < dodai; i++) {
+          const index = data.result.bill[i]
+          const number1 = number.Num[i] 
+          container_hienthi.innerHTML += `<div class="accordion-item">
+                                        <h4 class="accordion-header">
+                                          <div class="each_ticket">
+                                              <div class="information">
+                                                  <h3>${index.bus_route.start_point} - ${index.bus_route.end_point}</h3>
+                                                  <div class="date_local">
+                                                      <div class="detail_ticket start_point">
+                                                          <h4>Điểm đi:</h4>
+                                                          <p>${index.bus_route.start_point}</p>
+                                                      </div>
+                                                      <div class="detail_ticket end_point">
+                                                          <h4>Điểm đến:</h4>
+                                                          <p>${index.bus_route.end_point}</p>
+                                                      </div>
+                                                      <div class="detail_ticket date_begin">
+                                                          <h4>Ngày - giờ đi:</h4>
+                                                          <p>${index.bus_route.arrival_time}</p>
+                                                      </div>
+                                                      <div class="detail_ticket price">
+                                                          <h4>Số lượng vé:</h4>
+                                                          <p>${index.quantity} vé</p>
+                                                      </div>
+                                                      <div class="detail_ticket price">
+                                                          <h4>Tổng tiền:</h4>
+                                                          <p>${index.totalPrice.toLocaleString('vi-VN')} VNĐ</p>
+                                                      </div>
+                                                  </div>
+                                                  <div class="morinfor_bookbutton">
+                                                      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${number1}" aria-expanded="true" aria-controls="collapse${number1}">
+                                                          Chi tiết tuyến xe đã đặt
+                                                      </button>
+                                                  </div>                    
+                                              </div>
+                                          </div>
+                                        </h4>
+                                        <div id="collapse${number1}" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                                          <div class="accordion-body"></div>
+                                        </div>
+                                      </div>`;
+        const body2 = {
+          refresh_token: refresh_token,
+          order_id: index._id,
+          current: 0
+        }
+        fetch('/api/order/get-order-detail-list', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${access_token}`
+          },
+          body: JSON.stringify(body2)
+        }).then((response) => {
+          return response.json()
+        }).then((data) => {
+          console.log(data)
+          const detail_ticket = document.querySelectorAll('.accordion-body')
+          detail_ticket.forEach((detail, index) => {
+            detail.innerHTML = `<table>
+                                  <thead>
+                                  <tr>
+                                    <th scope="col">Số thứ tự vé</th>
+                                    <th scope="col">Trạng thái</th>
+                                    <th scope="col">Giá vé</th>
+                                    <th scope="col">Huỷ vé</th>
+                                  </tr>
+                                  </thead>
+                                  <tbody>
+                                  <tr>
+                                    <th scope="row">1</th>
+                                    <td><span class="status_ticket">${data.result.bill[index].status == 0 ? 'Thành công' : 'Thất bại'}</span></td>
+                                    <td>5,000 VNĐ</td>
+                                    <td><button class="btn btn_cancel_ticket"><i class="ri-close-circle-fill"></i> Huỷ vé</button></td>
+                                  </tr>
+                                  <tr>
+                                    <th scope="row">2</th>
+                                    <td><span class="status_ticket">Thành công</span></td>
+                                    <td>5,000 VNĐ</td>
+                                    <td><button class="btn btn_cancel_ticket"><i class="ri-close-circle-fill"></i> Huỷ vé</button></td>
+                                  </tr>
+                                  <tr>
+                                    <th scope="row">3</th>
+                                    <td><span class="status_ticket">Thành công</span></td>
+                                    <td>5,000 VNĐ</td>
+                                    <td><button class="btn btn_cancel_ticket"><i class="ri-close-circle-fill"></i> Huỷ vé</button></td>
+                                  </tr>
+                                  <tr>
+                                    <th scope="row">4</th>
+                                    <td><span class="status_ticket">Thành công</span></td>
+                                    <td>5,000 VNĐ</td>
+                                    <td><button class="btn btn_cancel_ticket"><i class="ri-close-circle-fill"></i> Huỷ vé</button></td>
+                                  </tr>
+                                  </tbody>
+                                </table>`
+          })
+        })
+        }
+    }
+  }).catch((error) => {
+      console.error('Lỗi khi lấy API:', error);
+  });
 })
 
 document.getElementById('Contact_us').addEventListener('click', () => {
