@@ -268,14 +268,6 @@ io.on('connection', (socket: Socket) => {
           // type: loại phàn hồi (gồm 2 loại '+' và '-')
           // value: giá trị của phản hồi
 
-          socket.join(`statistics-${user._id}`)
-          await writeInfoLog(
-            `Doanh nghiệp/Quản trị viên ${user._id} (SocketID: ${socket.id}) đã kết nối đến phòng statistics-${user._id}`
-          )
-          console.log(
-            `\x1b[33mNgười dùng \x1b[36m${socket.id}\x1b[33m đã kết nối đến phòng \x1b[36mstatistics-${user._id}\x1b[0m`
-          )
-
           if (user.permission === UserPermission.ADMINISTRATOR) {
             socket.join(`statistics-global`)
             await writeInfoLog(
@@ -283,6 +275,14 @@ io.on('connection', (socket: Socket) => {
             )
             console.log(
               `\x1b[33mNgười dùng \x1b[36m${socket.id}\x1b[33m đã kết nối đến phòng \x1b[36mstatistics-global\x1b[0m`
+            )
+          } else {
+            socket.join(`statistics-${user._id}`)
+            await writeInfoLog(
+              `Doanh nghiệp ${user._id} (SocketID: ${socket.id}) đã kết nối đến phòng statistics-${user._id}`
+            )
+            console.log(
+              `\x1b[33mNgười dùng \x1b[36m${socket.id}\x1b[33m đã kết nối đến phòng \x1b[36mstatistics-${user._id}\x1b[0m`
             )
           }
         }
