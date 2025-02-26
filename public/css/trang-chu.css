@@ -455,6 +455,10 @@ body {
   color: #ffffff;
 }
 
+#modal-img {
+  width: 100%;
+}
+
   footer {
     background-color: var(--primary-color);
   }

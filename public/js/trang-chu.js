@@ -7,22 +7,33 @@ let access_token = localStorage.getItem('access_token')
 let refresh_token = localStorage.getItem('refresh_token')
 
 fetch('https://provinces.open-api.vn/api/?depth=1')
-      .then((response) => {
-        return response.json()
-      })
-      .then((data) => {
-        const list_province_go = document.getElementById('provinces_go')
-        const list_province_arrive = document.getElementById('provinces_arrive')
-        data.forEach((province) => {
-          const name = province.name.replace(/Tỉnh /g, '').replace(/Thành phố /g, 'TP ')
-          const option_value = `<option value="${name}">`
-          list_province_go.innerHTML += option_value
-          list_province_arrive.innerHTML += option_value
-        })
-      })
-      .catch((error) => {
-        console.error('Lỗi:', error)
-      })
+  .then((response) => {
+    return response.json()
+  })
+  .then((data) => {
+    const list_province_go = document.getElementById('provinces_go')
+    const list_province_arrive = document.getElementById('provinces_arrive')
+    data.forEach((province) => {
+      const name = province.name.replace(/Tỉnh /g, '').replace(/Thành phố /g, 'TP ')
+      const option_value = `<option value="${name}">`
+      list_province_go.innerHTML += option_value
+      list_province_arrive.innerHTML += option_value
+    })
+  })
+  .catch((error) => {
+    console.error('Lỗi:', error)
+  })
+
+fetch('/api/notification-global/get-notification')
+  .then((response) => {
+    return response.json()
+  })
+  .then((data) => {
+    document.getElementById('modal-title').textContent = data.title
+    document.getElementById('modal-img').src = data.images[0].url
+    document.getElementById('modal-content').textContent = data.description
+    document.getElementById('modal-author').textContent = data.display_name
+  })
 
 function getUserInfo() {
   return new Promise((resolve) => {
