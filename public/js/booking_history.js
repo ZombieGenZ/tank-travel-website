@@ -165,14 +165,18 @@ function getUserInfo() {
                 const container_hienthi = document.getElementById('accordionExample');
                 if(data != null) {
                   const dodai = data.result.bill.length;
-                  console.log(data.result.bill.length);
+                  const number = {
+                    Num: ["One", "Two", "Three", "Four", "Five"]
+                  }
                   for(let i = 0; i < dodai; i++) {
                     const index = data.result.bill[i]
+                    const number1 = number.Num[i] 
+                    console.log(index._id)
                     container_hienthi.innerHTML += `<div class="accordion-item">
                                                   <h4 class="accordion-header">
                                                     <div class="each_ticket">
                                                         <div class="information">
-                                                            <h3>Đà Lạt - Sài Gòn</h3>
+                                                            <h3>${index.bus_route.start_point} - ${index.bus_route.end_point}</h3>
                                                             <div class="date_local">
                                                                 <div class="detail_ticket start_point">
                                                                     <h4>Điểm đi:</h4>
@@ -192,18 +196,18 @@ function getUserInfo() {
                                                                 </div>
                                                                 <div class="detail_ticket price">
                                                                     <h4>Tổng tiền:</h4>
-                                                                    <p>${index.totalPrice} VNĐ</p>
+                                                                    <p>${index.totalPrice.toLocaleString('vi-VN')} VNĐ</p>
                                                                 </div>
                                                             </div>
                                                             <div class="morinfor_bookbutton">
-                                                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${number1}" aria-expanded="true" aria-controls="collapse${number1}">
                                                                     Chi tiết tuyến xe đã đặt
                                                                 </button>
                                                             </div>                    
                                                         </div>
                                                     </div>
                                                   </h4>
-                                                  <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                                                  <div id="collapse${number1}" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
                                                     <div class="accordion-body">
                                                         <table>
                                                             <thead>
@@ -244,6 +248,24 @@ function getUserInfo() {
                                                     </div>
                                                 </div>
                                               </div>`
+                  const body2 = {
+                    refresh_token: refresh_token,
+                    order_id: index._id,
+                    current: number
+                  }
+                                  
+                  fetch('/api/order/get-order-detail-list', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                     Authorization: `Bearer ${access_token}`
+                    },
+                    body: JSON.stringify(body2)
+                  }).then((response) => {
+                    return response.json();
+                  }).then((data) => {
+                      console.log(data);
+                    })
                   }
                 }
               })
