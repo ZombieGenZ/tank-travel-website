@@ -90,9 +90,9 @@ function getUserInfo() {
 
             document.getElementById('logout').addEventListener('click', () => {
               const refresh_token = localStorage.getItem('refresh_token')
-            
+
               const body = { refresh_token: refresh_token }
-            
+
               fetch('/api/users/logout', {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
@@ -111,7 +111,7 @@ function getUserInfo() {
                     })
                     return
                   }
-            
+
                   if (data.message == 'Đăng xuất thành công!') {
                     localStorage.removeItem('access_token')
                     localStorage.removeItem('refresh_token')
@@ -143,29 +143,45 @@ function getUserInfo() {
         }
       })
 
-      fetch('https://provinces.open-api.vn/api/?depth=1').then((response) => {
+    fetch('https://provinces.open-api.vn/api/?depth=1')
+      .then((response) => {
         return response.json()
       })
       .then((data) => {
         const list_province_go = document.getElementById('provinces_go')
         const list_province_arrive = document.getElementById('provinces_arrive')
-        data.forEach(province => {
-            const option_value = `<option value="${province.name}">`
-            list_province_go.innerHTML += option_value
-            list_province_arrive.innerHTML += option_value
-        });
-    })
-    .catch((error) => {
-        console.error('Lỗi:', error);
-    });
+        data.forEach((province) => {
+          const name = province.name.replace(/Tỉnh /g, '').replace(/Thành phố /g, 'TP ')
+          const option_value = `<option value="${name}">`
+          list_province_go.innerHTML += option_value
+          list_province_arrive.innerHTML += option_value
+        })
+      })
+      .catch((error) => {
+        console.error('Lỗi:', error)
+      })
   })
 }
+
+function convertToISO8601UTC(dateString) {
+  const date = new Date(dateString)
+  date.setUTCHours(17)
+  date.setUTCMinutes(0)
+  date.setUTCSeconds(0)
+  date.setUTCMilliseconds(0)
+  const isoString = date.toISOString().replace(/\.\d+Z$/, '.0000000Z')
+  return isoString
+}
+
+let vehicleSelection = 0
 
 getUserInfo().then(() => {
   const Xe_Khach = document.querySelector('.booking_nav button:nth-child(1)')
   const Tau_Hoa = document.querySelector('.booking_nav button:nth-child(2)')
+  const SearchBtn = document.getElementById('search_bus')
 
   Xe_Khach.addEventListener('click', () => {
+    vehicleSelection = 0
     Xe_Khach.style.backgroundColor = '#3d5cb8'
     Xe_Khach.style.color = 'white'
     Tau_Hoa.style.backgroundColor = '#f1f5f9'
@@ -173,28 +189,72 @@ getUserInfo().then(() => {
   })
 
   Tau_Hoa.addEventListener('click', () => {
+    vehicleSelection = 1
     Tau_Hoa.style.backgroundColor = '#3d5cb8'
     Tau_Hoa.style.color = 'white'
     Xe_Khach.style.backgroundColor = '#f1f5f9'
     Xe_Khach.style.color = '#64748b'
   })
 
+  SearchBtn.addEventListener('click', () => {
+    const start_point = document.getElementById('provinces_go_selected').value
+    const end_point = document.getElementById('provinces_arrive_selected').value
+    const date = document.getElementById('date-go').value
+
+    if (
+      start_point == null ||
+      start_point == undefined ||
+      start_point == '' ||
+      end_point == null ||
+      end_point == undefined ||
+      end_point == '' ||
+      date == null ||
+      date == undefined ||
+      date == ''
+    ) {
+      Swal.fire({
+        title: 'Oops...',
+        icon: 'error',
+        text: 'Vui lòng nhập đầy đủ thông tin',
+        footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
+      })
+      return
+    }
+
+    if (start_point === end_point) {
+      Swal.fire({
+        title: 'Oops...',
+        icon: 'error',
+        text: 'Điểm đi và điểm đến không được trùng nhau',
+        footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
+      })
+      return
+    }
+
+    const encodedStartPoint = encodeURIComponent(start_point)
+    const encodedEndPoint = encodeURIComponent(end_point)
+    const encodedDepartureTime = encodeURIComponent(convertToISO8601UTC(date))
+    const encodedVehicleSelection = encodeURIComponent(vehicleSelection)
+
+    window.location.href = `/ticket-info/?vehicle_type=${encodedVehicleSelection}&start_point=${encodedStartPoint}&end_point=${encodedEndPoint}&departure_time=${encodedDepartureTime}`
+  })
+
   document.getElementById('nav_logo').addEventListener('click', () => {
     window.location.href = '/'
   })
-  
+
   document.getElementById('img_trangchu').addEventListener('click', () => {
     window.location.href = '/'
   })
-  
+
   document.getElementById('btn_login').addEventListener('click', () => {
     window.location.href = '/login'
   })
-  
+
   document.getElementById('ticket-information').addEventListener('click', () => {
     window.location.href = '/ticket-info'
   })
-  
+
   document.getElementById('signup_business').addEventListener('click', () => {
     window.location.href = '/business_signup'
   })
@@ -202,7 +262,7 @@ getUserInfo().then(() => {
 
 document.getElementById('Contact_us').addEventListener('click', () => {
   Swal.fire({
-    title: "Liên hệ chúng tôi",
+    title: 'Liên hệ chúng tôi',
     icon: 'info',
     html: `<div>
             <ul class="ul_contact">
@@ -213,9 +273,12 @@ document.getElementById('Contact_us').addEventListener('click', () => {
   })
 })
 
-
 const typed = new Typed('#text', {
-  strings: [document.getElementById('text').textContent, 'An tâm tuyệt đối, hành trình trọn vẹn.', 'Nhanh chóng, đúng giờ, không lo trễ hẹn.'],
+  strings: [
+    document.getElementById('text').textContent,
+    'An tâm tuyệt đối, hành trình trọn vẹn.',
+    'Nhanh chóng, đúng giờ, không lo trễ hẹn.'
+  ],
   typeSpeed: 50,
   backSpeed: 50,
   loop: true

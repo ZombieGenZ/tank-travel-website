@@ -32,7 +32,6 @@ function getUserInfo() {
             localStorage.setItem('refresh_token', data.authenticate.refresh_token)
           }
           if (user != null) {
-            console.log(user)
             const buttonlogin = document.getElementById('btn_login')
             const ul = document.getElementById('ul_links')
             const personal = document.createElement('div')

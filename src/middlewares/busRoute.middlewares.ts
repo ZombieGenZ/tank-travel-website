@@ -758,27 +758,13 @@ export const findBusRouteListValidator = validate(
         notEmpty: {
           errorMessage: BUSROUTE_MESSAGE.START_POINT_IS_REQUIRED
         },
-        trim: true,
-        isLength: {
-          options: {
-            min: 5,
-            max: 500
-          },
-          errorMessage: BUSROUTE_MESSAGE.START_POINT_LENGTH_MUST_BE_FROM_5_TO_500
-        }
+        trim: true
       },
       end_point: {
         notEmpty: {
           errorMessage: BUSROUTE_MESSAGE.END_POINT_IS_REQUIRED
         },
         trim: true,
-        isLength: {
-          options: {
-            min: 5,
-            max: 500
-          },
-          errorMessage: BUSROUTE_MESSAGE.END_POINT_LENGTH_MUST_BE_FROM_5_TO_500
-        },
         custom: {
           options: (value, { req }) => {
             if (value == req.body.start_point) {

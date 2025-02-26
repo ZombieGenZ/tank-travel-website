@@ -388,21 +388,6 @@ class BusRouteService {
     if (user.permission == UserPermission.ADMINISTRATOR) {
       const keywords = payload.keywords.split(' ')
 
-      // const searchQuery = {
-      //   $and: [
-      //     {
-      //       $or: keywords.map((key) => ({
-      //         $or: [
-      //           { start_point: { $regex: key, $options: 'i' } },
-      //           { end_point: { $regex: key, $options: 'i' } },
-      //           ...(isNaN(Number(key)) ? [] : [{ price: Number(key) }, { quantity: Number(key) }])
-      //         ]
-      //       }))
-      //     },
-      //     { created_at: { $lt: new Date(payload.session_time) } }
-      //   ]
-      // }
-
       const pipeline = [
         {
           $match: {
@@ -632,13 +617,17 @@ class BusRouteService {
   }
 
   async findBusRouteList(payload: FindBusRouteListRequestBody) {
-    const limit = Number(process.env.LOAD_QUANTITY_LIMIT as string)
+    const limit = Number(process.env.LOAD_QUANTITY_LIMIT)
     const next = limit + 1
 
-    const searchDate = new Date(payload.departure_time)
-    const day = searchDate.getDate()
-    const month = searchDate.getMonth() + 1
-    const year = searchDate.getFullYear()
+    const departureDate = new Date(payload.departure_time)
+
+    const year = departureDate.getUTCFullYear()
+    const month = departureDate.getUTCMonth() + 1
+    const day = departureDate.getUTCDate()
+
+    const startOfDayString = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}T00:00:00`
+    const endOfDayString = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}T23:59:59`
 
     const searchQuery = {
       start_point: {
@@ -650,11 +639,11 @@ class BusRouteService {
         $options: 'i'
       },
       quantity: { $gt: 0 },
+      created_at: { $lt: new Date(payload.session_time) },
       departure_time: {
-        $gte: `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}T00:00:00.000Z`,
-        $lt: `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}T23:59:59.999Z`
-      },
-      created_at: { $lt: new Date(payload.session_time) }
+        $gte: startOfDayString,
+        $lte: endOfDayString
+      }
     }
 
     const result = await databaseService.busRoute
@@ -697,9 +686,7 @@ class BusRouteService {
       .toArray()
 
     const continued = result.length > limit
-
     const busRoute = result.slice(0, limit)
-
     const current = payload.current + busRoute.length
 
     if (busRoute.length === 0) {
