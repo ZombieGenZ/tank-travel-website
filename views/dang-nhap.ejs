@@ -15,58 +15,58 @@
     <main>
         <div class="signup_form">
             <div class="form">
-                <h3>Sign up</h3>
+                <h3>Đăng ký</h3>
                 <div class="input__group">
                     <input type="input" class="form__field" id="username_register" placeholder="Name" required="">
-                    <label class="form__label">Fullname</label>
+                    <label class="form__label">Họ và tên</label>
                 </div>
                 <div class="input__group group_email">
                     <div>
                         <input type="input" class="form__field" placeholder="Name" required="" id="email_register">
                         <label class="form__label">Email</label>
                     </div>
-                    <button class="send_button" id="send_code_to_verify_email_register" onclick="sendEmailVerify(this)">Send code</button>
+                    <button class="send_button" id="send_code_to_verify_email_register" onclick="sendEmailVerify(this)">Gửi mã</button>
                 </div>
                 <div class="input__group">
                     <input type="input" class="form__field" id="phone_register" placeholder="Name" required="">
-                    <label class="form__label">Phone number</label>
+                    <label class="form__label">Số điện thoại</label>
                 </div>
                 <div class="input__group">
                     <input type="password" class="form__field pass_confirm" id="password_register" placeholder="Name" required="">
-                    <label class="form__label">Password</label>
+                    <label class="form__label">Mật khẩu</label>
                     <div class="close_pass"><i class="ri-eye-off-line"></i></div>
                     <div class="open_pass"><i class="ri-eye-line"></i></div>
                 </div>
                 <div class="input__group">
                     <input type="password" class="form__field pass_confirm" id="comfirm_password_register" placeholder="Name" required="">
-                    <label class="form__label">Confirm password</label>
+                    <label class="form__label">Xác nhận mật khẩu</label>
                     <div class="close_pass"><i class="ri-eye-off-line"></i></div>
                     <div class="open_pass"><i class="ri-eye-line"></i></div>
                 </div>
                 <div class="input__group">
                     <input type="password" class="form__field" id="email_verify_code" placeholder="Name" required="">
-                    <label class="form__label">Verification code</label>
+                    <label class="form__label">Mã xác minh</label>
                 </div>
-                <span class="have_account">Already have an account? <a id="open_login">Login</a></span>
-                <button class="btn" onclick="register()">Sign up</button>
+                <span class="have_account">Đã có tài khoản ? <a id="open_login">Đăng nhập</a></span>
+                <button class="btn" onclick="register()">Đăng ký</button>
             </div>
         </div>
         <div class="login_form" id="login_form">
             <div class="form">
                 <span class="button_close" id="button_close"><i class="ri-close-large-line"></i></span>
-                <h3 for="">Login</h3>
+                <h3 for="">Đăng nhập</h3>
                 <div class="input__group">
                     <input type="input" class="form__field" id="username_login" placeholder="Name" required="">
-                    <label class="form__label">Username</label>
+                    <label class="form__label">Tên đăng nhập</label>
                 </div>
                 <div class="input__group">
                     <input type="password" class="form__field pass_confirm" id="password_login" placeholder="Name" required="">
-                    <label class="form__label">Password</label>
+                    <label class="form__label">Mật khẩu</label>
                     <div class="close_pass"><i class="ri-eye-off-line"></i></div>
                     <div class="open_pass"><i class="ri-eye-line"></i></div>
                 </div>
-                <span><a id="forget_password">I forgot my password !</a></span>
-                <button class="btn" id="login" onclick="login()">Login</button>
+                <span><a id="forget_password">Quên mật khẩu ?</a></span>
+                <button class="btn" id="login" onclick="login()">Đăng nhập</button>
             </div>
         </div>
     </main>
