@@ -379,14 +379,16 @@ export const refreshTokenValidator = validate(
             }
 
             try {
-              const [decoded_refresh_token, refreshToken] = await Promise.all([
-                verifyToken({ token: value, publicKey: process.env.SECURITY_JWT_SECRET_REFRESH_TOKEN as string }),
-                databaseService.refreshToken.findOne({ token: value })
-              ])
+              const decoded_refresh_token = (await verifyToken({
+                token: value,
+                publicKey: process.env.SECURITY_JWT_SECRET_REFRESH_TOKEN as string
+              })) as TokenPayload
 
-              if (refreshToken === null) {
+              const user = await databaseService.users.findOne({ _id: new ObjectId(decoded_refresh_token.user_id) })
+
+              if (user === null || user === undefined) {
                 throw new ErrorWithStatus({
-                  message: USER_MESSAGE.REFRESH_TOKEN_DOES_NOT_EXIST,
+                  message: USER_MESSAGE.USER_NOT_FOUND,
                   status: HTTPSTATUS.UNAUTHORIZED
                 })
               }
