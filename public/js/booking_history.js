@@ -230,6 +230,7 @@ getUserInfo().then(() => {
     session_time: date,
     current: number
   }
+  let iduser = []
 
   fetch('/api/order/get-order-list', {
     method: 'POST',
@@ -256,6 +257,7 @@ getUserInfo().then(() => {
         for(let i = 0; i < dodai; i++) {
           const index = data.result.bill[i]
           const number1 = number.Num[i] 
+          iduser.push(index._id)
           container_hienthi.innerHTML += `<div class="accordion-item">
                                         <h4 class="accordion-header">
                                           <div class="each_ticket">
@@ -295,68 +297,75 @@ getUserInfo().then(() => {
                                           <div class="accordion-body"></div>
                                         </div>
                                       </div>`;
-        const body2 = {
-          refresh_token: refresh_token,
-          order_id: index._id,
-          current: 0
         }
-        fetch('/api/order/get-order-detail-list', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${access_token}`
-          },
-          body: JSON.stringify(body2)
-        }).then((response) => {
-          return response.json()
-        }).then((data) => {
-          console.log(data)
-          const detail_ticket = document.querySelectorAll('.accordion-body')
-          detail_ticket.forEach((detail, index) => {
-            detail.innerHTML = `<table>
-                                  <thead>
-                                  <tr>
-                                    <th scope="col">Số thứ tự vé</th>
-                                    <th scope="col">Trạng thái</th>
-                                    <th scope="col">Giá vé</th>
-                                    <th scope="col">Huỷ vé</th>
-                                  </tr>
-                                  </thead>
-                                  <tbody>
-                                  <tr>
-                                    <th scope="row">1</th>
-                                    <td><span class="status_ticket">${data.result.bill[index].status == 0 ? 'Thành công' : 'Thất bại'}</span></td>
-                                    <td>5,000 VNĐ</td>
-                                    <td><button class="btn btn_cancel_ticket"><i class="ri-close-circle-fill"></i> Huỷ vé</button></td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">2</th>
-                                    <td><span class="status_ticket">Thành công</span></td>
-                                    <td>5,000 VNĐ</td>
-                                    <td><button class="btn btn_cancel_ticket"><i class="ri-close-circle-fill"></i> Huỷ vé</button></td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">3</th>
-                                    <td><span class="status_ticket">Thành công</span></td>
-                                    <td>5,000 VNĐ</td>
-                                    <td><button class="btn btn_cancel_ticket"><i class="ri-close-circle-fill"></i> Huỷ vé</button></td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">4</th>
-                                    <td><span class="status_ticket">Thành công</span></td>
-                                    <td>5,000 VNĐ</td>
-                                    <td><button class="btn btn_cancel_ticket"><i class="ri-close-circle-fill"></i> Huỷ vé</button></td>
-                                  </tr>
-                                  </tbody>
-                                </table>`
-          })
+        console.log(iduser)
+        const accordion_body = document.querySelectorAll('.accordion-body')
+        accordion_body.forEach((element, index) => {
+          const orderId = iduser[index];
+          const body2 = {
+            refresh_token: refresh_token,
+            order_id: iduser[index],
+            current: 0
+          }
+          fetch('/api/order/get-order-detail-list', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${access_token}`
+            },
+            body: JSON.stringify(body2)
+          }).then((response) => {
+            return response.json()
+          }).then((data) => {
+            const orderDetails = data.result.bill.filter(ticket => ticket.bill === orderId);
+            console.log(orderDetails)
+            let table = `<table>
+                                    <thead>
+                                    <tr>
+                                      <th scope="col">Số thứ tự vé</th>
+                                      <th scope="col">Trạng thái</th>
+                                      <th scope="col">Giá vé</th>
+                                      <th scope="col">Huỷ vé</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>`
+                orderDetails.forEach((ticket, index) => {
+                  table += `<tr>
+                              <th scope="row">${index + 1}</th>
+                              <td><span class="status_ticket">${ticket.status == 0 ? 'Thành công' : 'Thất bại'}</span></td>
+                              <td>${ticket.price.toLocaleString('vi-VN')} VNĐ</td>
+                              <td><button class="btn btn_cancel_ticket" onclick="cancel_ticket('${ticket._id}')"><i class="ri-close-circle-fill"></i> Huỷ vé</button></td>
+                            </tr>`
+                })
+                table += `</tbody>
+                        </table>`
+                element.innerHTML = table
+            })
         })
-        }
     }
   }).catch((error) => {
       console.error('Lỗi khi lấy API:', error);
   });
 })
+
+function cancel_ticket(id) {
+  const body = {
+    refresh_token: refresh_token,
+    ticket_id: id
+  }
+  fetch('/api/order/cancel-ticket', { 
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${access_token}`
+    },
+    body: JSON.stringify(body)
+  }).then((response) => {
+    return response.json()
+  }).then((data) => {
+    
+  })
+}
 
 document.getElementById('Contact_us').addEventListener('click', () => {
   Swal.fire({
