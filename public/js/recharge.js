@@ -1,5 +1,10 @@
 const server_url = 'https://tank-travel.io.vn'
 
+const loading = document.querySelector('.loaders')
+window.onload = function() {
+  loading.style.display = 'none'
+}
+
 let user = null
 const access_token = localStorage.getItem('access_token')
 const refresh_token = localStorage.getItem('refresh_token')

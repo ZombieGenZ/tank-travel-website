@@ -1,3 +1,8 @@
+const loading = document.querySelector('.loader')
+window.onload = function() {
+  loading.style.display = 'none'
+}
+
 const button = document.getElementById('btn')
 
 button.addEventListener('click', () => {

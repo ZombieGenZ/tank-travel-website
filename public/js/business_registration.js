@@ -1,3 +1,8 @@
+const loading = document.querySelector('.loader')
+window.onload = function() {
+  loading.style.display = 'none'
+}
+
 function validateEmail(email) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   return emailRegex.test(email)

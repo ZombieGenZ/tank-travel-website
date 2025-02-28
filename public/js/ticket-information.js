@@ -1,3 +1,8 @@
+const loading = document.querySelector('.loaders')
+window.onload = function() {
+  loading.style.display = 'none'
+}
+
 let user = null
 const access_token = localStorage.getItem('access_token')
 const refresh_token = localStorage.getItem('refresh_token')
@@ -205,11 +210,6 @@ window.addEventListener('load', () => {
     const decodedStartPoint = decodeURIComponent(start_point)
     const decodedEndPoint = decodeURIComponent(end_point)
 
-    console.log("Vehicle Type (decoded):", decodedVehicleType);
-    console.log("Start Point (decoded):", decodedStartPoint);
-    console.log("End Point (decoded):", decodedEndPoint);
-    console.log("Departure Time:", departure_time);
-
     if (vehicle_type && start_point && end_point && departure_time) {
       const body = {
         session_time: session_time,
@@ -414,6 +414,10 @@ window.addEventListener('load', () => {
                         <div class="input__group">
                             <input type="input" class="form__field" placeholder="Name" value="${busRoute[index].price.toLocaleString('vi-VN')}" readOnly>
                             <label for="name" class="form__label">Giá vé:</label>
+                        </div>
+                        <div class="input__group">
+                              <input type="input" class="form__field" placeholder="Name" value="${busRoute[index].vehicle.vehicle_type == '0' ? 'Xe khách' : 'Tàu hỏa'}" readOnly>
+                              <label for="name" class="form__label">Phương tiện:</label>
                         </div>
                       `,
                     focusConfirm: false,
@@ -773,6 +777,10 @@ window.addEventListener('load', () => {
                       <div class="input__group">
                           <input type="input" class="form__field" placeholder="Name" value="${busRoute[index].price.toLocaleString('vi-VN')}" readOnly>
                           <label for="name" class="form__label">Giá vé:</label>
+                      </div>
+                      <div class="input__group">
+                          <input type="input" class="form__field" placeholder="Name" value="${busRoute[index].vehicle.vehicle_type == '0' ? 'Xe khách' : 'Tàu hỏa'}" readOnly>
+                          <label for="name" class="form__label">Phương tiện:</label>
                       </div>
                     `,
                   focusConfirm: false,

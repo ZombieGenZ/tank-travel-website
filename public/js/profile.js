@@ -1,3 +1,8 @@
+const loading = document.querySelector('.loader')
+window.onload = function() {
+  loading.style.display = 'none'
+}
+
 let user = null
 const access_token = localStorage.getItem('access_token')
 const refresh_token = localStorage.getItem('refresh_token')

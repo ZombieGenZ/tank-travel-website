@@ -9,6 +9,11 @@ const open_pass = document.querySelectorAll('.open_pass')
 
 let isLogin = false
 
+const loading = document.querySelector('.loader')
+window.onload = function() {
+  loading.style.display = 'none'
+}
+
 const new_password = document.getElementById('password_register')
 close_pass[0].addEventListener('click', () => {
   close_pass[0].classList.add('off')

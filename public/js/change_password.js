@@ -1,3 +1,8 @@
+const loading = document.querySelector('.loader')
+window.onload = function() {
+  loading.style.display = 'none'
+}
+
 function isStrongPassword(password) {
   const minLength = 8
   if (password.length < minLength) {

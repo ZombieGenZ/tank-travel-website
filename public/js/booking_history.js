@@ -1,3 +1,18 @@
+const loading = document.querySelector('.loader')
+window.onload = function() {
+  loading.style.display = 'none'
+}
+
+function formatDate(dateString) {
+  const date = new Date(dateString)
+  const hours = date.getHours().toString().padStart(2, '0')
+  const minutes = date.getMinutes().toString().padStart(2, '0')
+  const day = date.getDate().toString().padStart(2, '0')
+  const month = (date.getMonth() + 1).toString().padStart(2, '0')
+  const year = date.getFullYear()
+  return `${hours}:${minutes} ${day}/${month}/${year}`
+}
+
 let user = null
 let access_token = localStorage.getItem('access_token')
 let refresh_token = localStorage.getItem('refresh_token')
@@ -252,7 +267,26 @@ getUserInfo().then(() => {
       if(data != null) {
         const dodai = data.result.bill.length;
         const number = {
-          Num: ["One", "Two", "Three", "Four", "Five"]
+          Num: [
+              "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
+              "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen", "Twenty",
+              "Twenty-One", "Twenty-Two", "Twenty-Three", "Twenty-Four", "Twenty-Five",
+              "Twenty-Six", "Twenty-Seven", "Twenty-Eight", "Twenty-Nine", "Thirty",
+              "Thirty-One", "Thirty-Two", "Thirty-Three", "Thirty-Four", "Thirty-Five",
+              "Thirty-Six", "Thirty-Seven", "Thirty-Eight", "Thirty-Nine", "Forty",
+              "Forty-One", "Forty-Two", "Forty-Three", "Forty-Four", "Forty-Five",
+              "Forty-Six", "Forty-Seven", "Forty-Eight", "Forty-Nine", "Fifty",
+              "Fifty-One", "Fifty-Two", "Fifty-Three", "Fifty-Four", "Fifty-Five",
+              "Fifty-Six", "Fifty-Seven", "Fifty-Eight", "Fifty-Nine", "Sixty",
+              "Sixty-One", "Sixty-Two", "Sixty-Three", "Sixty-Four", "Sixty-Five",
+              "Sixty-Six", "Sixty-Seven", "Sixty-Eight", "Sixty-Nine", "Seventy",
+              "Seventy-One", "Seventy-Two", "Seventy-Three", "Seventy-Four", "Seventy-Five",
+              "Seventy-Six", "Seventy-Seven", "Seventy-Eight", "Seventy-Nine", "Eighty",
+              "Eighty-One", "Eighty-Two", "Eighty-Three", "Eighty-Four", "Eighty-Five",
+              "Eighty-Six", "Eighty-Seven", "Eighty-Eight", "Eighty-Nine", "Ninety",
+              "Ninety-One", "Ninety-Two", "Ninety-Three", "Ninety-Four", "Ninety-Five",
+              "Ninety-Six", "Ninety-Seven", "Ninety-Eight", "Ninety-Nine", "One Hundred"
+          ]
         }
         for(let i = 0; i < dodai; i++) {
           const index = data.result.bill[i]
@@ -274,7 +308,7 @@ getUserInfo().then(() => {
                                                       </div>
                                                       <div class="detail_ticket date_begin">
                                                           <h4>Ngày - giờ đi:</h4>
-                                                          <p>${index.bus_route.arrival_time}</p>
+                                                          <p>${formatDate(index.bus_route.arrival_time)}</p>
                                                       </div>
                                                       <div class="detail_ticket price">
                                                           <h4>Số lượng vé:</h4>
@@ -293,7 +327,7 @@ getUserInfo().then(() => {
                                               </div>
                                           </div>
                                         </h4>
-                                        <div id="collapse${number1}" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                                        <div id="collapse${number1}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                                           <div class="accordion-body"></div>
                                         </div>
                                       </div>`;

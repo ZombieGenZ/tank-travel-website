@@ -2,6 +2,11 @@ $(document).ready(function(){
   $('#myModal').modal('show');
 });
 
+const loading = document.querySelector('.loader')
+window.onload = function() {
+  loading.style.display = 'none'
+}
+
 let user = null
 let access_token = localStorage.getItem('access_token')
 let refresh_token = localStorage.getItem('refresh_token')
