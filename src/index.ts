@@ -36,6 +36,8 @@ import notificationPrivateApi from '~/routes/notification-priate.routes'
 
 // import test router
 import testApi from '~/routes/test.routes'
+import runAllCrons from './jobs/global.jobs'
+import { backupPublicFolder } from './jobs/functions/backupPublicFile.functions'
 
 const app = express()
 const server = createServer(app)
@@ -65,6 +67,8 @@ app.use((req, res, next) => {
   ;(req as any).io = io
   next()
 })
+
+runAllCrons()
 
 app.use(express.json())
 app.use(express.static(path.join(__dirname, '../public')))
@@ -382,7 +386,7 @@ process.on('SIGINT', async () => {
   console.log(`\x1b[33mMáy chủ đã ngừng hoạt động\x1b[0m`)
   console.log()
   await stopBot()
-  await writeInfoLog(`Thời gian tắt máy chủ ${formatDateFull2(date)}`)
+  await writeInfoLog(`Thời gian tắt máy chủ ${formatDateFull2(date)}\x1b[0m`)
   console.log()
   console.log(`\x1b[33mThời gian tắt máy chủ \x1b[36m${formatDateFull2(date)}\x1b[0m`)
   console.log()
