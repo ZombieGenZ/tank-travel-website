@@ -10,7 +10,7 @@ const open_pass = document.querySelectorAll('.open_pass')
 let isLogin = false
 
 const loading = document.querySelector('.loader')
-window.onload = function() {
+window.onload = function () {
   loading.style.display = 'none'
 }
 
@@ -432,6 +432,16 @@ function register() {
         return
       }
 
+      if (data.message === 'Bạn phải xác thực để sử dụng chức năng này') {
+        Swal.fire({
+          title: 'Oops...',
+          icon: 'error',
+          text: data.message,
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
+        })
+        return
+      }
+
       if (data.message === 'Đăng ký thành công! Vui lòng đăng nhập lại') {
         Swal.fire({
           title: 'Thành công!',
@@ -519,6 +529,16 @@ function login() {
       }
 
       if (data.message === 'Vui lòng thay đổi mật khẩu tạm thời trước khi đăng nhập') {
+        Swal.fire({
+          title: 'Oops...',
+          icon: 'error',
+          text: data.message,
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
+        })
+        return
+      }
+
+      if (data.message === 'Bạn phải xác thực để sử dụng chức năng này') {
         Swal.fire({
           title: 'Oops...',
           icon: 'error',

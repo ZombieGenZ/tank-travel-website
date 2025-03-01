@@ -1,6 +1,7 @@
+import axios from 'axios'
 import { Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
-import { BUSINESS_REGISTRATION_MESSAGE } from '~/constants/message'
+import { BUSINESS_REGISTRATION_MESSAGE, SYSTEM_MESSAGE } from '~/constants/message'
 import { RegisterRequestBody, CensorRequestBody } from '~/models/requests/businessRegistration.requests'
 import BusinessRegistration from '~/models/schemas/businessregistration.schemas'
 import User from '~/models/schemas/users.schemas'
@@ -11,6 +12,33 @@ export const registerController = async (req: Request<ParamsDictionary, any, Reg
   const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
 
   try {
+    // const turnstile_secret_key = process.env.CLOUDFLARE_TURNSTILE_SECRETKEY as string
+    // const turnstile_response = req.body['cf-turnstile-response']
+
+    // const verifyFormData = new URLSearchParams()
+    // verifyFormData.append('secret', turnstile_secret_key)
+    // verifyFormData.append('response', turnstile_response)
+    // verifyFormData.append('remoteip', ip)
+
+    // const verificationResponse = await axios.post(
+    //   'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+    //   verifyFormData.toString(),
+    //   {
+    //     headers: {
+    //       'Content-Type': 'application/x-www-form-urlencoded'
+    //     }
+    //   }
+    // )
+
+    // const verificationResult = verificationResponse.data
+
+    // if (!verificationResult.success) {
+    //   res.json({
+    //     message: SYSTEM_MESSAGE.YOU_MUST_AUTHENTICATE_TO_USE_THIS_FUNCTION
+    //   })
+    //   return
+    // }
+
     await BusinessRegistrationService.register(req.body)
 
     await writeInfoLog(`Thực hiện đăng ký doanh nghiệp thành công (IP: ${ip}])`)

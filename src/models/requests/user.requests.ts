@@ -12,11 +12,13 @@ export interface RegisterRequestBody {
   password: string
   confirm_password: string
   email_verify_code: string
+  'cf-turnstile-response': string
 }
 
 export interface LoginRequestBody {
   email: string
   password: string
+  'cf-turnstile-response': string
 }
 
 export interface TokenPayload extends JwtPayload {
@@ -30,6 +32,7 @@ export interface LogoutRequestBody {
 
 export interface SendForgotPasswordRequestBody {
   email: string
+  'cf-turnstile-response': string
 }
 
 export interface ForgotPasswordRequestBody {

@@ -3,6 +3,7 @@ export interface RegisterRequestBody {
   email: string
   phone: string
   have_account: boolean
+  'cf-turnstile-response': string
 }
 
 export interface CensorRequestBody {

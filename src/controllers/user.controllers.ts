@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { ObjectId } from 'mongodb'
-import { USER_MESSAGE } from '~/constants/message'
+import { SYSTEM_MESSAGE, USER_MESSAGE } from '~/constants/message'
 import {
   LogoutRequestBody,
   RegisterRequestBody,
@@ -14,13 +14,15 @@ import {
   ChangeEmailRequestBody,
   ChangePhoneRequestBody,
   ChangeAvatarRequestBody,
-  ChangePasswordTemporaryRequestBody
+  ChangePasswordTemporaryRequestBody,
+  LoginRequestBody
 } from '~/models/requests/user.requests'
 import User from '~/models/schemas/users.schemas'
 import UserServices from '~/services/user.services'
 import { ImageType } from '~/constants/image'
 import { omit } from 'lodash'
 import { writeInfoLog, writeErrorLog } from '~/utils/log'
+import axios from 'axios'
 
 export const sendEmailController = async (
   req: Request<ParamsDictionary, any, EmailVerifyRequestBody>,
@@ -68,6 +70,33 @@ export const registerController = async (req: Request<ParamsDictionary, any, Reg
   const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
 
   try {
+    // const turnstile_secret_key = process.env.CLOUDFLARE_TURNSTILE_SECRETKEY as string
+    // const turnstile_response = req.body['cf-turnstile-response']
+
+    // const verifyFormData = new URLSearchParams()
+    // verifyFormData.append('secret', turnstile_secret_key)
+    // verifyFormData.append('response', turnstile_response)
+    // verifyFormData.append('remoteip', ip)
+
+    // const verificationResponse = await axios.post(
+    //   'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+    //   verifyFormData.toString(),
+    //   {
+    //     headers: {
+    //       'Content-Type': 'application/x-www-form-urlencoded'
+    //     }
+    //   }
+    // )
+
+    // const verificationResult = verificationResponse.data
+
+    // if (!verificationResult.success) {
+    //   res.json({
+    //     message: SYSTEM_MESSAGE.YOU_MUST_AUTHENTICATE_TO_USE_THIS_FUNCTION
+    //   })
+    //   return
+    // }
+
     await UserServices.register(req.body)
 
     await writeInfoLog(`Thực hiện đăng ký tài khoản ${req.body.email} thành công (IP: ${ip}])`)
@@ -84,12 +113,39 @@ export const registerController = async (req: Request<ParamsDictionary, any, Reg
   }
 }
 
-export const loginController = async (req: Request, res: Response) => {
+export const loginController = async (req: Request<ParamsDictionary, any, LoginRequestBody>, res: Response) => {
   const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
   const user_id = user._id as ObjectId
 
   try {
+    // const turnstile_secret_key = process.env.CLOUDFLARE_TURNSTILE_SECRETKEY as string
+    // const turnstile_response = req.body['cf-turnstile-response']
+
+    // const verifyFormData = new URLSearchParams()
+    // verifyFormData.append('secret', turnstile_secret_key)
+    // verifyFormData.append('response', turnstile_response)
+    // verifyFormData.append('remoteip', ip)
+
+    // const verificationResponse = await axios.post(
+    //   'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+    //   verifyFormData.toString(),
+    //   {
+    //     headers: {
+    //       'Content-Type': 'application/x-www-form-urlencoded'
+    //     }
+    //   }
+    // )
+
+    // const verificationResult = verificationResponse.data
+
+    // if (!verificationResult.success) {
+    //   res.json({
+    //     message: SYSTEM_MESSAGE.YOU_MUST_AUTHENTICATE_TO_USE_THIS_FUNCTION
+    //   })
+    //   return
+    // }
+
     const result = await UserServices.login(user_id.toString())
 
     await writeInfoLog(`Thực hiện đăng nhập tài khoản ${user_id} thành công (IP: ${ip}])`)
@@ -139,6 +195,33 @@ export const sendEmailForgotPasswordController = async (
   const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
 
   try {
+    // const turnstile_secret_key = process.env.CLOUDFLARE_TURNSTILE_SECRETKEY as string
+    // const turnstile_response = req.body['cf-turnstile-response']
+
+    // const verifyFormData = new URLSearchParams()
+    // verifyFormData.append('secret', turnstile_secret_key)
+    // verifyFormData.append('response', turnstile_response)
+    // verifyFormData.append('remoteip', ip)
+
+    // const verificationResponse = await axios.post(
+    //   'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+    //   verifyFormData.toString(),
+    //   {
+    //     headers: {
+    //       'Content-Type': 'application/x-www-form-urlencoded'
+    //     }
+    //   }
+    // )
+
+    // const verificationResult = verificationResponse.data
+
+    // if (!verificationResult.success) {
+    //   res.json({
+    //     message: SYSTEM_MESSAGE.YOU_MUST_AUTHENTICATE_TO_USE_THIS_FUNCTION
+    //   })
+    //   return
+    // }
+
     const user = req.user as User
 
     await UserServices.sendEmailForgotPassword(req.body, user)

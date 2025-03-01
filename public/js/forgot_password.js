@@ -1,5 +1,5 @@
 const loading = document.querySelector('.loader')
-window.onload = function() {
+window.onload = function () {
   loading.style.display = 'none'
 }
 
@@ -51,6 +51,16 @@ button.addEventListener('click', () => {
             footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
           })
         }
+        return
+      }
+
+      if (data.message === 'Bạn phải xác thực để sử dụng chức năng này') {
+        Swal.fire({
+          title: 'Oops...',
+          icon: 'error',
+          text: data.message,
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
+        })
         return
       }
 

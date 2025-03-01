@@ -111,7 +111,17 @@ document.getElementById('btn').addEventListener('click', () => {
         return
       }
 
-      if (data.message === 'Business registration successful!') {
+      if (data.message === 'Bạn phải xác thực để sử dụng chức năng này') {
+        Swal.fire({
+          title: 'Oops...',
+          icon: 'error',
+          text: data.message,
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
+        })
+        return
+      }
+
+      if (data.message === 'Đăng ký doanh nghiệp thành công!') {
         Swal.fire({
           title: 'Thành công',
           icon: 'success',

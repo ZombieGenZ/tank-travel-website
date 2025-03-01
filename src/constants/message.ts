@@ -1,5 +1,6 @@
 export const SYSTEM_MESSAGE = {
-  VALIDATION_ERROR: 'Lỗi dữ liệu đầu vào'
+  VALIDATION_ERROR: 'Lỗi dữ liệu đầu vào',
+  YOU_MUST_AUTHENTICATE_TO_USE_THIS_FUNCTION: 'Bạn phải xác thực để sử dụng chức năng này'
 } as const
 
 export const USER_MESSAGE = {
