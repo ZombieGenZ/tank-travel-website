@@ -199,3 +199,36 @@ export const findDealStatisticsController = async (
     })
   }
 }
+
+export const getChartRevenueStatisticsController = async (
+  req: Request<ParamsDictionary, any, GetStatisticsRequestBody>,
+  res: Response
+) => {
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
+  const user = req.user as User
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  try {
+    const result = await StatisticalService.getChartRevenueStatistics(user)
+
+    await writeInfoLog(`Thực hiện lấy thống kê số đơn theo khoản thời gian thành công (User: ${user._id}) (IP: ${ip}])`)
+
+    res.json({
+      result,
+      authenticate
+    })
+  } catch (err) {
+    await writeErrorLog(
+      `Thực hiện lấy thống kê số đơn theo khoản thời gian thất bại (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`
+    )
+
+    res.json({
+      message: STATISTICS_MESSAGE.GET_STATISTICS_FAILURE,
+      authenticate
+    })
+  }
+}

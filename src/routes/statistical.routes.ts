@@ -5,7 +5,8 @@ import {
   getOrderStatisticsController,
   findOrderStatisticsController,
   getDealtatisticsController,
-  findDealStatisticsController
+  findDealStatisticsController,
+  getChartRevenueStatisticsController
 } from '~/controllers/statistical.controllers'
 import { authenticationValidator, businessAuthenticationValidator } from '~/middlewares/authentication.middlewares'
 import { findStatisticalValidator } from '~/middlewares/statistical.middlewares'
@@ -127,6 +128,24 @@ router.post(
   businessAuthenticationValidator,
   findStatisticalValidator,
   wrapRequestHandler(findDealStatisticsController)
+)
+
+/*
+ * Description: Lấy thông tin thống kê doanh thu dưới dạn biểu đồ
+ * Path: /api/statistical/chart/get-revenue-statistics
+ * Method: POST
+ * headers: {
+ *    authorization: Bearer <token>
+ * },
+ * Body: {
+ *    refresh_token: string
+ * }
+ */
+router.post(
+  '/chart/get-revenue-statistics',
+  authenticationValidator,
+  businessAuthenticationValidator,
+  wrapRequestHandler(getChartRevenueStatisticsController)
 )
 
 export default router

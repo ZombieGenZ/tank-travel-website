@@ -26,3 +26,11 @@ export const formatDateNotSecond = (date: Date): string => {
 
   return `${hour}:${minute} ${day}/${month}/${year}`
 }
+
+export const formatDateOnlyDayAndMonth = (date: Date): string => {
+  const formatDate = new Date(date)
+  const day = String(formatDate.getDate()).padStart(2, '0')
+  const month = String(formatDate.getMonth() + 1).padStart(2, '0')
+
+  return `${day}/${month}`
+}
