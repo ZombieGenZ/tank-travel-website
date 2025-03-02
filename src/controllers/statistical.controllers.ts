@@ -215,7 +215,9 @@ export const getChartRevenueStatisticsController = async (
   try {
     const result = await StatisticalService.getChartRevenueStatistics(user)
 
-    await writeInfoLog(`Thực hiện lấy thống kê số đơn theo khoản thời gian thành công (User: ${user._id}) (IP: ${ip}])`)
+    await writeInfoLog(
+      `Thực hiện lấy tổng quan thông tin doanh thu 7 ngày qua thành công (User: ${user._id}) (IP: ${ip}])`
+    )
 
     res.json({
       result,
@@ -223,7 +225,40 @@ export const getChartRevenueStatisticsController = async (
     })
   } catch (err) {
     await writeErrorLog(
-      `Thực hiện lấy thống kê số đơn theo khoản thời gian thất bại (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`
+      `Thực hiện lấy tổng quan thông tin doanh thu 7 ngày qua thất bại (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`
+    )
+
+    res.json({
+      message: STATISTICS_MESSAGE.GET_STATISTICS_FAILURE,
+      authenticate
+    })
+  }
+}
+
+export const getTopRevenueStatisticsController = async (
+  req: Request<ParamsDictionary, any, GetStatisticsRequestBody>,
+  res: Response
+) => {
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
+  const user = req.user as User
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  try {
+    const result = await StatisticalService.getTopRevenueStatistics()
+
+    await writeInfoLog(`Thực hiện lấy thống TOP doanh thu trong 7 ngày qua thành công (User: ${user._id}) (IP: ${ip}])`)
+
+    res.json({
+      result,
+      authenticate
+    })
+  } catch (err) {
+    await writeErrorLog(
+      `Thực hiện lấy thống TOP doanh thu trong 7 ngày qua thất bại (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`
     )
 
     res.json({

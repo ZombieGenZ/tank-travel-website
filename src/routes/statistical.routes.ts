@@ -6,7 +6,8 @@ import {
   findOrderStatisticsController,
   getDealtatisticsController,
   findDealStatisticsController,
-  getChartRevenueStatisticsController
+  getChartRevenueStatisticsController,
+  getTopRevenueStatisticsController
 } from '~/controllers/statistical.controllers'
 import { authenticationValidator, businessAuthenticationValidator } from '~/middlewares/authentication.middlewares'
 import { findStatisticalValidator } from '~/middlewares/statistical.middlewares'
@@ -132,7 +133,7 @@ router.post(
 
 /*
  * Description: Lấy thông tin thống kê doanh thu dưới dạn biểu đồ
- * Path: /api/statistical/chart/get-revenue-statistics
+ * Path: /api/statistical/chart/revenue
  * Method: POST
  * headers: {
  *    authorization: Bearer <token>
@@ -142,10 +143,28 @@ router.post(
  * }
  */
 router.post(
-  '/chart/get-revenue-statistics',
+  '/chart/revenue',
   authenticationValidator,
   businessAuthenticationValidator,
   wrapRequestHandler(getChartRevenueStatisticsController)
+)
+
+/*
+ * Description: Top doanh thu theo 7 ngày gần nhất
+ * Path: /api/statistical/top/revenue
+ * Method: POST
+ * headers: {
+ *    authorization: Bearer <token>
+ * },
+ * Body: {
+ *    refresh_token: string
+ * }
+ */
+router.post(
+  '/top/revenue',
+  authenticationValidator,
+  businessAuthenticationValidator,
+  wrapRequestHandler(getTopRevenueStatisticsController)
 )
 
 export default router

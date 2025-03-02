@@ -595,6 +595,102 @@ class StatisticalService {
       return finalResult
     }
   }
+
+  async getTopRevenueStatistics() {
+    const today: Date = new Date()
+    const sevenDaysAgo: Date = new Date()
+    sevenDaysAgo.setDate(today.getDate() - 7)
+
+    today.setHours(23, 59, 59, 999)
+    sevenDaysAgo.setHours(0, 0, 0, 0)
+
+    const result = await databaseService.bill
+      .aggregate([
+        {
+          $match: {
+            booking_time: {
+              $gte: sevenDaysAgo,
+              $lte: today
+            }
+          }
+        },
+        {
+          $lookup: {
+            from: process.env.DATABASE_BUS_ROUTE_COLLECTION,
+            localField: 'bus_route',
+            foreignField: '_id',
+            as: 'bus_route_info'
+          }
+        },
+        {
+          $unwind: '$bus_route_info'
+        },
+        {
+          $lookup: {
+            from: process.env.DATABASE_VEHICLE_COLLECTION,
+            localField: 'bus_route_info.vehicle',
+            foreignField: '_id',
+            as: 'vehicle_info'
+          }
+        },
+        {
+          $unwind: '$vehicle_info'
+        },
+        {
+          $lookup: {
+            from: process.env.DATABASE_USER_COLLECTION,
+            localField: 'vehicle_info.user',
+            foreignField: '_id',
+            as: 'user_info'
+          }
+        },
+        {
+          $unwind: '$user_info'
+        },
+        {
+          $addFields: {
+            discountedPrice: {
+              $multiply: ['$totalPrice', 0.95]
+            }
+          }
+        },
+        {
+          $group: {
+            _id: '$vehicle_info.user',
+            totalRevenue: { $sum: '$discountedPrice' },
+            user: { $first: '$user_info' }
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            userId: '$_id',
+            totalRevenue: 1,
+            display_name: '$user.display_name',
+            email: '$user.email',
+            phone: '$user.phone',
+            user_type: '$user.user_type',
+            balance: '$user.balance',
+            revenue: '$user.revenue',
+            permission: '$user.permission',
+            avatar: '$user.avatar',
+            temporary: '$user.temporary',
+            penalty: '$user.penalty',
+            created_at: '$user.created_at',
+            updated_at: '$user.updated_at'
+          }
+        },
+        {
+          $sort: { totalRevenue: -1 }
+        },
+        {
+          $limit: 5
+        }
+      ])
+      .toArray()
+
+    return result
+  }
 }
 
 const statisticsService = new StatisticalService()
