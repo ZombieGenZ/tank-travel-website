@@ -29,10 +29,10 @@ export const compressPuclicFolder = async (date: Date) => {
   }
 
   try {
-    console.log('\x1b[33mĐamg bắt đầu nén thư mục \x1b[36mPublic\x1b[33m...\x1b[0m')
+    console.log('\x1b[33mĐamg bắt đầu nén thư mục \x1b[36mUpload\x1b[33m...\x1b[0m')
     await zipDirectory(sourceDirectory, outputZipFile, date)
-    console.log('\x1b[33mNén thư mục \x1b[36mPublic\x1b[33m thành công!\x1b[0m')
+    console.log('\x1b[33mNén thư mục \x1b[36mUpload\x1b[33m thành công!\x1b[0m')
   } catch (err) {
-    console.log('\x1b[31mNén thư mục \x1b[36mPublic\x1b[31m thất bại!\x1b[0m')
+    console.log('\x1b[31mNén thư mục \x1b[36mUpload\x1b[31m thất bại!\x1b[0m')
   }
 }
