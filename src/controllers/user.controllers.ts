@@ -251,6 +251,11 @@ export const sendEmailVerifyController = async (
 ) => {
   const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
 
   try {
     await UserServices.sendEmailVerifyChangeEmail(req.body, user)
@@ -260,7 +265,8 @@ export const sendEmailVerifyController = async (
     )
 
     res.json({
-      message: USER_MESSAGE.EMAIL_VERIFY_CODE_SEND_SUCCESS
+      message: USER_MESSAGE.EMAIL_VERIFY_CODE_SEND_SUCCESS,
+      authenticate
     })
   } catch (err) {
     await writeErrorLog(
@@ -268,7 +274,8 @@ export const sendEmailVerifyController = async (
     )
 
     res.json({
-      message: USER_MESSAGE.EMAIL_VERIFY_CODE_SEND_FAILURE
+      message: USER_MESSAGE.EMAIL_VERIFY_CODE_SEND_FAILURE,
+      authenticate
     })
   }
 }
@@ -279,6 +286,11 @@ export const reSendEmailVerifyController = async (
 ) => {
   const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
 
   try {
     await UserServices.reSendEmailVerifyChangeEmail(req.body, user)
@@ -288,7 +300,8 @@ export const reSendEmailVerifyController = async (
     )
 
     res.json({
-      message: USER_MESSAGE.EMAIL_VERIFY_CODE_RESEND_SUCCESS
+      message: USER_MESSAGE.EMAIL_VERIFY_CODE_RESEND_SUCCESS,
+      authenticate
     })
   } catch (err) {
     await writeErrorLog(
@@ -296,7 +309,8 @@ export const reSendEmailVerifyController = async (
     )
 
     res.json({
-      message: USER_MESSAGE.EMAIL_VERIFY_CODE_RESEND_FAILURE
+      message: USER_MESSAGE.EMAIL_VERIFY_CODE_RESEND_FAILURE,
+      authenticate
     })
   }
 }
