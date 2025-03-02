@@ -67,8 +67,6 @@ export const uploadPuclicFolder = async (date: Date) => {
     })
 
     console.log('\x1b[33mTải lên thư mục \x1b[36mUpload\x1b[33m thành công!\x1b[0m')
-    console.log('File ID:', response.data.id)
-
     return response.data.id
   } catch (error) {
     console.error('\x1b[31mTải lên thư mục \x1b[36mUpload\x1b[31m thất bại!\x1b[0m', error)
