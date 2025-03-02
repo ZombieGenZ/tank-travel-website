@@ -6,6 +6,7 @@ import {
   LogoutRequestBody,
   RegisterRequestBody,
   EmailVerifyRequestBody,
+  ChangeDisplayNameRequestBody,
   SendForgotPasswordRequestBody,
   ForgotPasswordRequestBody,
   TokenPayload,
@@ -130,6 +131,37 @@ export const logoutController = async (req: Request<ParamsDictionary, any, Logou
 
     res.json({
       message: USER_MESSAGE.LOGOUT_FAILURE
+    })
+  }
+}
+
+export const changeDisplayNameController = async (
+  req: Request<ParamsDictionary, any, ChangeDisplayNameRequestBody>,
+  res: Response
+) => {
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
+  const user = req.user as User
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  try {
+    await UserServices.changeDisplayName(req.body, user)
+
+    await writeInfoLog(`Thực hiện thay đổi tên hiển thị cho tài khoản ${user._id} thành công (IP: ${ip}])`)
+
+    res.json({
+      message: USER_MESSAGE.CHANGED_DISPLAY_NAME_SUCCESS,
+      authenticate
+    })
+  } catch (err) {
+    await writeErrorLog(`Thực hiện thay đổi tên hiển thị cho tài khoản ${user._id} thất bại (IP: ${ip}]) Error: ${err}`)
+
+    res.json({
+      message: USER_MESSAGE.CHANGED_DISPLAY_NAME_FAILURE,
+      authenticate
     })
   }
 }

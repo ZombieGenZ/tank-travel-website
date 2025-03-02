@@ -3,6 +3,7 @@ import {
   registerController,
   loginController,
   logoutController,
+  changeDisplayNameController,
   sendEmailController,
   reSendEmailController,
   sendEmailForgotPasswordController,
@@ -23,6 +24,7 @@ import {
   checkTemporaryAccountValidator,
   loginValidator,
   refreshTokenValidator,
+  changeDisplayNameValidator,
   sendEmailVerifyValidator,
   reSendEmailVerifyValidator,
   sendEmailForgotPasswordValidator,
@@ -133,6 +135,25 @@ router.post('/login', loginValidator, checkTemporaryAccountValidator, wrapReques
  * }
  */
 router.delete('/logout', refreshTokenValidator, wrapRequestHandler(logoutController))
+
+/*
+ * Description: Thay đổi tên hiển thị cho một tài khoản có trong CSDL
+ * Path: /api/users/change-display-name
+ * Method: PUT
+ * headers: {
+ *    authorization: Bearer <token>
+ * },
+ * Body: {
+ *    refresh_token: string,
+ *    new_display_name: string
+ * }
+ */
+router.put(
+  '/change-display-name',
+  authenticationValidator,
+  changeDisplayNameValidator,
+  wrapRequestHandler(changeDisplayNameController)
+)
 
 /*
  * Description: Gửi email quên mật khẩu cho một tài khoản có trong CSDL

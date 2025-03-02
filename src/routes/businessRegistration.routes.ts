@@ -21,7 +21,8 @@ const router = express.Router()
  *    name: string,
  *    email: string,
  *    phone: string,
- *    have_account: boolean
+ *    have_account: boolean,
+ *    'cf-turnstile-response': string
  * }
  */
 router.post('/register', registerValidator, wrapRequestHandler(registerController))

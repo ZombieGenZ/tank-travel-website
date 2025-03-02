@@ -28,6 +28,11 @@ export interface LogoutRequestBody {
   refresh_token: string
 }
 
+export interface ChangeDisplayNameRequestBody {
+  refresh_token: string
+  new_display_name: string
+}
+
 export interface SendForgotPasswordRequestBody {
   email: string
   'cf-turnstile-response': string

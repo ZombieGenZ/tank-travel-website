@@ -414,6 +414,52 @@ export const refreshTokenValidator = validate(
   )
 )
 
+export const changeDisplayNameValidator = (req: Request, res: Response, next: NextFunction) => {
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  checkSchema(
+    {
+      new_display_name: {
+        notEmpty: {
+          errorMessage: USER_MESSAGE.DISPLAY_NAME_IS_REQUIRED
+        },
+        trim: true,
+        isString: {
+          errorMessage: USER_MESSAGE.DISPLAY_NAME_MUST_BE_A_STRING
+        },
+        isLength: {
+          options: {
+            min: 1,
+            max: 50
+          },
+          errorMessage: USER_MESSAGE.DISPLAY_NAME_LENGTH_MUST_BE_FROM_1_TO_50
+        }
+      }
+    },
+    ['body']
+  )
+    .run(req)
+    .then(() => {
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        res
+          .status(HTTPSTATUS.UNPROCESSABLE_ENTITY)
+          .json({ message: SYSTEM_MESSAGE.VALIDATION_ERROR, errors: errors.mapped(), authenticate })
+        return
+      }
+      next()
+      return
+    })
+    .catch((err) => {
+      res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ message: err, authenticate })
+      return
+    })
+}
+
 export const sendEmailForgotPasswordValidator = validate(
   checkSchema({
     email: {

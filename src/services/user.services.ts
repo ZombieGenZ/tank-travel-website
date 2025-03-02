@@ -1,6 +1,7 @@
 import {
   RegisterRequestBody,
   EmailVerifyRequestBody,
+  ChangeDisplayNameRequestBody,
   SendForgotPasswordRequestBody,
   ForgotPasswordRequestBody,
   ChangePasswordRequestBody,
@@ -233,6 +234,24 @@ class UserService {
 
   async logout(refresh_token: string) {
     await databaseService.refreshToken.deleteOne({ token: refresh_token })
+  }
+
+  async changeDisplayName(payload: ChangeDisplayNameRequestBody, user: User) {
+    await Promise.all([
+      databaseService.users.updateOne(
+        {
+          _id: user._id
+        },
+        {
+          $set: {
+            display_name: payload.new_display_name
+          },
+          $currentDate: {
+            updated_at: true
+          }
+        }
+      )
+    ])
   }
 
   async sendEmailForgotPassword(payload: SendForgotPasswordRequestBody, user: User) {
