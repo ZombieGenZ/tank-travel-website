@@ -3,6 +3,9 @@ window.onload = function() {
   loading.style.display = 'none'
 }
 
+const payment_containe = document.getElementById('payment_container')
+payment_containe.style.animation = 'fade-in 1s ease-in-out'
+
 let user = null
 let access_token = localStorage.getItem('access_token')
 let refresh_token = localStorage.getItem('refresh_token')
@@ -46,10 +49,10 @@ function getUserInfo() {
             const So_du = document.createElement('div')
             So_du.classList.add('So_du')
             recharge.classList.add('link')
-            recharge.innerHTML = '<a href="#"><i class="ri-money-dollar-circle-line"></i> Recharge</a>'
+            recharge.innerHTML = '<a href="#"><i class="ri-money-dollar-circle-line"></i> Nạp tiền</a>'
             recharge.id = 'recharge_money'
             booking_history.classList.add('link')
-            booking_history.innerHTML = '<a href="#"><i class="ri-history-line"></i> Booking history</a>'
+            booking_history.innerHTML = '<a href="#"><i class="ri-history-line"></i> Lịch sử đặt vé</a>'
             booking_history.id = 'booking_history'
             personal.classList.add('menu')
             personal.innerHTML = `<div class="item">
@@ -71,9 +74,6 @@ function getUserInfo() {
                                       <div class="submenu-item">
                                         <a href="#" id="logout" class="submenu-link"> Đăng xuất </a>
                                       </div>
-                                      <div class="submenu-item">
-                                        <a href="#" id="bill_information" class="submenu-link"> Hoá đơn tổng </a>
-                                      </div>
                                     </div>
                                   </div>`
             So_du.innerText = `Số dư: ${user.balance.toLocaleString('vi-VN')} VNĐ`
@@ -83,6 +83,10 @@ function getUserInfo() {
             personal_infor.appendChild(personal)
             ul.appendChild(recharge)
             ul.appendChild(booking_history)
+            
+            So_du.addEventListener('click', () => {
+              window.location.href = '/recharge'
+            })
 
             recharge.addEventListener('click', () => {
               window.location.href = '/recharge'

@@ -40,7 +40,7 @@ body {
     display: flex;
     align-items: center;
     flex-direction: column;
-    gap: 1rem;
+    gap: 2rem;
     border-radius: 2rem;
     border: 1px solid var(--extra-light);
     box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.1);

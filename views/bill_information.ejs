@@ -12,24 +12,27 @@
     <nav id="navbar">
         <div class="nav_logo"  id="nav_logo">TANK TRAVEL</div>
         <ul class="ul_links" id="ul_links">
-            <li class="link" id="ticket-information"><a href="#"><i class="ri-coupon-2-fill"></i> Route information</a></li>
-            <li class="link" id="Contact_us"><a href="#"><i class="ri-contacts-book-2-fill"></i> Contact us</a></li>
+            <li class="link" id="ticket-information"><a href="#"><i class="ri-coupon-2-fill"></i> Thông tin vé</a></li>
+            <li class="link" id="Contact_us"><a href="#"><i class="ri-contacts-book-2-fill"></i> Liên hệ chúng tôi</a></li>
         </ul>
         <div class="personal_login" id="personal_infor">
-            <button class="btn" id="signup_business">Business registration</button>
-            <button class="btn" id="btn_login">Login</button>
+            <button class="btn" id="signup_business">Đăng ký doanh nghiệp</button>
+            <button class="btn" id="btn_login">Đăng nhập</button>
         </div>
     </nav>
 
+    <div class="loader">
+        <div class="justify-content-center jimu-primary-loading"></div>
+    </div>
+
     <div class="dropdown_personal" id="dropdown_personal">
         <ul>
-            <li class="link" id="profile"><a href="#"><i class="ri-profile-fill"></i> Your profile</a></li>
-            <li class="link" id="logout"><a href="#" id="a_logout"><i class="ri-logout-box-r-fill"></i> Log out</a></li>
-            <li class="link" id="bill_information"><a href="#"><i class="ri-coupon-2-fill"></i> Hoá đơn vé</a></li>
+            <li class="link" id="profile"><a href="#"><i class="ri-profile-fill"></i> Thông tin cá nhân</a></li>
+            <li class="link" id="logout"><a href="#" id="a_logout"><i class="ri-logout-box-r-fill"></i> Đăng xuất</a></li>
         </ul>
     </div>
 
-    <section class="section_container payment_container">
+    <section class="section_container payment_container" id="payment_container">
         <h1>Hoá đơn tổng</h1>
         <div class="user_information">
             <h2>Thông tin cá nhân:</h2>
@@ -45,10 +48,6 @@
                 <input type="input" class="form__field" placeholder="Name" required="">
                 <label for="name" class="form__label">Số điện thoại</label>
             </div>
-        </div>
-
-        <div class="loader">
-            <div class="justify-content-center jimu-primary-loading"></div>
         </div>
 
         <div class="user_allticket">

@@ -129,6 +129,10 @@ function getUserInfo() {
             ul.appendChild(recharge)
             ul.appendChild(booking_history)
 
+            So_du.addEventListener('click', () => {
+              window.location.href = '/recharge'
+            })
+
             recharge.addEventListener('click', () => {
               window.location.href = '/recharge'
             })

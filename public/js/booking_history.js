@@ -91,6 +91,10 @@ function getUserInfo() {
             ul.appendChild(recharge)
             ul.appendChild(booking_history)
 
+            So_du.addEventListener('click', () => {
+              window.location.href = '/recharge'
+            })
+
             recharge.addEventListener('click', () => {
               window.location.href = '/recharge'
             })
@@ -161,61 +165,11 @@ function getUserInfo() {
 }
 
 getUserInfo().then(() => {
-  const detail_infor = document.querySelectorAll('.detail_infor')
   const each_ticket = document.querySelectorAll('.each_ticket')
   const viewhistory_container = document.querySelector('.viewhistory_container')
   viewhistory_container.style.animation = 'fade-in 1s ease-in-out'
   each_ticket.forEach(each_ticket => {
     each_ticket.style.animation = 'fade-in 1.5s ease-in-out'
-  })
-  detail_infor.forEach(detail_infor => {
-    detail_infor.addEventListener('click', () => {
-      Swal.fire({
-        title: 'Lịch sử đặt vé',
-        html: ` <div class="input__group">
-                    <input type="input" class="form__field" placeholder="Name" value="" readOnly>
-                    <label for="name" class="form__label">Ngày đặt:</label>
-                </div>
-                <div class="input__group">
-                    <input type="input" class="form__field" placeholder="Name" value="" readOnly>
-                    <label for="name" class="form__label">Nơi đi:</label>
-                </div>
-                <div class="input__group">
-                    <input type="input" class="form__field" placeholder="Name" value="" readOnly>
-                    <label for="name" class="form__label">Nơi đến:</label>
-                </div>
-                <div class="input__group">
-                    <input type="input" class="form__field" placeholder="Name" value="" readOnly>
-                    <label for="name" class="form__label">Ngày đi:</label>
-                </div>
-                <div class="input__group">
-                    <input type="input" class="form__field" placeholder="Name" value="" readOnly>
-                    <label for="name" class="form__label">Số vé đặt trước:</label>
-                </div>
-                <div class="input__group">
-                    <input type="input" class="form__field" placeholder="Name" value="" readOnly>
-                    <label for="name" class="form__label">Thời gian đi:</label>
-                </div>
-                <div class="input__group">
-                    <input type="input" class="form__field" placeholder="Name" value="" readOnly>
-                    <label for="name" class="form__label">Giá / vé (VNĐ):</label>
-                </div>
-                <div class="input__group">
-                    <input type="input" class="form__field" placeholder="Name" value="" readOnly>
-                    <label for="name" class="form__label">Tổng tiền (VNĐ):</label>
-                </div>
-                <div class="input__group">
-                    <input type="input" class="form__field" placeholder="Name" value="" readOnly>
-                    <label for="name" class="form__label">Phương tiện:</label>
-                </div>`,
-        focusConfirm: false,
-        showConfirmButton: false,
-        showCancelButton: true,
-        cancelButtonColor: '#d33',
-        cancelButtonText: 'Thoát',
-        footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
-      })
-    })
   })
 
   document.getElementById('nav_logo').addEventListener('click', () => {

@@ -32,11 +32,11 @@
 
     <div class="loaders">
         <div class="justify-content-center jimu-primary-loading"></div>
-      </div>
+    </div>
 
     <section class="section_container recharge_container" id="recharge_container">
         <div class="recharge_form" id="recharge_choose">
-            <h1>Recharge</h1>
+            <h1>Nạp tiền</h1>
             <div class="form">
                 <div class="form__group">
                     <div class="input__content">
@@ -51,34 +51,47 @@
                     <div class="input__content">
                         <div class="input__group">
                             <input type="number" class="form__field" id="money_view" placeholder="Name" value="0">
-                            <label for="name" class="form__label">Số tiền: </label>
+                            <label for="name" class="form__label">Số tiền (đồng): </label>
                         </div>
                         <p>Số tiền nạp</p>
                     </div>
                 </div>
                 <div class="class_money">
-                    <button class="btn_toview">100000</button>
-                    <button class="btn_toview">200000</button>
-                    <button class="btn_toview">500000</button>
-                    <button class="btn_toview">1000000</button>
-                    <button class="btn_toview">1500000</button>
-                    <button class="btn_toview">2000000</button>
+                    <button class="btn_toview" value="100000">100.000</button>
+                    <button class="btn_toview" value="200000">200.000</button>
+                    <button class="btn_toview" value="500000">500.000</button>
+                    <button class="btn_toview" value="1000000">1.000.000</button>
+                    <button class="btn_toview" value="1500000">1.500.000</button>
+                    <button class="btn_toview" value="2000000">2.000.000</button>
                 </div>
                 <button class="btn" id="recharge_button">Nạp tiền</button>
             </div>
         </div>
         <div class="recharge_form recharge_payment">
             <h1>Cách 1:</h1>
-            <p>Mở app banking trên điện thoại và scan mã QR dưới đây</p>
+            <p>Mở app banking trên điện thoại và quét mã QR dưới đây:</p>
             <img src="" alt="" id="bank-qr">
             <div class="loading_browsing">
                 <p>Trạng thái: </p>
-                <div class="loader" id="loader"></div>
+                <div class="loader">
+                    <div class="bar1"></div>
+                    <div class="bar2"></div>
+                    <div class="bar3"></div>
+                    <div class="bar4"></div>
+                    <div class="bar5"></div>
+                    <div class="bar6"></div>
+                    <div class="bar7"></div>
+                    <div class="bar8"></div>
+                    <div class="bar9"></div>
+                    <div class="bar10"></div>
+                    <div class="bar11"></div>
+                    <div class="bar12"></div>
+                </div>
             </div>
         </div>
         <div class="recharge_form recharge_payment">
             <h1>Cách 2:</h1>
-            <p>Chuyển thủ công theo thông tin</p>
+            <p>Chuyển thủ công theo thông tin:</p>
             <img src="/images/system/MB.png" alt="">
             <div class="information_master" id="bank-owner">
                 Chủ tài khoản:

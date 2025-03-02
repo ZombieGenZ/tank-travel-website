@@ -12,8 +12,9 @@ const refresh_token = localStorage.getItem('refresh_token')
 const button_data = document.querySelectorAll('.btn_toview')
 const money_view = document.getElementById('money_view')
 button_data.forEach((button) => {
+  console.log(button.value)
   button.addEventListener('click', () => {
-    const data_view = button.textContent
+    const data_view = button.value
     money_view.value = data_view
   })
 })
@@ -62,7 +63,7 @@ recharge_button.addEventListener('click', () => {
     recharge_choose.style.animation = 'fade-in .5s ease-in-out'
     recharge_button.style.backgroundColor = 'gray'
     recharge_grid.style.animation = 'width-out .5s ease-in-out'
-    recharge_grid.style.width = '70%'
+    recharge_grid.style.width = '85%'
     recharge_grid.style.gridTemplateColumns = '1fr 1fr 1fr'
     recharge_payment.forEach((dis) => {
       dis.style.display = 'flex'
@@ -244,6 +245,10 @@ function getUserInfo() {
             personal_infor.appendChild(personal)
             ul.appendChild(recharge)
             ul.appendChild(booking_history)
+
+            So_du.addEventListener('click', () => {
+              window.location.href = '/recharge'
+            })
 
             recharge.addEventListener('click', () => {
               window.location.href = '/recharge'

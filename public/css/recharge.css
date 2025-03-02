@@ -457,7 +457,7 @@ body {
     color: #ffffff;
   }
 
-  .loader {
+  .loaders {
     position: absolute;
     top: 0;
     bottom: 0;
@@ -572,15 +572,7 @@ body {
     color: var(--white);
     margin-bottom: 1rem;
   }
-
-  .loader {
-    width: 48px;
-    height: 48px;
-    margin: auto;
-    margin-top: 1rem;
-    position: relative;
-  }
-  
+ 
   .Success {
     color: green;
     margin-top: 1rem;
@@ -591,29 +583,98 @@ body {
     margin-top: 1rem;
   }
 
-  .loader:before {
-    content: '';
-    width: 48px;
-    height: 5px;
-    background: #f0808050;
-    position: absolute;
-    top: 60px;
-    left: 0;
-    border-radius: 50%;
-    animation: shadow324 0.5s linear infinite;
+  /* From Uiverse.io by david-mohseni */ 
+.loader {
+  position: relative;
+  width: 54px;
+  height: 54px;
+  border-radius: 10px;
+  margin-top: 1rem;
+}
+
+.loader div {
+  width: 8%;
+  height: 24%;
+  background: rgb(128, 128, 128);
+  position: absolute;
+  left: 50%;
+  top: 30%;
+  opacity: 0;
+  border-radius: 50px;
+  box-shadow: 0 0 3px rgba(0,0,0,0.2);
+  animation: fade458 1s linear infinite;
+}
+
+@keyframes fade458 {
+  from {
+    opacity: 1;
   }
-  
-  .loader:after {
-    content: '';
-    width: 100%;
-    height: 100%;
-    background: #f08080;
-    position: absolute;
-    top: 0;
-    left: 0;
-    border-radius: 4px;
-    animation: jump7456 0.5s linear infinite;
+
+  to {
+    opacity: 0.25;
   }
+}
+
+.loader .bar1 {
+  transform: rotate(0deg) translate(0, -130%);
+  animation-delay: 0s;
+}
+
+.loader .bar2 {
+  transform: rotate(30deg) translate(0, -130%);
+  animation-delay: -1.1s;
+}
+
+.loader .bar3 {
+  transform: rotate(60deg) translate(0, -130%);
+  animation-delay: -1s;
+}
+
+.loader .bar4 {
+  transform: rotate(90deg) translate(0, -130%);
+  animation-delay: -0.9s;
+}
+
+.loader .bar5 {
+  transform: rotate(120deg) translate(0, -130%);
+  animation-delay: -0.8s;
+}
+
+.loader .bar6 {
+  transform: rotate(150deg) translate(0, -130%);
+  animation-delay: -0.7s;
+}
+
+.loader .bar7 {
+  transform: rotate(180deg) translate(0, -130%);
+  animation-delay: -0.6s;
+}
+
+.loader .bar8 {
+  transform: rotate(210deg) translate(0, -130%);
+  animation-delay: -0.5s;
+}
+
+.loader .bar9 {
+  transform: rotate(240deg) translate(0, -130%);
+  animation-delay: -0.4s;
+}
+
+.loader .bar10 {
+  transform: rotate(270deg) translate(0, -130%);
+  animation-delay: -0.3s;
+}
+
+.loader .bar11 {
+  transform: rotate(300deg) translate(0, -130%);
+  animation-delay: -0.2s;
+}
+
+.loader .bar12 {
+  transform: rotate(330deg) translate(0, -130%);
+  animation-delay: -0.1s;
+}
+
   
   @keyframes jump7456 {
     15% {
@@ -637,25 +698,13 @@ body {
       transform: translateY(0) rotate(90deg);
     }
   }
-  
-  @keyframes shadow324 {
-  
-    0%,
-      100% {
-      transform: scale(1, 1);
-    }
-  
-    50% {
-      transform: scale(1.2, 1);
-    }
-  }
 
   @keyframes width-out {
     0% {
       width: 40%;
     }
     100% {
-      width: 70%;
+      width: 85%;
     }
   }
 

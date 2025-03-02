@@ -373,6 +373,12 @@ body {
     gap: 5rem;
   }
 
+  .ticket_information h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    animation: fade-in 1s ease-in-out;
+  }
+
   .date_local {
     display: grid;
     grid-template-columns: repeat(4, 1fr) auto;
