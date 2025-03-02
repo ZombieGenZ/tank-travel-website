@@ -37,7 +37,6 @@ import notificationPrivateApi from '~/routes/notification-priate.routes'
 // import test router
 import testApi from '~/routes/test.routes'
 import runAllCrons from './jobs/global.jobs'
-import { backupPublicFolder } from './jobs/functions/backupPublicFile.functions'
 
 const app = express()
 const server = createServer(app)

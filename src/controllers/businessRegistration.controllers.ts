@@ -12,32 +12,39 @@ export const registerController = async (req: Request<ParamsDictionary, any, Reg
   const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
 
   try {
-    // const turnstile_secret_key = process.env.CLOUDFLARE_TURNSTILE_SECRETKEY as string
-    // const turnstile_response = req.body['cf-turnstile-response']
+    const turnstile_secret_key = process.env.CLOUDFLARE_TURNSTILE_SECRETKEY as string
+    const turnstile_response = req.body['cf-turnstile-response']
 
-    // const verifyFormData = new URLSearchParams()
-    // verifyFormData.append('secret', turnstile_secret_key)
-    // verifyFormData.append('response', turnstile_response)
-    // verifyFormData.append('remoteip', ip)
+    if (!turnstile_response) {
+      res.json({
+        message: SYSTEM_MESSAGE.YOU_MUST_AUTHENTICATE_TO_USE_THIS_FUNCTION
+      })
+      return
+    }
 
-    // const verificationResponse = await axios.post(
-    //   'https://challenges.cloudflare.com/turnstile/v0/siteverify',
-    //   verifyFormData.toString(),
-    //   {
-    //     headers: {
-    //       'Content-Type': 'application/x-www-form-urlencoded'
-    //     }
-    //   }
-    // )
+    const verifyFormData = new URLSearchParams()
+    verifyFormData.append('secret', turnstile_secret_key)
+    verifyFormData.append('response', turnstile_response)
+    verifyFormData.append('remoteip', ip)
 
-    // const verificationResult = verificationResponse.data
+    const verificationResponse = await axios.post(
+      'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+      verifyFormData.toString(),
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }
+    )
 
-    // if (!verificationResult.success) {
-    //   res.json({
-    //     message: SYSTEM_MESSAGE.YOU_MUST_AUTHENTICATE_TO_USE_THIS_FUNCTION
-    //   })
-    //   return
-    // }
+    const verificationResult = verificationResponse.data
+
+    if (!verificationResult.success) {
+      res.json({
+        message: SYSTEM_MESSAGE.YOU_MUST_AUTHENTICATE_TO_USE_THIS_FUNCTION
+      })
+      return
+    }
 
     await BusinessRegistrationService.register(req.body)
 

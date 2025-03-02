@@ -30,6 +30,7 @@ document.getElementById('btn').addEventListener('click', () => {
   const business_name = document.getElementById('business_name').value
   const phoneNumber = document.getElementById('business_phone').value
   const email = document.getElementById('business_email').value
+  const turnstileResponse = document.querySelector('[name="cf-turnstile-response"]')?.value
 
   if (
     business_name == null ||
@@ -46,6 +47,16 @@ document.getElementById('btn').addEventListener('click', () => {
       title: 'Oops...',
       icon: 'error',
       text: 'Không được để trống các trường dử liệu',
+      footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
+    })
+    return
+  }
+
+  if (!turnstileResponse) {
+    Swal.fire({
+      title: 'Oops...',
+      icon: 'error',
+      text: 'Vui lòng xác thực bạn không phải là robot',
       footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
     })
     return
@@ -75,7 +86,8 @@ document.getElementById('btn').addEventListener('click', () => {
     name: business_name.trim(),
     email: email.trim(),
     phone: phoneNumber.trim(),
-    have_account: false
+    have_account: false,
+    'cf-turnstile-response': turnstileResponse
   }
 
   fetch('/api/business-registration/register', {
