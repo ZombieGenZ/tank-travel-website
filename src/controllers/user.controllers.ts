@@ -321,6 +321,11 @@ export const changeEmailController = async (
 ) => {
   const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
   const user = req.user as User
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
 
   try {
     await UserServices.changeEmail(req.body, user)
@@ -328,7 +333,8 @@ export const changeEmailController = async (
     await writeInfoLog(`Thực hiện thay đổi địa chỉ email cho tài khoản ${user._id} thành công (IP: ${ip}])`)
 
     res.json({
-      message: USER_MESSAGE.CHANGED_EMAIL_SUCCESS
+      message: USER_MESSAGE.CHANGED_EMAIL_SUCCESS,
+      authenticate
     })
   } catch (err) {
     await writeErrorLog(
@@ -336,7 +342,8 @@ export const changeEmailController = async (
     )
 
     res.json({
-      message: USER_MESSAGE.CHANGED_EMAIL_FAILURE
+      message: USER_MESSAGE.CHANGED_EMAIL_FAILURE,
+      authenticate
     })
   }
 }
