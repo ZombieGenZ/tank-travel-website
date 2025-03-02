@@ -643,6 +643,138 @@ export const forgotPasswordValidator = validate(
   )
 )
 
+export const sendEmailVerifyLoginValidator = (req: Request, res: Response, next: NextFunction) => {
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  checkSchema({
+    email: {
+      notEmpty: {
+        errorMessage: USER_MESSAGE.EMAIL_IS_REQUIRED
+      },
+      trim: true,
+      isString: {
+        errorMessage: USER_MESSAGE.EMAIL_IS_MUST_BE_A_STRING
+      },
+      isLength: {
+        options: {
+          min: 5,
+          max: 100
+        },
+        errorMessage: USER_MESSAGE.EMAIL_LENGTH_MUST_BE_FROM_5_TO_100
+      },
+      isEmail: {
+        errorMessage: USER_MESSAGE.EMAIL_IS_NOT_VALID
+      },
+      custom: {
+        options: async (value) => {
+          const email_infomation = await getEmailInfomation(value)
+
+          if (!email_infomation) {
+            throw new Error(USER_MESSAGE.EMAIL_IS_NOT_VALID)
+          }
+
+          const user = await databaseService.users.findOne({ email: value })
+
+          if (user !== null) {
+            throw new Error(USER_MESSAGE.EMAIL_IS_ALWAYS_EXISTENT)
+          }
+
+          const email_verify_code = await databaseService.emailVerifyCodes.findOne({ email: value })
+
+          if (email_verify_code !== null) {
+            throw new Error(USER_MESSAGE.EMAIL_ALREADY_SENDING)
+          }
+
+          return true
+        }
+      }
+    }
+  })
+    .run(req)
+    .then(() => {
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        res
+          .status(HTTPSTATUS.UNPROCESSABLE_ENTITY)
+          .json({ message: SYSTEM_MESSAGE.VALIDATION_ERROR, errors: errors.mapped(), authenticate })
+        return
+      }
+      next()
+      return
+    })
+    .catch((err) => {
+      res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ message: err, authenticate })
+      return
+    })
+}
+
+export const reSendEmailVerifyLoginValidator = (req: Request, res: Response, next: NextFunction) => {
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  checkSchema({
+    email: {
+      notEmpty: {
+        errorMessage: USER_MESSAGE.EMAIL_IS_REQUIRED
+      },
+      trim: true,
+      isString: {
+        errorMessage: USER_MESSAGE.EMAIL_IS_MUST_BE_A_STRING
+      },
+      isLength: {
+        options: {
+          min: 5,
+          max: 100
+        },
+        errorMessage: USER_MESSAGE.EMAIL_LENGTH_MUST_BE_FROM_5_TO_100
+      },
+      isEmail: {
+        errorMessage: USER_MESSAGE.EMAIL_IS_NOT_VALID
+      },
+      custom: {
+        options: async (value) => {
+          const user = await databaseService.users.findOne({ email: value })
+
+          if (user !== null) {
+            throw new Error(USER_MESSAGE.EMAIL_IS_ALWAYS_EXISTENT)
+          }
+
+          const email_verify_code = await databaseService.emailVerifyCodes.findOne({ email: value })
+
+          if (email_verify_code === null) {
+            throw new Error(USER_MESSAGE.EMAIL_VERIFY_CODE_HAS_NOT_BEEN_SENT)
+          }
+
+          return true
+        }
+      }
+    }
+  })
+    .run(req)
+    .then(() => {
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        res
+          .status(HTTPSTATUS.UNPROCESSABLE_ENTITY)
+          .json({ message: SYSTEM_MESSAGE.VALIDATION_ERROR, errors: errors.mapped(), authenticate })
+        return
+      }
+      next()
+      return
+    })
+    .catch((err) => {
+      res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).json({ message: err, authenticate })
+      return
+    })
+}
+
 export const changePasswordValidator = async (req: Request, res: Response, next: NextFunction) => {
   const { access_token, refresh_token } = req
   const authenticate = {

@@ -36,7 +36,9 @@ import {
   image3x4Validator,
   changePasswordTemporaryValidator,
   loginManageValidator,
-  bannedValidator
+  bannedValidator,
+  sendEmailVerifyLoginValidator,
+  reSendEmailVerifyLoginValidator
 } from '~/middlewares/user.middlewares'
 import { wrapRequestHandler } from '~/utils/handlers'
 import multer from 'multer'
@@ -217,7 +219,7 @@ router.put(
 router.post(
   '/send-email-verify-change-email',
   authenticationValidator,
-  sendEmailVerifyValidator,
+  sendEmailVerifyLoginValidator,
   wrapRequestHandler(sendEmailVerifyController)
 )
 
@@ -236,7 +238,7 @@ router.post(
 router.put(
   '/resend-email-verify-change-email',
   authenticationValidator,
-  reSendEmailVerifyValidator,
+  reSendEmailVerifyLoginValidator,
   wrapRequestHandler(reSendEmailVerifyController)
 )
 
