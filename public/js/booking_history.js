@@ -364,6 +364,6 @@ document.getElementById('Contact_us').addEventListener('click', () => {
               <li>Số điện thoại: 0908651852</li>
               <li>Email: namndtb00921@fpt.edu.vn</li>
             </ul>
-           </div>`
+          </div>`
   })
 })
