@@ -474,7 +474,6 @@ class StatisticalService {
     }
 
     if (user.permission === UserPermission.ADMINISTRATOR) {
-      // ADMIN sees all revenue data
       const result = await databaseService.bill
         .aggregate([
           {
@@ -690,6 +689,522 @@ class StatisticalService {
       .toArray()
 
     return result
+  }
+
+  async getCompareDealsStatistics(user: User) {
+    const today: Date = new Date()
+    const yesterday: Date = new Date()
+    yesterday.setDate(today.getDate() - 1)
+
+    const todayStart: Date = new Date(today)
+    todayStart.setHours(0, 0, 0, 0)
+    const todayEnd: Date = new Date(today)
+    todayEnd.setHours(23, 59, 59, 999)
+
+    const yesterdayStart: Date = new Date(yesterday)
+    yesterdayStart.setHours(0, 0, 0, 0)
+    const yesterdayEnd: Date = new Date(yesterday)
+    yesterdayEnd.setHours(23, 59, 59, 999)
+
+    let todayCount = 0
+    let yesterdayCount = 0
+
+    if (user.permission === UserPermission.ADMINISTRATOR) {
+      const todayDealsCount = await databaseService.bill
+        .aggregate([
+          {
+            $match: {
+              booking_time: {
+                $gte: todayStart,
+                $lte: todayEnd
+              }
+            }
+          },
+          {
+            $count: 'count'
+          }
+        ])
+        .toArray()
+
+      const yesterdayDealsCount = await databaseService.bill
+        .aggregate([
+          {
+            $match: {
+              booking_time: {
+                $gte: yesterdayStart,
+                $lte: yesterdayEnd
+              }
+            }
+          },
+          {
+            $count: 'count'
+          }
+        ])
+        .toArray()
+
+      todayCount = todayDealsCount.length > 0 ? todayDealsCount[0].count : 0
+      yesterdayCount = yesterdayDealsCount.length > 0 ? yesterdayDealsCount[0].count : 0
+    } else {
+      const todayDealsCount = await databaseService.bill
+        .aggregate([
+          {
+            $match: {
+              booking_time: {
+                $gte: todayStart,
+                $lte: todayEnd
+              }
+            }
+          },
+          {
+            $lookup: {
+              from: process.env.DATABASE_BUS_ROUTE_COLLECTION,
+              localField: 'bus_route',
+              foreignField: '_id',
+              as: 'bus_route_info'
+            }
+          },
+          {
+            $unwind: '$bus_route_info'
+          },
+          {
+            $lookup: {
+              from: process.env.DATABASE_VEHICLE_COLLECTION,
+              localField: 'bus_route_info.vehicle',
+              foreignField: '_id',
+              as: 'vehicle_info'
+            }
+          },
+          {
+            $unwind: '$vehicle_info'
+          },
+          {
+            $match: {
+              'vehicle_info.user': user._id
+            }
+          },
+          {
+            $count: 'count'
+          }
+        ])
+        .toArray()
+
+      const yesterdayDealsCount = await databaseService.bill
+        .aggregate([
+          {
+            $match: {
+              booking_time: {
+                $gte: yesterdayStart,
+                $lte: yesterdayEnd
+              }
+            }
+          },
+          {
+            $lookup: {
+              from: process.env.DATABASE_BUS_ROUTE_COLLECTION,
+              localField: 'bus_route',
+              foreignField: '_id',
+              as: 'bus_route_info'
+            }
+          },
+          {
+            $unwind: '$bus_route_info'
+          },
+          {
+            $lookup: {
+              from: process.env.DATABASE_VEHICLE_COLLECTION,
+              localField: 'bus_route_info.vehicle',
+              foreignField: '_id',
+              as: 'vehicle_info'
+            }
+          },
+          {
+            $unwind: '$vehicle_info'
+          },
+          {
+            $match: {
+              'vehicle_info.user': user._id
+            }
+          },
+          {
+            $count: 'count'
+          }
+        ])
+        .toArray()
+
+      todayCount = todayDealsCount.length > 0 ? todayDealsCount[0].count : 0
+      yesterdayCount = yesterdayDealsCount.length > 0 ? yesterdayDealsCount[0].count : 0
+    }
+
+    let percentChange = 0
+
+    if (yesterdayCount === 0) {
+      percentChange = todayCount > 0 ? 100 : 0
+    } else {
+      percentChange = Math.round(((todayCount - yesterdayCount) / yesterdayCount) * 100)
+    }
+
+    return percentChange
+  }
+
+  async getCompareRevenueStatistics(user: User) {
+    const today: Date = new Date()
+    const yesterday: Date = new Date()
+    yesterday.setDate(today.getDate() - 1)
+
+    const todayStart: Date = new Date(today)
+    todayStart.setHours(0, 0, 0, 0)
+    const todayEnd: Date = new Date(today)
+    todayEnd.setHours(23, 59, 59, 999)
+
+    const yesterdayStart: Date = new Date(yesterday)
+    yesterdayStart.setHours(0, 0, 0, 0)
+    const yesterdayEnd: Date = new Date(yesterday)
+    yesterdayEnd.setHours(23, 59, 59, 999)
+
+    let todayRevenue = 0
+    let yesterdayRevenue = 0
+
+    if (user.permission === UserPermission.ADMINISTRATOR) {
+      const todayRevenueData = await databaseService.bill
+        .aggregate([
+          {
+            $match: {
+              booking_time: {
+                $gte: todayStart,
+                $lte: todayEnd
+              }
+            }
+          },
+          {
+            $addFields: {
+              discountedPrice: {
+                $multiply: ['$totalPrice', 0.95]
+              }
+            }
+          },
+          {
+            $group: {
+              _id: null,
+              totalRevenue: { $sum: '$discountedPrice' }
+            }
+          }
+        ])
+        .toArray()
+
+      const yesterdayRevenueData = await databaseService.bill
+        .aggregate([
+          {
+            $match: {
+              booking_time: {
+                $gte: yesterdayStart,
+                $lte: yesterdayEnd
+              }
+            }
+          },
+          {
+            $addFields: {
+              discountedPrice: {
+                $multiply: ['$totalPrice', 0.95]
+              }
+            }
+          },
+          {
+            $group: {
+              _id: null,
+              totalRevenue: { $sum: '$discountedPrice' }
+            }
+          }
+        ])
+        .toArray()
+
+      todayRevenue = todayRevenueData.length > 0 ? todayRevenueData[0].totalRevenue : 0
+      yesterdayRevenue = yesterdayRevenueData.length > 0 ? yesterdayRevenueData[0].totalRevenue : 0
+    } else {
+      const todayRevenueData = await databaseService.bill
+        .aggregate([
+          {
+            $match: {
+              booking_time: {
+                $gte: todayStart,
+                $lte: todayEnd
+              }
+            }
+          },
+          {
+            $lookup: {
+              from: process.env.DATABASE_BUS_ROUTE_COLLECTION,
+              localField: 'bus_route',
+              foreignField: '_id',
+              as: 'bus_route_info'
+            }
+          },
+          {
+            $unwind: '$bus_route_info'
+          },
+          {
+            $lookup: {
+              from: process.env.DATABASE_VEHICLE_COLLECTION,
+              localField: 'bus_route_info.vehicle',
+              foreignField: '_id',
+              as: 'vehicle_info'
+            }
+          },
+          {
+            $unwind: '$vehicle_info'
+          },
+          {
+            $match: {
+              'vehicle_info.user': user._id
+            }
+          },
+          {
+            $addFields: {
+              discountedPrice: {
+                $multiply: ['$totalPrice', 0.95]
+              }
+            }
+          },
+          {
+            $group: {
+              _id: null,
+              totalRevenue: { $sum: '$discountedPrice' }
+            }
+          }
+        ])
+        .toArray()
+
+      const yesterdayRevenueData = await databaseService.bill
+        .aggregate([
+          {
+            $match: {
+              booking_time: {
+                $gte: yesterdayStart,
+                $lte: yesterdayEnd
+              }
+            }
+          },
+          {
+            $lookup: {
+              from: process.env.DATABASE_BUS_ROUTE_COLLECTION,
+              localField: 'bus_route',
+              foreignField: '_id',
+              as: 'bus_route_info'
+            }
+          },
+          {
+            $unwind: '$bus_route_info'
+          },
+          {
+            $lookup: {
+              from: process.env.DATABASE_VEHICLE_COLLECTION,
+              localField: 'bus_route_info.vehicle',
+              foreignField: '_id',
+              as: 'vehicle_info'
+            }
+          },
+          {
+            $unwind: '$vehicle_info'
+          },
+          {
+            $match: {
+              'vehicle_info.user': user._id
+            }
+          },
+          {
+            $addFields: {
+              discountedPrice: {
+                $multiply: ['$totalPrice', 0.95]
+              }
+            }
+          },
+          {
+            $group: {
+              _id: null,
+              totalRevenue: { $sum: '$discountedPrice' }
+            }
+          }
+        ])
+        .toArray()
+
+      todayRevenue = todayRevenueData.length > 0 ? todayRevenueData[0].totalRevenue : 0
+      yesterdayRevenue = yesterdayRevenueData.length > 0 ? yesterdayRevenueData[0].totalRevenue : 0
+    }
+
+    let percentChange = 0
+
+    if (yesterdayRevenue === 0) {
+      percentChange = todayRevenue > 0 ? 100 : 0
+    } else {
+      percentChange = Math.round(((todayRevenue - yesterdayRevenue) / yesterdayRevenue) * 100)
+    }
+
+    return percentChange
+  }
+  async getCompareTicketStatistics(user: User) {
+    const today: Date = new Date()
+    const yesterday: Date = new Date()
+    yesterday.setDate(today.getDate() - 1)
+
+    const todayStart: Date = new Date(today)
+    todayStart.setHours(0, 0, 0, 0)
+    const todayEnd: Date = new Date(today)
+    todayEnd.setHours(23, 59, 59, 999)
+
+    const yesterdayStart: Date = new Date(yesterday)
+    yesterdayStart.setHours(0, 0, 0, 0)
+    const yesterdayEnd: Date = new Date(yesterday)
+    yesterdayEnd.setHours(23, 59, 59, 999)
+
+    let todayQuantity = 0
+    let yesterdayQuantity = 0
+
+    if (user.permission === UserPermission.ADMINISTRATOR) {
+      const todayQuantityData = await databaseService.bill
+        .aggregate([
+          {
+            $match: {
+              booking_time: {
+                $gte: todayStart,
+                $lte: todayEnd
+              }
+            }
+          },
+          {
+            $group: {
+              _id: null,
+              totalQuantity: { $sum: '$quantity' }
+            }
+          }
+        ])
+        .toArray()
+
+      const yesterdayQuantityData = await databaseService.bill
+        .aggregate([
+          {
+            $match: {
+              booking_time: {
+                $gte: yesterdayStart,
+                $lte: yesterdayEnd
+              }
+            }
+          },
+          {
+            $group: {
+              _id: null,
+              totalQuantity: { $sum: '$quantity' }
+            }
+          }
+        ])
+        .toArray()
+
+      todayQuantity = todayQuantityData.length > 0 ? todayQuantityData[0].totalQuantity : 0
+      yesterdayQuantity = yesterdayQuantityData.length > 0 ? yesterdayQuantityData[0].totalQuantity : 0
+    } else {
+      const todayQuantityData = await databaseService.bill
+        .aggregate([
+          {
+            $match: {
+              booking_time: {
+                $gte: todayStart,
+                $lte: todayEnd
+              }
+            }
+          },
+          {
+            $lookup: {
+              from: process.env.DATABASE_BUS_ROUTE_COLLECTION,
+              localField: 'bus_route',
+              foreignField: '_id',
+              as: 'bus_route_info'
+            }
+          },
+          {
+            $unwind: '$bus_route_info'
+          },
+          {
+            $lookup: {
+              from: process.env.DATABASE_VEHICLE_COLLECTION,
+              localField: 'bus_route_info.vehicle',
+              foreignField: '_id',
+              as: 'vehicle_info'
+            }
+          },
+          {
+            $unwind: '$vehicle_info'
+          },
+          {
+            $match: {
+              'vehicle_info.user': user._id
+            }
+          },
+          {
+            $group: {
+              _id: null,
+              totalQuantity: { $sum: '$quantity' }
+            }
+          }
+        ])
+        .toArray()
+
+      const yesterdayQuantityData = await databaseService.bill
+        .aggregate([
+          {
+            $match: {
+              booking_time: {
+                $gte: yesterdayStart,
+                $lte: yesterdayEnd
+              }
+            }
+          },
+          {
+            $lookup: {
+              from: process.env.DATABASE_BUS_ROUTE_COLLECTION,
+              localField: 'bus_route',
+              foreignField: '_id',
+              as: 'bus_route_info'
+            }
+          },
+          {
+            $unwind: '$bus_route_info'
+          },
+          {
+            $lookup: {
+              from: process.env.DATABASE_VEHICLE_COLLECTION,
+              localField: 'bus_route_info.vehicle',
+              foreignField: '_id',
+              as: 'vehicle_info'
+            }
+          },
+          {
+            $unwind: '$vehicle_info'
+          },
+          {
+            $match: {
+              'vehicle_info.user': user._id
+            }
+          },
+          {
+            $group: {
+              _id: null,
+              totalQuantity: { $sum: '$quantity' }
+            }
+          }
+        ])
+        .toArray()
+
+      todayQuantity = todayQuantityData.length > 0 ? todayQuantityData[0].totalQuantity : 0
+      yesterdayQuantity = yesterdayQuantityData.length > 0 ? yesterdayQuantityData[0].totalQuantity : 0
+    }
+
+    let percentChange = 0
+
+    if (yesterdayQuantity === 0) {
+      percentChange = todayQuantity > 0 ? 100 : 0
+    } else {
+      percentChange = Math.round(((todayQuantity - yesterdayQuantity) / yesterdayQuantity) * 100)
+    }
+
+    return percentChange
   }
 }
 

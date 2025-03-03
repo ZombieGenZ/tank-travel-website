@@ -84,6 +84,9 @@ Tank Travel là một nền tảng đặt vé xe khách/tàu hỏa trực tuyế
 |  | `/api/statistical/find-deal-statistics` | `POST` | Lấy thống kê số đơn hàng theo khoảng thời gian |
 |  | `/api/statistical/chart/revenue` | `POST` | Lấy thông tin thống kê doanh thu dưới dạng biểu đồ |
 |  | `/api/statistical/top/revenue` | `POST` | Lấy danh sách top doanh thu trong 7 ngày gần nhất |
+|  | `/api/statistical/compare/deals` | `POST` | Lấy tỉ lệ chên lẹch số lượng đơn hàng so với ngày hôm trước |
+|  | `/api/statistical/compare/revenue` | `POST` | Lấy tỉ lệ chên lẹch số doanh thu so với ngày hôm trước |
+|  | `/api/statistical/compare/ticket` | `POST` | Lấy tỉ lệ chên lẹch số lượng vé đã bán so với ngày hôm trước |
 | **Thanh toán** | `/api/revenue/create-bank-order` | `POST` | Tạo đơn hàng thanh toán ngân hàng |
 |  | `/api/revenue/checkout-bank-order` | `POST` | Xử lý phản hồi thanh toán từ Sepay |
 | **Quản lý thông báo cá nhân** | `/api/notification-private/get-notification` | `POST` | Lấy thông báo của người dùng |

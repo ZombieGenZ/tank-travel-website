@@ -250,7 +250,9 @@ export const getTopRevenueStatisticsController = async (
   try {
     const result = await StatisticalService.getTopRevenueStatistics()
 
-    await writeInfoLog(`Thực hiện lấy thống TOP doanh thu trong 7 ngày qua thành công (User: ${user._id}) (IP: ${ip}])`)
+    await writeInfoLog(
+      `Thực hiện lấy thống kê TOP doanh thu trong 7 ngày qua thành công (User: ${user._id}) (IP: ${ip}])`
+    )
 
     res.json({
       result,
@@ -258,7 +260,112 @@ export const getTopRevenueStatisticsController = async (
     })
   } catch (err) {
     await writeErrorLog(
-      `Thực hiện lấy thống TOP doanh thu trong 7 ngày qua thất bại (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`
+      `Thực hiện lấy thống kê TOP doanh thu trong 7 ngày qua thất bại (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`
+    )
+
+    res.json({
+      message: STATISTICS_MESSAGE.GET_STATISTICS_FAILURE,
+      authenticate
+    })
+  }
+}
+
+export const getCompareDealsStatisticsController = async (
+  req: Request<ParamsDictionary, any, GetStatisticsRequestBody>,
+  res: Response
+) => {
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
+  const user = req.user as User
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  try {
+    const result = await StatisticalService.getCompareDealsStatistics(user)
+
+    await writeInfoLog(
+      `Thực hiện lấy thông tin sự thay đổi về số đơn hàng đã đặt giửa ngày hôm nay và ngày hôm qua thành công (User: ${user._id}) (IP: ${ip}])`
+    )
+
+    res.json({
+      result,
+      authenticate
+    })
+  } catch (err) {
+    await writeErrorLog(
+      `Thực hiện lấy thông tin sự thay đổi về số đơn hàng đã đặt giửa ngày hôm nay và ngày hôm qua thất bại (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`
+    )
+
+    res.json({
+      message: STATISTICS_MESSAGE.GET_STATISTICS_FAILURE,
+      authenticate
+    })
+  }
+}
+
+export const getCompaRerevenueStatisticsController = async (
+  req: Request<ParamsDictionary, any, GetStatisticsRequestBody>,
+  res: Response
+) => {
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
+  const user = req.user as User
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  try {
+    const result = await StatisticalService.getCompareRevenueStatistics(user)
+
+    await writeInfoLog(
+      `Thực hiện lấy thông tin sự thay đổi về số doanh thu đã nhận giửa ngày hôm nay và ngày hôm qua thành công (User: ${user._id}) (IP: ${ip}])`
+    )
+
+    res.json({
+      result,
+      authenticate
+    })
+  } catch (err) {
+    await writeErrorLog(
+      `Thực hiện lấy thông tin sự thay đổi về số doanh thu đã nhận giửa ngày hôm nay và ngày hôm qua thất bại (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`
+    )
+
+    res.json({
+      message: STATISTICS_MESSAGE.GET_STATISTICS_FAILURE,
+      authenticate
+    })
+  }
+}
+
+export const getCompaTicketStatisticsController = async (
+  req: Request<ParamsDictionary, any, GetStatisticsRequestBody>,
+  res: Response
+) => {
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
+  const user = req.user as User
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  try {
+    const result = await StatisticalService.getCompareTicketStatistics(user)
+
+    await writeInfoLog(
+      `Thực hiện lấy thông tin sự thay đổi về số vé đã bán giửa ngày hôm nay và ngày hôm qua thành công (User: ${user._id}) (IP: ${ip}])`
+    )
+
+    res.json({
+      result,
+      authenticate
+    })
+  } catch (err) {
+    await writeErrorLog(
+      `Thực hiện lấy thông tin sự thay đổi về số vé đã bán giửa ngày hôm nay và ngày hôm qua thất bại (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`
     )
 
     res.json({

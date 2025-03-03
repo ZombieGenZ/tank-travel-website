@@ -7,7 +7,10 @@ import {
   getDealtatisticsController,
   findDealStatisticsController,
   getChartRevenueStatisticsController,
-  getTopRevenueStatisticsController
+  getTopRevenueStatisticsController,
+  getCompareDealsStatisticsController,
+  getCompaRerevenueStatisticsController,
+  getCompaTicketStatisticsController
 } from '~/controllers/statistical.controllers'
 import { authenticationValidator, businessAuthenticationValidator } from '~/middlewares/authentication.middlewares'
 import { findStatisticalValidator } from '~/middlewares/statistical.middlewares'
@@ -165,6 +168,60 @@ router.post(
   authenticationValidator,
   businessAuthenticationValidator,
   wrapRequestHandler(getTopRevenueStatisticsController)
+)
+
+/*
+ * Description: Lấy % thay đổi số đơn hàng của ngày hôm nay và ngày hôm qua
+ * Path: /api/statistical/compare/deals
+ * Method: POST
+ * headers: {
+ *    authorization: Bearer <token>
+ * },
+ * Body: {
+ *    refresh_token: string
+ * }
+ */
+router.post(
+  '/compare/deals',
+  authenticationValidator,
+  businessAuthenticationValidator,
+  wrapRequestHandler(getCompareDealsStatisticsController)
+)
+
+/*
+ * Description: Lấy % thay đổi số doanh thu của ngày hôm nay và ngày hôm qua
+ * Path: /api/statistical/compare/revenue
+ * Method: POST
+ * headers: {
+ *    authorization: Bearer <token>
+ * },
+ * Body: {
+ *    refresh_token: string
+ * }
+ */
+router.post(
+  '/compare/revenue',
+  authenticationValidator,
+  businessAuthenticationValidator,
+  wrapRequestHandler(getCompaRerevenueStatisticsController)
+)
+
+/*
+ * Description: Lấy % thay đổi số đơn hàng của ngày hôm nay và ngày hôm qua
+ * Path: /api/statistical/compare/ticket
+ * Method: POST
+ * headers: {
+ *    authorization: Bearer <token>
+ * },
+ * Body: {
+ *    refresh_token: string
+ * }
+ */
+router.post(
+  '/compare/ticket',
+  authenticationValidator,
+  businessAuthenticationValidator,
+  wrapRequestHandler(getCompaTicketStatisticsController)
 )
 
 export default router
