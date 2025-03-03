@@ -791,7 +791,7 @@ window.addEventListener('load', () => {
                           <label for="name" class="form__label">Phương tiện:</label>
                       </div>
                       <div class="input__group">
-                          <input type="input" class="form__field" placeholder="Name" value="" readOnly>
+                          <input type="input" class="form__field total_price" placeholder="Name" value="" readOnly>
                           <label for="name" class="form__label">Tổng giá vé:</label>
                       </div>
                     `,
@@ -917,6 +917,12 @@ window.addEventListener('load', () => {
                     }
                   },
                   footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+                })
+                const ticket_booking = document.querySelector('.ticket_booking');
+                const total_price = document.querySelector('.total_price')
+                total_price.value = (ticket_booking.value * busRoute[index].price).toLocaleString('vi-VN')
+                ticket_booking.addEventListener('change', () => {
+                  total_price.value = (ticket_booking.value * busRoute[index].price).toLocaleString('vi-VN')
                 })
               })
             })
