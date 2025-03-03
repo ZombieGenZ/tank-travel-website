@@ -173,7 +173,7 @@ function getUserInfo() {
                     Swal.fire({
                       title: 'Oops...',
                       icon: 'error',
-                      text: 'Error connecting to server',
+                      text: 'Lỗi kết nối tới server',
                       footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
                     })
                     return

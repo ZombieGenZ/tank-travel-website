@@ -188,7 +188,7 @@ function getUserInfo() {
                     Swal.fire({
                       title: 'Oops...',
                       icon: 'error',
-                      text: 'Error connecting to server',
+                      text: 'Lỗi kết nối đến server',
                       footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
                     })
                     return
@@ -241,7 +241,7 @@ window.addEventListener('load', () => {
               title: 'Oops...',
               icon: 'error',
               text: 'Lỗi kết nối đến máy chủ',
-              footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+              footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
             })
             return
           }
@@ -251,7 +251,7 @@ window.addEventListener('load', () => {
               title: 'Oops...',
               icon: 'error',
               text: 'Lỗi kết nối đến máy chủ',
-              footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+              footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
             })
             return
           }
@@ -262,7 +262,7 @@ window.addEventListener('load', () => {
                 title: 'Oops...',
                 icon: 'error',
                 text: data.errors[key].msg,
-                footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+                footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
               })
             }
             return
@@ -549,7 +549,7 @@ window.addEventListener('load', () => {
                         return false
                       }
                     },
-                    footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+                    footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
                   })
                 })
               })
@@ -608,7 +608,7 @@ window.addEventListener('load', () => {
             title: 'Oops...',
             icon: 'error',
             text: 'Lỗi kết nối đến máy chủ',
-            footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+            footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
           })
           return
         }
@@ -618,7 +618,7 @@ window.addEventListener('load', () => {
             title: 'Oops...',
             icon: 'error',
             text: 'Lỗi kết nối đến máy chủ',
-            footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+            footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
           })
           return
         }
@@ -629,7 +629,7 @@ window.addEventListener('load', () => {
               title: 'Oops...',
               icon: 'error',
               text: data.errors[key].msg,
-              footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+              footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
             })
           }
           return
@@ -916,7 +916,7 @@ window.addEventListener('load', () => {
                       return false
                     }
                   },
-                  footer: '<a href="https://discord.gg/7SkzMkFWYN">Having trouble? Contact us</a>'
+                  footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
                 })
                 const ticket_booking = document.querySelector('.ticket_booking');
                 const total_price = document.querySelector('.total_price')
