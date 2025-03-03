@@ -451,30 +451,39 @@ class StatisticalService {
 
   async getChartRevenueStatistics(user: User) {
     const today: Date = new Date()
+    today.setHours(23, 59, 59, 999)
+
+    const timezoneOffset = today.getTimezoneOffset()
+
     const sevenDaysAgo: Date = new Date()
     sevenDaysAgo.setDate(today.getDate() - 7)
-
-    today.setHours(23, 59, 59, 999)
     sevenDaysAgo.setHours(0, 0, 0, 0)
 
-    const allDates: Array<{ date: Date; dateString: string; formattedDate: string }> = []
-    for (let i = 0; i <= 7; i++) {
-      const date: Date = new Date(sevenDaysAgo)
-      date.setDate(sevenDaysAgo.getDate() + i)
+    const isDifferentDay = timezoneOffset / 60 > 0
 
-      const day = String(date.getDate()).padStart(2, '0')
-      const month = String(date.getMonth() + 1).padStart(2, '0')
+    const allDates: Array<{ date: Date; dateString: string; formattedDate: string }> = []
+    const tempDate = new Date(sevenDaysAgo)
+
+    while (tempDate <= today) {
+      const day = String(tempDate.getDate()).padStart(2, '0')
+      const month = String(tempDate.getMonth() + 1).padStart(2, '0')
       const formattedDate = `${day}/${month}`
 
+      const utcDate = new Date(Date.UTC(tempDate.getFullYear(), tempDate.getMonth(), tempDate.getDate(), 0, 0, 0, 0))
+      const dateString = utcDate.toISOString().split('T')[0]
+
       allDates.push({
-        date: date,
-        dateString: date.toISOString().split('T')[0],
+        date: new Date(tempDate),
+        dateString: dateString,
         formattedDate: formattedDate
       })
+
+      tempDate.setDate(tempDate.getDate() + 1)
     }
 
+    let result
     if (user.permission === UserPermission.ADMINISTRATOR) {
-      const result = await databaseService.bill
+      result = await databaseService.bill
         .aggregate([
           {
             $match: {
@@ -487,7 +496,7 @@ class StatisticalService {
           {
             $addFields: {
               dateOnly: {
-                $dateToString: { format: '%Y-%m-%d', date: '$booking_time' }
+                $dateToString: { format: '%Y-%m-%d', date: '$booking_time', timezone: 'UTC' }
               },
               discountedPrice: {
                 $multiply: ['$totalPrice', 0.95]
@@ -497,7 +506,8 @@ class StatisticalService {
           {
             $group: {
               _id: '$dateOnly',
-              totalRevenue: { $sum: '$discountedPrice' }
+              totalRevenue: { $sum: '$discountedPrice' },
+              count: { $sum: 1 }
             }
           },
           {
@@ -505,22 +515,8 @@ class StatisticalService {
           }
         ])
         .toArray()
-
-      const resultMap: Record<string, number> = {}
-      result.forEach((item: any) => {
-        resultMap[item._id] = item.totalRevenue
-      })
-
-      const finalResult = allDates.map((dateObj) => {
-        return {
-          date: dateObj.formattedDate,
-          totalRevenue: resultMap[dateObj.dateString] || 0
-        }
-      })
-
-      return finalResult
     } else {
-      const result = await databaseService.bill
+      result = await databaseService.bill
         .aggregate([
           {
             $match: {
@@ -560,7 +556,7 @@ class StatisticalService {
           {
             $addFields: {
               dateOnly: {
-                $dateToString: { format: '%Y-%m-%d', date: '$booking_time' }
+                $dateToString: { format: '%Y-%m-%d', date: '$booking_time', timezone: 'UTC' }
               },
               discountedPrice: {
                 $multiply: ['$totalPrice', 0.95]
@@ -570,7 +566,8 @@ class StatisticalService {
           {
             $group: {
               _id: '$dateOnly',
-              totalRevenue: { $sum: '$discountedPrice' }
+              totalRevenue: { $sum: '$discountedPrice' },
+              count: { $sum: 1 }
             }
           },
           {
@@ -578,21 +575,23 @@ class StatisticalService {
           }
         ])
         .toArray()
-
-      const resultMap: Record<string, number> = {}
-      result.forEach((item: any) => {
-        resultMap[item._id] = item.totalRevenue
-      })
-
-      const finalResult = allDates.map((dateObj) => {
-        return {
-          date: dateObj.formattedDate,
-          totalRevenue: resultMap[dateObj.dateString] || 0
-        }
-      })
-
-      return finalResult
     }
+
+    const resultMap: Record<string, number> = {}
+    result.forEach((item: any) => {
+      resultMap[item._id] = item.totalRevenue
+    })
+
+    const finalResult = allDates.map((dateObj) => {
+      const revenue = resultMap[dateObj.dateString] || 0
+
+      return {
+        date: dateObj.formattedDate,
+        totalRevenue: revenue
+      }
+    })
+
+    return finalResult
   }
 
   async getTopRevenueStatistics() {
