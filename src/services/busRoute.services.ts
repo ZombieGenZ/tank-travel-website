@@ -543,7 +543,8 @@ class BusRouteService {
         {
           $match: {
             created_at: { $lt: new Date(payload.session_time) },
-            quantity: { $gt: 0 }
+            quantity: { $gt: 0 },
+            departure_time: { $gte: date.toISOString() }
           }
         },
         {
