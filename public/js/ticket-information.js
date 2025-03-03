@@ -423,6 +423,10 @@ window.addEventListener('load', () => {
                               <input type="input" class="form__field" placeholder="Name" value="${busRoute[index].vehicle.vehicle_type == '0' ? 'Xe khách' : 'Tàu hỏa'}" readOnly>
                               <label for="name" class="form__label">Phương tiện:</label>
                         </div>
+                        <div class="input__group">
+                              <input type="input" class="form__field" placeholder="Name" value="" readOnly>
+                              <label for="name" class="form__label">Tổng giá vé:</label>
+                        </div>
                       `,
                     focusConfirm: false,
                     showCancelButton: true,
@@ -763,7 +767,7 @@ window.addEventListener('load', () => {
                           <label for="name" class="form__label">Số điện thoại:</label>
                       </div>
                       <div class="input__group">
-                          <input type="input" class="form__field" id="ticket_booking" value="1" placeholder="Name" required="">
+                          <input type="input" class="form__field ticket_booking" id="ticket_booking" value="1" placeholder="Name" required="">
                           <label for="name" class="form__label">Số vé:</label>
                       </div>
                       <div class="input__group">
@@ -785,6 +789,10 @@ window.addEventListener('load', () => {
                       <div class="input__group">
                           <input type="input" class="form__field" placeholder="Name" value="${busRoute[index].vehicle.vehicle_type == '0' ? 'Xe khách' : 'Tàu hỏa'}" readOnly>
                           <label for="name" class="form__label">Phương tiện:</label>
+                      </div>
+                      <div class="input__group">
+                          <input type="input" class="form__field" placeholder="Name" value="" readOnly>
+                          <label for="name" class="form__label">Tổng giá vé:</label>
                       </div>
                     `,
                   focusConfirm: false,
