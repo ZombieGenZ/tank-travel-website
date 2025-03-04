@@ -10,7 +10,8 @@ import {
   getTopRevenueStatisticsController,
   getCompareDealsStatisticsController,
   getCompaRerevenueStatisticsController,
-  getCompaTicketStatisticsController
+  getCompaTicketStatisticsController,
+  getTodayStatisticsController
 } from '~/controllers/statistical.controllers'
 import { authenticationValidator, businessAuthenticationValidator } from '~/middlewares/authentication.middlewares'
 import { findStatisticalValidator } from '~/middlewares/statistical.middlewares'
@@ -222,6 +223,24 @@ router.post(
   authenticationValidator,
   businessAuthenticationValidator,
   wrapRequestHandler(getCompaTicketStatisticsController)
+)
+
+/*
+ * Description: Lấy số đơn hàng, số vé đã bán và số doanh thu trong ngày
+ * Path: /api/statistical/overview
+ * Method: POST
+ * headers: {
+ *    authorization: Bearer <token>
+ * },
+ * Body: {
+ *    refresh_token: string
+ * }
+ */
+router.post(
+  '/overview',
+  authenticationValidator,
+  businessAuthenticationValidator,
+  wrapRequestHandler(getTodayStatisticsController)
 )
 
 export default router

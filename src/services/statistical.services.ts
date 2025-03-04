@@ -844,7 +844,6 @@ class StatisticalService {
 
     return percentChange
   }
-
   async getCompareRevenueStatistics(user: User) {
     const today: Date = new Date()
     const yesterday: Date = new Date()
@@ -1204,6 +1203,73 @@ class StatisticalService {
     }
 
     return percentChange
+  }
+
+  async getTodayStatistics(user: User) {
+    const today: Date = new Date()
+    const todayStart: Date = new Date(today)
+    todayStart.setHours(0, 0, 0, 0)
+    const todayEnd: Date = new Date(today)
+    todayEnd.setHours(23, 59, 59, 999)
+
+    let todayDeals = 0
+    let todayTickets = 0
+    let todayRevenue = 0
+
+    const matchCondition: any = {
+      booking_time: {
+        $gte: todayStart,
+        $lte: todayEnd
+      }
+    }
+
+    if (user.permission !== UserPermission.ADMINISTRATOR) {
+      matchCondition['vehicle_info.user'] = user._id
+    }
+
+    const todayData = await databaseService.bill
+      .aggregate([
+        { $match: matchCondition },
+        {
+          $lookup: {
+            from: process.env.DATABASE_BUS_ROUTE_COLLECTION,
+            localField: 'bus_route',
+            foreignField: '_id',
+            as: 'bus_route_info'
+          }
+        },
+        { $unwind: { path: '$bus_route_info', preserveNullAndEmptyArrays: true } },
+        {
+          $lookup: {
+            from: process.env.DATABASE_VEHICLE_COLLECTION,
+            localField: 'bus_route_info.vehicle',
+            foreignField: '_id',
+            as: 'vehicle_info'
+          }
+        },
+        { $unwind: { path: '$vehicle_info', preserveNullAndEmptyArrays: true } },
+        {
+          $group: {
+            _id: null,
+            totalDeals: { $sum: 1 },
+            totalTickets: { $sum: '$quantity' },
+            totalRevenue: { $sum: { $multiply: ['$totalPrice', 0.95] } }
+          }
+        }
+      ])
+      .toArray()
+
+    if (todayData.length > 0) {
+      todayDeals = todayData[0].totalDeals
+      todayTickets = todayData[0].totalTickets
+      todayRevenue = todayData[0].totalRevenue
+    }
+
+    return {
+      deals: todayDeals,
+      tickets: todayTickets,
+      revenue: todayRevenue
+    }
   }
 }
 

@@ -374,3 +374,38 @@ export const getCompaTicketStatisticsController = async (
     })
   }
 }
+
+export const getTodayStatisticsController = async (
+  req: Request<ParamsDictionary, any, GetStatisticsRequestBody>,
+  res: Response
+) => {
+  const ip = (req.headers['cf-connecting-ip'] || req.ip) as string
+  const user = req.user as User
+  const { access_token, refresh_token } = req
+  const authenticate = {
+    access_token,
+    refresh_token
+  }
+
+  try {
+    const result = await StatisticalService.getTodayStatistics(user)
+
+    await writeInfoLog(
+      `Thực hiện lấy thông tin số đơn hàng, số vé đã bán và số doanh thu trong ngày thành công (User: ${user._id}) (IP: ${ip}])`
+    )
+
+    res.json({
+      result,
+      authenticate
+    })
+  } catch (err) {
+    await writeErrorLog(
+      `Thực hiện lấy thông tin số đơn hàng, số vé đã bán và số doanh thu trong ngày thất bại (User: ${user._id}) (IP: ${ip}]) | Error: ${err}`
+    )
+
+    res.json({
+      message: STATISTICS_MESSAGE.GET_STATISTICS_FAILURE,
+      authenticate
+    })
+  }
+}
