@@ -33,6 +33,14 @@ class EvaluateService {
       ),
       NotificationPrivateService.createNotification(vehicle.user, notificationMessage)
     ])
+
+    const allRatings = await databaseService.evaluate.find({ vehicle: vehicle._id }).toArray()
+
+    const totalStars = allRatings.reduce((sum, rating) => sum + rating.star, 0)
+    const averageStars = totalStars / allRatings.length
+    const roundedAverageStars = Math.round(averageStars * 10) / 10
+
+    await databaseService.vehicles.updateOne({ _id: vehicle._id }, { $set: { average_rating: roundedAverageStars } })
   }
 
   async UpdateEvaluate(payload: UpdateEvaluateRequestBody, evaluate: Evaluate) {
@@ -50,10 +58,38 @@ class EvaluateService {
         }
       }
     )
+
+    const allRatings = await databaseService.evaluate.find({ vehicle: evaluate.vehicle }).toArray()
+
+    const totalStars = allRatings.reduce((sum, rating) => sum + rating.star, 0)
+    const averageStars = totalStars / allRatings.length
+    const roundedAverageStars = Math.round(averageStars * 10) / 10
+
+    await databaseService.vehicles.updateOne(
+      { _id: evaluate.vehicle },
+      { $set: { average_rating: roundedAverageStars } }
+    )
   }
 
   async DeleteEvaluate(payload: DeleteEvaluateRequestBody) {
+    const evaluate = await databaseService.evaluate.findOne({ _id: new ObjectId(payload.evaluate_id) })
     await databaseService.evaluate.deleteOne({ _id: new ObjectId(payload.evaluate_id) })
+
+    const allRatings = await databaseService.evaluate.find({ vehicle: new ObjectId(payload.evaluate_id) }).toArray()
+
+    if (allRatings.length == 0) {
+      await databaseService.vehicles.updateOne({ _id: evaluate?.vehicle }, { $set: { average_rating: 0 } })
+      return
+    }
+
+    const totalStars = allRatings.reduce((sum, rating) => sum + rating.star, 0)
+    const averageStars = totalStars / allRatings.length
+    const roundedAverageStars = Math.round(averageStars * 10) / 10
+
+    await databaseService.vehicles.updateOne(
+      { _id: new ObjectId(payload.evaluate_id) },
+      { $set: { average_rating: roundedAverageStars } }
+    )
   }
 
   async GetEvaluate(payload: GetEvaluateRequestBody, user: User) {

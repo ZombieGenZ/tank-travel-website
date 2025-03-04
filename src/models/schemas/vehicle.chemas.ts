@@ -12,6 +12,7 @@ interface VehicleType {
   preview: ImageType[]
   license_plate: string // Biển số xe
   user: ObjectId
+  average_rating?: number
   created_at?: Date
   updated_at?: Date
   status?: VehicleStatus
@@ -27,6 +28,7 @@ export default class Vehicle {
   preview: ImageType[]
   license_plate: string
   user: ObjectId
+  average_rating: number
   created_at: Date
   updated_at: Date
   status: VehicleStatus
@@ -43,6 +45,7 @@ export default class Vehicle {
     this.license_plate = vehicle.license_plate
     this.user = vehicle.user
     this.status = vehicle.status || VehicleStatus.PENDING_APPROVAL
+    this.average_rating = vehicle.average_rating || 0
     this.created_at = vehicle.created_at || date
     this.updated_at = vehicle.created_at || date
   }
