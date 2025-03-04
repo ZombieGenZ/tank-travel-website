@@ -220,6 +220,7 @@ getUserInfo().then(() => {
       const container_hienthi = document.getElementById('accordionExample');
       if(data != null) {
         const dodai = data.result.bill.length;
+        console.log("Tổng số vé nhận được từ API:", dodai);
         const number = {
           Num: [
               "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
@@ -286,7 +287,6 @@ getUserInfo().then(() => {
                                         </div>
                                       </div>`;
         }
-        console.log(iduser)
         const accordion_body = document.querySelectorAll('.accordion-body')
         accordion_body.forEach((element, index) => {
           const orderId = iduser[index];
@@ -306,7 +306,6 @@ getUserInfo().then(() => {
             return response.json()
           }).then((data) => {
             const orderDetails = data.result.bill.filter(ticket => ticket.bill === orderId);
-            console.log(orderDetails)
             let table = `<table>
                                     <thead>
                                     <tr>
