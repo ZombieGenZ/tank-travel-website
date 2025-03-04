@@ -389,7 +389,7 @@ process.on('SIGINT', async () => {
   console.log(`\x1b[33mMáy chủ đã ngừng hoạt động\x1b[0m`)
   console.log()
   await stopBot()
-  await writeInfoLog(`Thời gian tắt máy chủ ${formatDateFull2(date)}\x1b[0m`)
+  await writeInfoLog(`Thời gian tắt máy chủ ${formatDateFull2(date)}`)
   console.log()
   console.log(`\x1b[33mThời gian tắt máy chủ \x1b[36m${formatDateFull2(date)}\x1b[0m`)
   console.log()
