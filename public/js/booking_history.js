@@ -200,6 +200,7 @@ getUserInfo().then(() => {
     current: number
   }
   let iduser = []
+  let detail = []
 
   fetch('/api/order/get-order-list', {
     method: 'POST',
@@ -220,7 +221,6 @@ getUserInfo().then(() => {
       const container_hienthi = document.getElementById('accordionExample');
       if(data != null) {
         const dodai = data.result.bill.length;
-        console.log("Tổng số vé nhận được từ API:", dodai);
         const number = {
           Num: [
               "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
@@ -289,10 +289,11 @@ getUserInfo().then(() => {
         }
         const accordion_body = document.querySelectorAll('.accordion-body')
         accordion_body.forEach((element, index) => {
+          console.log(iduser[index])
           const orderId = iduser[index];
           const body2 = {
             refresh_token: refresh_token,
-            order_id: iduser[index],
+            order_id: orderId,
             current: 0
           }
           fetch('/api/order/get-order-detail-list', {
@@ -306,6 +307,8 @@ getUserInfo().then(() => {
             return response.json()
           }).then((data) => {
             const orderDetails = data.result.bill.filter(ticket => ticket.bill === orderId);
+            detail.push(orderDetails)
+            console.log(detail)
             let table = `<table>
                                     <thead>
                                     <tr>
@@ -321,13 +324,13 @@ getUserInfo().then(() => {
                               <th scope="row">${index + 1}</th>
                               <td><span class="status_ticket">${ticket.status == 0 ? 'Thành công' : 'Thất bại'}</span></td>
                               <td>${ticket.price.toLocaleString('vi-VN')} VNĐ</td>
-                              <td><button class="btn btn_cancel_ticket" onclick="cancel_ticket('${ticket._id}')"><i class="ri-close-circle-fill"></i> Huỷ vé</button></td>
+                              <td><button class="btn btn_cancel_ticket" data-index="${index}"><i class="ri-close-circle-fill"></i> Huỷ vé</button></td>
                             </tr>`
                 })
                 table += `</tbody>
                         </table>`
                 element.innerHTML = table
-            })
+          })
         })
     }
   }).catch((error) => {
@@ -335,24 +338,6 @@ getUserInfo().then(() => {
   });
 })
 
-function cancel_ticket(id) {
-  const body = {
-    refresh_token: refresh_token,
-    ticket_id: id
-  }
-  fetch('/api/order/cancel-ticket', { 
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${access_token}`
-    },
-    body: JSON.stringify(body)
-  }).then((response) => {
-    return response.json()
-  }).then((data) => {
-    
-  })
-}
 
 document.getElementById('Contact_us').addEventListener('click', () => {
   Swal.fire({

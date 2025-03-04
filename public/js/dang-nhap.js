@@ -445,6 +445,7 @@ function register() {
       if (data.message === 'Đăng ký thành công! Vui lòng đăng nhập lại') {
         Swal.fire({
           title: 'Thành công!',
+          icon: 'success',
           text: data.message
         }).then((result) => {
           if (result.dismiss === Swal.DismissReason.backdrop) {

@@ -1,6 +1,4 @@
-$(document).ready(function(){
-  $('#myModal').modal('show');
-});
+
 
 const loading = document.querySelector('.loader')
 window.onload = function() {
@@ -34,10 +32,15 @@ fetch('/api/notification-global/get-notification')
     return response.json()
   })
   .then((data) => {
-    document.getElementById('modal-title').textContent = data.title
-    document.getElementById('modal-img').src = data.images[0].url
-    document.getElementById('modal-content').textContent = data.description
-    document.getElementById('modal-author').textContent = data.display_name
+    if(data != null || data != undefined) {
+      $(document).ready(function(){
+        $('#myModal').modal('show');
+      });
+      document.getElementById('modal-title').textContent = data.title
+      document.getElementById('modal-img').src = data.images[0].url
+      document.getElementById('modal-content').textContent = data.description
+      document.getElementById('modal-author').textContent = data.display_name
+    }
   })
 
 function getUserInfo() {

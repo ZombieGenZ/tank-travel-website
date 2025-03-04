@@ -328,6 +328,7 @@ window.addEventListener('load', () => {
                   title: 'Thông tin chi tiết vé xe',
                   html: `<div class="input__group">
                               <img src="${busRoute[index].vehicle.preview[1].url}" class="preview_img">
+                              <img src="${busRoute[index].vehicle.preview[2].url}" class="preview_img">
                           </div>
                           <div class="input__group">
                               <input type="input" class="form__field" placeholder="Name" value="${busRoute[index].start_point}" readOnly>
