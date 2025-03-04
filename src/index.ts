@@ -190,7 +190,7 @@ app.get('/order/bill', async (req: Request, res: Response) => {
             : 'Không xác định',
     departure_time: formatDateFull2(busRoute.departure_time),
     arrival_time: formatDateFull2(busRoute.arrival_time),
-    booking_time: bill.booking_time,
+    booking_time: formatDateFull2(bill.booking_time),
     seats: bill.quantity
   })
 })
