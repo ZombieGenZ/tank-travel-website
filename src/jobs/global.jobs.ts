@@ -3,6 +3,7 @@ import { backupPublicFolder } from './functions/backupUploadFile.functions'
 import { autoUnBanAccountExpiredBanned } from './functions/autoUnBanAccountExpiredBanned.functions'
 import { isLastDayOfMonth } from '~/utils/date'
 import { automaticReward } from './functions/automaticReward.functions'
+import { statisticalReport } from './functions/statisticalReport.functions'
 
 const runAllCrons = () => {
   // Cron job dùng để backup file mỗi ngày vào lúc 6h sáng, 12h trưa và 18h chiều và 0h đêm
@@ -13,6 +14,12 @@ const runAllCrons = () => {
   cron.schedule('0 0 * * *', () => {
     if (isLastDayOfMonth()) {
       automaticReward()
+    }
+  })
+  // Cron job dùng để tự động gửi thống kê hàng tháng cho doanh nghiệp
+  cron.schedule('0 12 * * *', () => {
+    if (isLastDayOfMonth()) {
+      statisticalReport()
     }
   })
 }
