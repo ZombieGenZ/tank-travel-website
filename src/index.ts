@@ -13,7 +13,7 @@ import { TokenPayload } from './models/requests/user.requests'
 import { verifyToken } from './utils/jwt'
 import { ObjectId } from 'mongodb'
 import { writeInfoLog } from './utils/log'
-import { UserPermission } from './constants/enum'
+import { SeatType, UserPermission, VehicleTypeEnum } from './constants/enum'
 
 dotenv.config()
 const port = process.env.APP_PORT || 3000
@@ -130,8 +130,69 @@ app.get('/profile', (req: Request, res: Response) => {
   res.render('profile')
 })
 
-app.get('/bill_information', (req: Request, res: Response) => {
-  res.render('bill_information')
+app.get('/order/bill', async (req: Request, res: Response) => {
+  if (!req.query.id) {
+    // DOITAFTER: màn hình 404
+    res.json({
+      message: 'You do not permission to access this page'
+    })
+    return
+  }
+
+  const bill = await databaseService.bill.findOne({ _id: new ObjectId(req.query.id.toString()) })
+
+  if (!bill) {
+    // DOITAFTER: màn hình 404
+    res.json({
+      message: 'You do not permission to access this page'
+    })
+    return
+  }
+
+  const busRoute = await databaseService.busRoute.findOne({ _id: bill.bus_route })
+
+  if (!busRoute) {
+    // DOITAFTER: màn hình 404
+    res.json({
+      message: 'You do not permission to access this page'
+    })
+    return
+  }
+
+  const vehicle = await databaseService.vehicles.findOne({ _id: busRoute.vehicle })
+
+  if (!vehicle) {
+    // DOITAFTER: màn hình 404
+    res.json({
+      message: 'You do not permission to access this page'
+    })
+    return
+  }
+
+  res.render('bill_information', {
+    start_point: busRoute.start_point,
+    end_point: busRoute.end_point,
+    vehicle_type:
+      vehicle.vehicle_type == VehicleTypeEnum.BUS
+        ? 'xe khách'
+        : vehicle.vehicle_type == VehicleTypeEnum.TRAIN
+          ? 'tàu hỏa'
+          : vehicle.vehicle_type == VehicleTypeEnum.PLANE
+            ? 'máy bay'
+            : 'Không xác định',
+    seats_type:
+      vehicle.seat_type == SeatType.SEATING_SEAT
+        ? 'Ghế ngồi'
+        : vehicle.seat_type == SeatType.SLEEPER_SEAT
+          ? 'Giường nằm'
+          : vehicle.seat_type == SeatType.HYBRID_SEAT
+            ? 'Ghế vừa nằm vừa ngồi'
+            : 'Không xác định',
+    departure_time: formatDateFull2(busRoute.departure_time),
+    arrival_time: formatDateFull2(busRoute.arrival_time),
+    booking_time: bill.booking_time,
+    seats: bill.quantity
+  })
 })
 
 // download router

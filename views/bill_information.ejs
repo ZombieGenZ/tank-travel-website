@@ -33,7 +33,7 @@
     </div>
 
     <section class="section_container payment_container" id="payment_container">
-        <h1 id="tuyen_xe">Đà Lạt - Sài Gòn</h1>
+        <h1 id="tuyen_xe"><%= start_point %> - <%= end_point></h1>
         <div class="card">
             <div class="card__title">Thông tin vé</div>
             <div class="card__data">
@@ -41,23 +41,23 @@
                 <div class="items">Tuyến xe</div>
                 <div class="items">Loại phương tiện</div>
                 <div class="items">Loại ghế</div>
-                <div class="items">Số hiệu ghế</div>
                 <div class="items">Nơi khởi hành</div>
                 <div class="items">Thời gian khởi hành</div>
                 <div class="items">Nơi đến</div>
                 <div class="items">Thời gian đến dự kiến</div>
                 <div class="items">Thời gian đặt vé</div>
+                <div class="items">Số lượng vé</div>
               </div>
               <div class="card__left">
-                <div class="items">Đà Lạt - Sài Gòn</div>
-                <div class="items">varchar</div>
-                <div class="items">datetime</div>
-                <div class="items">boolean</div>
-                <div class="items">boolean</div>
-                <div class="items">varchar</div>
-                <div class="items">datetime</div>
-                <div class="items">boolean</div>
-                <div class="items">boolean</div>
+                <div class="items"><%= start_point %> - <%= end_point %></div>
+                <div class="items"><%= vehicle_type %></div>
+                <div class="items"><%= seats_type %></div>
+                <div class="items"><%= start_point %></div>
+                <div class="items"><%= departure_time %></div>
+                <div class="items"><%= end_point %></div>
+                <div class="items"><%= arrival_time %></div>
+                <div class="items"><%= booking_time %></div>
+                <div class="items"><%= seats %></div>
               </div>
             </div>
           </div>
