@@ -318,7 +318,7 @@ getUserInfo().then(() => {
                     orderDetails.forEach((ticket, idx) => {
                       table += `<tr>
                                   <th scope="row">${idx + 1}</th>
-                                  <td><span class="status_ticket">${ticket.status == 0 ? 'Thành công' : 'Thất bại'}</span></td>
+                                  ${ticket.status == 0 ? '<td><span class="status_ticket">Thành công</span></td>' : '<td><span class="status_ticket back-red">Thất bại</span></td>'}
                                   <td>${ticket.price.toLocaleString('vi-VN')} VNĐ</td>
                                   <td><button class="btn btn_cancel_ticket" onclick="cancel_ticket('${ticket._id}')" data-index="${idx}"><i class="ri-close-circle-fill"></i> Huỷ vé</button></td>
                                 </tr>`;
@@ -358,4 +358,34 @@ document.getElementById('Contact_us').addEventListener('click', () => {
 
 function cancel_ticket(id) {
   console.log(id)
+  const boday = {
+    refresh_token: refresh_token,
+    ticket_id: id
+  }
+  fetch('/api/order/cancel-ticket', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${access_token}`
+    },
+    body: JSON.stringify(boday)
+  }).then((response) => {
+    return response.json()
+  }).then((data) => {
+    if(data.success) {
+      Swal.fire({
+        title: 'Huỷ vé thành công',
+        icon: 'success',
+        footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
+      })
+      location.reload()
+    } else {
+      Swal.fire({
+        title: 'Oops...',
+        icon: 'error',
+        text: 'Huỷ vé không thành công',
+        footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
+      })
+    }
+  })
 }

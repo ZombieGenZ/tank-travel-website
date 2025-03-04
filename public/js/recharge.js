@@ -135,17 +135,17 @@ recharge_button.addEventListener('click', () => {
 
           document.getElementById('wallet_money').value = wallet + res.amount
 
-          loader.classList.remove('loader')
-          loader.classList.add('Success')
-          const Success = document.createElement('h2')
-          Success.innerText = 'Thành công'
-          loader.appendChild(Success)
-
           Swal.fire({
             title: 'Thành công',
             icon: 'success',
             text: 'Nạp tiền thành công!'
           })
+
+          loader.classList.remove('loader')
+          loader.classList.add('Success')
+          const Success = document.createElement('h2')
+          Success.innerText = 'Thành công'
+          loader.appendChild(Success)
         })
 
         socket.emit('connect-payment-realtime', refresh_token, data.result.order_id)
@@ -158,6 +158,7 @@ recharge_button.addEventListener('click', () => {
       } else {
         Swal.fire({
           title: 'Oops...',
+          icon: 'error',
           text: 'Lỗi kết nối đến máy chủ',
           footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
         }).then(() => {

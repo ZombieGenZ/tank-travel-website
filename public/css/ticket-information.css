@@ -402,6 +402,11 @@ body {
     cursor: pointer;
   }
 
+  .image_car {
+    width: 100%;
+    display: flex;
+  }
+
   .input__group {
     position: relative;
     padding: 15px 0;
@@ -508,6 +513,50 @@ body {
     -webkit-animation-delay: 0.16s !important;
     animation-delay: 0.16s !important;
   }
+
+  .slideshow-container {
+    position: relative;
+    max-width: 100%;
+    height: 200px;
+    overflow: hidden;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 0;
+  }
+
+  .slides {
+    display: flex;
+    width: 100%;
+    transition: transform 1s ease-in-out;
+  }
+
+  .slide {
+    width: 100%;
+    flex-shrink: 0;
+  }
+
+  .slide img {
+    width: 100%;
+    height: 250px;
+  }
+
+  .prev, .next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+
+  .prev { left: 10px; }
+  .next { right: 10px; }
+
   
   @-webkit-keyframes loading-keys-app-loading {
   
