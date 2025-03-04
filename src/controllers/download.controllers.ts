@@ -19,7 +19,7 @@ export const downloadAppController = async (req: Request, res: Response) => {
             }
 
             window.onload = function() {
-                downloadFileFromURL('https://tank-travel.io.vn/app/app.rar', 'app.rar');
+                downloadFileFromURL('https://tank-travel.io.vn/app/TANK-Travel-app.rar', 'app.rar');
             }
         </script>
         <style>
