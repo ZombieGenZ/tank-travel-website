@@ -1271,6 +1271,511 @@ class StatisticalService {
       revenue: todayRevenue
     }
   }
+
+  async getWeeklyStatistics(user: User) {
+    const today: Date = new Date()
+
+    const currentDay = today.getDay()
+    const firstDayOfWeek = new Date(today)
+    const diff = currentDay === 0 ? 6 : currentDay - 1
+    firstDayOfWeek.setDate(today.getDate() - diff)
+    firstDayOfWeek.setHours(0, 0, 0, 0)
+
+    const lastDayOfWeek = new Date(firstDayOfWeek)
+    lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6)
+    lastDayOfWeek.setHours(23, 59, 59, 999)
+
+    const allDates: Array<{ date: Date; dateString: string; formattedDate: string }> = []
+    const tempDate = new Date(firstDayOfWeek)
+
+    while (tempDate <= lastDayOfWeek) {
+      const day = String(tempDate.getDate()).padStart(2, '0')
+      const month = String(tempDate.getMonth() + 1).padStart(2, '0')
+      const formattedDate = `${day}/${month}`
+
+      const utcDate = new Date(Date.UTC(tempDate.getFullYear(), tempDate.getMonth(), tempDate.getDate(), 0, 0, 0, 0))
+      const dateString = utcDate.toISOString().split('T')[0]
+
+      allDates.push({
+        date: new Date(tempDate),
+        dateString: dateString,
+        formattedDate: formattedDate
+      })
+
+      tempDate.setDate(tempDate.getDate() + 1)
+    }
+
+    let pipeline = []
+
+    const matchStage = {
+      $match: {
+        booking_time: {
+          $gte: firstDayOfWeek,
+          $lte: lastDayOfWeek
+        }
+      }
+    }
+
+    pipeline.push(matchStage)
+
+    if (user.permission !== UserPermission.ADMINISTRATOR) {
+      pipeline = [
+        ...pipeline,
+        {
+          $lookup: {
+            from: process.env.DATABASE_BUS_ROUTE_COLLECTION,
+            localField: 'bus_route',
+            foreignField: '_id',
+            as: 'bus_route_info'
+          }
+        },
+        {
+          $unwind: '$bus_route_info'
+        },
+        {
+          $lookup: {
+            from: process.env.DATABASE_VEHICLE_COLLECTION,
+            localField: 'bus_route_info.vehicle',
+            foreignField: '_id',
+            as: 'vehicle_info'
+          }
+        },
+        {
+          $unwind: '$vehicle_info'
+        },
+        {
+          $match: {
+            'vehicle_info.user': user._id
+          }
+        }
+      ]
+    }
+
+    const commonStages = [
+      {
+        $addFields: {
+          dateOnly: {
+            $dateToString: { format: '%Y-%m-%d', date: '$booking_time', timezone: 'UTC' }
+          },
+          discountedPrice: {
+            $multiply: ['$totalPrice', 0.95]
+          }
+        }
+      }
+    ]
+
+    pipeline = [...pipeline, ...commonStages]
+
+    const revenueByDayPipeline = [
+      ...pipeline,
+      {
+        $group: {
+          _id: '$dateOnly',
+          totalRevenue: { $sum: '$discountedPrice' },
+          totalDeals: { $sum: 1 },
+          totalTickets: { $sum: '$quantity' }
+        }
+      },
+      {
+        $sort: { _id: 1 }
+      }
+    ]
+
+    const dailyData = await databaseService.bill.aggregate(revenueByDayPipeline).toArray()
+
+    const weeklyTotalsPipeline = [
+      ...pipeline,
+      {
+        $group: {
+          _id: null,
+          totalRevenue: { $sum: '$discountedPrice' },
+          totalDeals: { $sum: 1 },
+          totalTickets: { $sum: '$quantity' },
+          averageTicketValue: { $avg: '$discountedPrice' }
+        }
+      }
+    ]
+
+    const weeklyTotals = await databaseService.bill.aggregate(weeklyTotalsPipeline).toArray()
+
+    const dailyDataMap: Record<string, any> = {}
+    dailyData.forEach((item: any) => {
+      dailyDataMap[item._id] = item
+    })
+
+    const formattedDailyData = allDates.map((dateObj) => {
+      const dayData = dailyDataMap[dateObj.dateString] || { totalRevenue: 0, totalDeals: 0, totalTickets: 0 }
+
+      return {
+        date: dateObj.formattedDate,
+        revenue: dayData.totalRevenue || 0,
+        deals: dayData.totalDeals || 0,
+        tickets: dayData.totalTickets || 0
+      }
+    })
+
+    const wtdStats = {
+      revenue: weeklyTotals.length > 0 ? weeklyTotals[0].totalRevenue : 0,
+      deals: weeklyTotals.length > 0 ? weeklyTotals[0].totalDeals : 0,
+      tickets: weeklyTotals.length > 0 ? weeklyTotals[0].totalTickets : 0,
+      averageTicketValue: weeklyTotals.length > 0 ? weeklyTotals[0].averageTicketValue : 0
+    }
+
+    const firstDayOfPrevWeek = new Date(firstDayOfWeek)
+    firstDayOfPrevWeek.setDate(firstDayOfPrevWeek.getDate() - 7)
+    firstDayOfPrevWeek.setHours(0, 0, 0, 0)
+
+    const lastDayOfPrevWeek = new Date(lastDayOfWeek)
+    lastDayOfPrevWeek.setDate(lastDayOfPrevWeek.getDate() - 7)
+    lastDayOfPrevWeek.setHours(23, 59, 59, 999)
+
+    let prevWeekPipeline = []
+
+    const prevWeekMatchStage = {
+      $match: {
+        booking_time: {
+          $gte: firstDayOfPrevWeek,
+          $lte: lastDayOfPrevWeek
+        }
+      }
+    }
+
+    prevWeekPipeline.push(prevWeekMatchStage)
+
+    if (user.permission !== UserPermission.ADMINISTRATOR) {
+      prevWeekPipeline = [
+        ...prevWeekPipeline,
+        {
+          $lookup: {
+            from: process.env.DATABASE_BUS_ROUTE_COLLECTION,
+            localField: 'bus_route',
+            foreignField: '_id',
+            as: 'bus_route_info'
+          }
+        },
+        {
+          $unwind: '$bus_route_info'
+        },
+        {
+          $lookup: {
+            from: process.env.DATABASE_VEHICLE_COLLECTION,
+            localField: 'bus_route_info.vehicle',
+            foreignField: '_id',
+            as: 'vehicle_info'
+          }
+        },
+        {
+          $unwind: '$vehicle_info'
+        },
+        {
+          $match: {
+            'vehicle_info.user': user._id
+          }
+        }
+      ]
+    }
+
+    prevWeekPipeline = [
+      ...prevWeekPipeline,
+      {
+        $addFields: {
+          discountedPrice: {
+            $multiply: ['$totalPrice', 0.95]
+          }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalRevenue: { $sum: '$discountedPrice' },
+          totalDeals: { $sum: 1 },
+          totalTickets: { $sum: '$quantity' }
+        }
+      }
+    ]
+
+    const prevWeekData = await databaseService.bill.aggregate(prevWeekPipeline).toArray()
+
+    const prevWeekStats = {
+      revenue: prevWeekData.length > 0 ? prevWeekData[0].totalRevenue : 0,
+      deals: prevWeekData.length > 0 ? prevWeekData[0].totalDeals : 0,
+      tickets: prevWeekData.length > 0 ? prevWeekData[0].totalTickets : 0
+    }
+
+    const calculatePercentChange = (current: number, previous: number) => {
+      if (previous === 0) {
+        return current > 0 ? 100 : 0
+      } else {
+        return Math.round(((current - previous) / previous) * 100)
+      }
+    }
+
+    const weekOverWeekChanges = {
+      revenueChange: calculatePercentChange(wtdStats.revenue, prevWeekStats.revenue),
+      dealsChange: calculatePercentChange(wtdStats.deals, prevWeekStats.deals),
+      ticketsChange: calculatePercentChange(wtdStats.tickets, prevWeekStats.tickets)
+    }
+
+    const dayNames = ['Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy', 'Chủ Nhật']
+    const formattedDailyDataWithDayNames = formattedDailyData.map((item, index) => {
+      return {
+        ...item,
+        dayName: dayNames[index]
+      }
+    })
+
+    return {
+      dailyData: formattedDailyDataWithDayNames,
+      weekToDate: wtdStats,
+      previousWeek: prevWeekStats,
+      weekOverWeekChanges: weekOverWeekChanges
+    }
+  }
+
+  async getMonthlyStatistics(user: User) {
+    const today: Date = new Date()
+    const firstDayOfMonth: Date = new Date(today.getFullYear(), today.getMonth(), 1)
+    firstDayOfMonth.setHours(0, 0, 0, 0)
+
+    const lastDayOfMonth: Date = new Date(today.getFullYear(), today.getMonth() + 1, 0)
+    lastDayOfMonth.setHours(23, 59, 59, 999)
+
+    const allDates: Array<{ date: Date; dateString: string; formattedDate: string }> = []
+    const tempDate = new Date(firstDayOfMonth)
+
+    while (tempDate <= lastDayOfMonth) {
+      const day = String(tempDate.getDate()).padStart(2, '0')
+      const month = String(tempDate.getMonth() + 1).padStart(2, '0')
+      const formattedDate = `${day}/${month}`
+
+      const utcDate = new Date(Date.UTC(tempDate.getFullYear(), tempDate.getMonth(), tempDate.getDate(), 0, 0, 0, 0))
+      const dateString = utcDate.toISOString().split('T')[0]
+
+      allDates.push({
+        date: new Date(tempDate),
+        dateString: dateString,
+        formattedDate: formattedDate
+      })
+
+      tempDate.setDate(tempDate.getDate() + 1)
+    }
+
+    let pipeline = []
+
+    const matchStage = {
+      $match: {
+        booking_time: {
+          $gte: firstDayOfMonth,
+          $lte: lastDayOfMonth
+        }
+      }
+    }
+
+    pipeline.push(matchStage)
+
+    if (user.permission !== UserPermission.ADMINISTRATOR) {
+      pipeline = [
+        ...pipeline,
+        {
+          $lookup: {
+            from: process.env.DATABASE_BUS_ROUTE_COLLECTION,
+            localField: 'bus_route',
+            foreignField: '_id',
+            as: 'bus_route_info'
+          }
+        },
+        {
+          $unwind: '$bus_route_info'
+        },
+        {
+          $lookup: {
+            from: process.env.DATABASE_VEHICLE_COLLECTION,
+            localField: 'bus_route_info.vehicle',
+            foreignField: '_id',
+            as: 'vehicle_info'
+          }
+        },
+        {
+          $unwind: '$vehicle_info'
+        },
+        {
+          $match: {
+            'vehicle_info.user': user._id
+          }
+        }
+      ]
+    }
+
+    const commonStages = [
+      {
+        $addFields: {
+          dateOnly: {
+            $dateToString: { format: '%Y-%m-%d', date: '$booking_time', timezone: 'UTC' }
+          },
+          discountedPrice: {
+            $multiply: ['$totalPrice', 0.95]
+          }
+        }
+      }
+    ]
+
+    pipeline = [...pipeline, ...commonStages]
+
+    const revenueByDayPipeline = [
+      ...pipeline,
+      {
+        $group: {
+          _id: '$dateOnly',
+          totalRevenue: { $sum: '$discountedPrice' },
+          totalDeals: { $sum: 1 },
+          totalTickets: { $sum: '$quantity' }
+        }
+      },
+      {
+        $sort: { _id: 1 }
+      }
+    ]
+
+    const dailyData = await databaseService.bill.aggregate(revenueByDayPipeline).toArray()
+
+    const monthlyTotalsPipeline = [
+      ...pipeline,
+      {
+        $group: {
+          _id: null,
+          totalRevenue: { $sum: '$discountedPrice' },
+          totalDeals: { $sum: 1 },
+          totalTickets: { $sum: '$quantity' },
+          averageTicketValue: { $avg: '$discountedPrice' }
+        }
+      }
+    ]
+
+    const monthlyTotals = await databaseService.bill.aggregate(monthlyTotalsPipeline).toArray()
+
+    const dailyDataMap: Record<string, any> = {}
+    dailyData.forEach((item: any) => {
+      dailyDataMap[item._id] = item
+    })
+
+    const formattedDailyData = allDates.map((dateObj) => {
+      const dayData = dailyDataMap[dateObj.dateString] || { totalRevenue: 0, totalDeals: 0, totalTickets: 0 }
+
+      return {
+        date: dateObj.formattedDate,
+        revenue: dayData.totalRevenue || 0,
+        deals: dayData.totalDeals || 0,
+        tickets: dayData.totalTickets || 0
+      }
+    })
+
+    const mtdStats = {
+      revenue: monthlyTotals.length > 0 ? monthlyTotals[0].totalRevenue : 0,
+      deals: monthlyTotals.length > 0 ? monthlyTotals[0].totalDeals : 0,
+      tickets: monthlyTotals.length > 0 ? monthlyTotals[0].totalTickets : 0,
+      averageTicketValue: monthlyTotals.length > 0 ? monthlyTotals[0].averageTicketValue : 0
+    }
+
+    const firstDayOfPrevMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1)
+    firstDayOfPrevMonth.setHours(0, 0, 0, 0)
+
+    const lastDayOfPrevMonth = new Date(today.getFullYear(), today.getMonth(), 0)
+    lastDayOfPrevMonth.setHours(23, 59, 59, 999)
+
+    let prevMonthPipeline = []
+
+    const prevMonthMatchStage = {
+      $match: {
+        booking_time: {
+          $gte: firstDayOfPrevMonth,
+          $lte: lastDayOfPrevMonth
+        }
+      }
+    }
+
+    prevMonthPipeline.push(prevMonthMatchStage)
+
+    if (user.permission !== UserPermission.ADMINISTRATOR) {
+      prevMonthPipeline = [
+        ...prevMonthPipeline,
+        {
+          $lookup: {
+            from: process.env.DATABASE_BUS_ROUTE_COLLECTION,
+            localField: 'bus_route',
+            foreignField: '_id',
+            as: 'bus_route_info'
+          }
+        },
+        {
+          $unwind: '$bus_route_info'
+        },
+        {
+          $lookup: {
+            from: process.env.DATABASE_VEHICLE_COLLECTION,
+            localField: 'bus_route_info.vehicle',
+            foreignField: '_id',
+            as: 'vehicle_info'
+          }
+        },
+        {
+          $unwind: '$vehicle_info'
+        },
+        {
+          $match: {
+            'vehicle_info.user': user._id
+          }
+        }
+      ]
+    }
+
+    prevMonthPipeline = [
+      ...prevMonthPipeline,
+      {
+        $addFields: {
+          discountedPrice: {
+            $multiply: ['$totalPrice', 0.95]
+          }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalRevenue: { $sum: '$discountedPrice' },
+          totalDeals: { $sum: 1 },
+          totalTickets: { $sum: '$quantity' }
+        }
+      }
+    ]
+
+    const prevMonthData = await databaseService.bill.aggregate(prevMonthPipeline).toArray()
+
+    const prevMonthStats = {
+      revenue: prevMonthData.length > 0 ? prevMonthData[0].totalRevenue : 0,
+      deals: prevMonthData.length > 0 ? prevMonthData[0].totalDeals : 0,
+      tickets: prevMonthData.length > 0 ? prevMonthData[0].totalTickets : 0
+    }
+
+    const calculatePercentChange = (current: number, previous: number) => {
+      if (previous === 0) {
+        return current > 0 ? 100 : 0
+      } else {
+        return Math.round(((current - previous) / previous) * 100)
+      }
+    }
+
+    const monthOverMonthChanges = {
+      revenueChange: calculatePercentChange(mtdStats.revenue, prevMonthStats.revenue),
+      dealsChange: calculatePercentChange(mtdStats.deals, prevMonthStats.deals),
+      ticketsChange: calculatePercentChange(mtdStats.tickets, prevMonthStats.tickets)
+    }
+
+    return {
+      dailyData: formattedDailyData,
+      monthToDate: mtdStats,
+      previousMonth: prevMonthStats,
+      monthOverMonthChanges: monthOverMonthChanges
+    }
+  }
 }
 
 const statisticsService = new StatisticalService()
