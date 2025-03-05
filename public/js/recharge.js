@@ -1,7 +1,7 @@
 const server_url = 'https://tank-travel.io.vn'
 
 const loading = document.querySelector('.loaders')
-window.onload = function() {
+window.onload = function () {
   loading.style.display = 'none'
 }
 
@@ -32,6 +32,8 @@ document.getElementById('Contact_us').addEventListener('click', () => {
   });
 })
 
+let money = 0
+
 const recharge_grid = document.getElementById('recharge_container')
 const recharge_choose = document.getElementById('recharge_choose')
 const recharge_payment = document.querySelectorAll('.recharge_payment')
@@ -39,6 +41,12 @@ const recharge_button = document.getElementById('recharge_button')
 const amount1 = document.getElementById('money_view')
 const loader = document.getElementById('loader')
 let socket
+
+socket = io(server_url, {
+  withCredentials: true,
+  transports: ['websocket']
+})
+
 recharge_grid.style.animation = 'fade-Y 1s ease-in-out'
 recharge_button.addEventListener('click', () => {
   const amount = document.getElementById('money_view').value
@@ -126,10 +134,6 @@ recharge_button.addEventListener('click', () => {
 
         const refresh_token = localStorage.getItem('refresh_token')
 
-        socket = io(server_url, {
-          withCredentials: true,
-          transports: ['websocket']
-        })
         socket.on('update-order-status', (res) => {
           const wallet = Number(document.getElementById('wallet_money').value)
 
@@ -210,7 +214,9 @@ function getUserInfo() {
             const recharge = document.createElement('li')
             const personal_infor = document.getElementById('personal_infor')
             const So_du = document.createElement('div')
+            money = user.balance
             So_du.classList.add('So_du')
+            So_du.id = 'So_Du'
             recharge.classList.add('link')
             recharge.innerHTML = '<a href="#"><i class="ri-money-dollar-circle-line"></i> Nạp tiền</a>'
             recharge.id = 'recharge_money'
@@ -271,6 +277,9 @@ function getUserInfo() {
 
 window.addEventListener('load', () => {
   getUserInfo().then(() => {
+    if (user == null || user == undefined) {
+      window.location.href = '/'
+    }
     const my_wallet = document.getElementById('wallet_money')
     my_wallet.value = user.balance
 
@@ -344,3 +353,14 @@ window.addEventListener('load', () => {
     })
   })
 })
+
+socket.on('update-balance', (res) => {
+  if (res.type == '+') {
+    money += res.value
+  } else {
+    money -= res.value
+  }
+  document.getElementById('So_Du').innerText = `Số dư: ${money.toLocaleString('vi-VN')} VNĐ`
+})
+
+socket.emit('connect-user-realtime', refresh_token)
