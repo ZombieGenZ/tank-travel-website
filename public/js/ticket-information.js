@@ -92,6 +92,17 @@ function getUserInfo() {
             const recharge = document.createElement('li')
             const personal_infor = document.getElementById('personal_infor')
             const So_du = document.createElement('div')
+            const notification = document.createElement('div')
+            notification.classList.add('notification')
+            notification.innerHTML = `<button class="button btn">
+                                        <i class="ri-notification-2-fill bell"></i>
+                                        <div class="arrow">›</div>
+                                      </button>
+                                      <div class="dropdown">
+                                        <div class="dropdown-item">🔔 Bạn có một thông báo mới</div>
+                                        <div class="dropdown-item">📩 Tin nhắn chưa đọc</div>
+                                        <div class="dropdown-item">⚠️ Cập nhật bảo mật</div>
+                                      </div>`
             So_du.classList.add('So_du')
             recharge.classList.add('link')
             recharge.innerHTML = '<a href="#"><i class="ri-money-dollar-circle-line"></i> Nạp tiền</a>'
@@ -125,6 +136,7 @@ function getUserInfo() {
             buttonlogin.style.display = 'none'
             buttonlogin.disabled = true
             personal_infor.appendChild(So_du)
+            personal_infor.appendChild(notification)
             personal_infor.appendChild(personal)
             ul.appendChild(recharge)
             ul.appendChild(booking_history)
@@ -428,7 +440,7 @@ window.addEventListener('load', () => {
                               <label for="name" class="form__label">Phương tiện:</label>
                         </div>
                         <div class="input__group">
-                              <input type="input" class="form__field" placeholder="Name" value="" readOnly>
+                              <input type="input" class="form__field total_price" placeholder="Name" value="" readOnly>
                               <label for="name" class="form__label">Tổng giá vé:</label>
                         </div>
                       `,
@@ -554,6 +566,12 @@ window.addEventListener('load', () => {
                       }
                     },
                     footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
+                  })
+                  const ticket_booking = document.querySelector('.ticket_booking');
+                  const total_price = document.querySelector('.total_price')
+                  total_price.value = (ticket_booking.value * busRoute[index].price).toLocaleString('vi-VN')
+                  ticket_booking.addEventListener('change', () => {
+                    total_price.value = (ticket_booking.value * busRoute[index].price).toLocaleString('vi-VN')
                   })
                 })
               })

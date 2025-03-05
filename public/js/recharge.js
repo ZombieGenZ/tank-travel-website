@@ -214,6 +214,17 @@ function getUserInfo() {
             const recharge = document.createElement('li')
             const personal_infor = document.getElementById('personal_infor')
             const So_du = document.createElement('div')
+            const notification = document.createElement('div')
+            notification.classList.add('notification')
+            notification.innerHTML = `<button class="button btn">
+                                        <i class="ri-notification-2-fill bell"></i>
+                                        <div class="arrow">›</div>
+                                      </button>
+                                      <div class="dropdown">
+                                        <div class="dropdown-item">🔔 Bạn có một thông báo mới</div>
+                                        <div class="dropdown-item">📩 Tin nhắn chưa đọc</div>
+                                        <div class="dropdown-item">⚠️ Cập nhật bảo mật</div>
+                                      </div>`
             money = user.balance
             So_du.classList.add('So_du')
             So_du.id = 'So_Du'
@@ -249,6 +260,7 @@ function getUserInfo() {
             buttonlogin.style.display = 'none'
             buttonlogin.disabled = true
             personal_infor.appendChild(So_du)
+            personal_infor.appendChild(notification)
             personal_infor.appendChild(personal)
             ul.appendChild(recharge)
             ul.appendChild(booking_history)
