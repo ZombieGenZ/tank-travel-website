@@ -1,5 +1,5 @@
 const loading = document.querySelector('.loader')
-window.onload = function() {
+window.onload = function () {
   loading.style.display = 'none'
 }
 
@@ -112,13 +112,27 @@ window.addEventListener('load', () => {
 
     document.getElementById('imageInput').addEventListener('change', (e) => {
       let file = e.target.files[0]
-      if(file) {
+      if (file) {
         let reader = new FileReader()
         reader.onload = (event) => {
           let img = document.getElementById('img_infor_1')
           img.src = event.target.result;
         }
         reader.readAsDataURL(file)
+
+        const formData = new FormData()
+        formData.append('refresh_token', refresh_token)
+        formData.append('new_avatar', file)
+
+        fetch('/api/users/change-avatar', {
+          method: 'PUT',
+          body: formData,
+          credentials: 'include'
+        })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data) // Ở ĐÂY
+      })
       }
     })
 
