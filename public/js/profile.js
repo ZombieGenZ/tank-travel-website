@@ -148,48 +148,24 @@ window.addEventListener('load', () => {
       }
     })
 
-    const save_btn = document.getElementById('btn_save_infor')
-    save_btn.addEventListener('click', () => {
-      let img = document.getElementById('img_infor_1')
-      const body = {
-        refresh_token: refresh_token,
-        new_avatar: img.src
-      }
-      fetch('/api/users/change-avatar', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${access_token}`
-        },
-        body: JSON.stringify(body)
-      }).then((response) => {
-        return response.json()
-      }).then((data) => {
-        console.log(data)
-        if(data.errorInfo.message == "request entity too large") {
-          Swal.fire({
-            title: 'Thay đổi ảnh thất bại',
-            icon: 'error',
-            text: 'Ảnh đại diện có dung lượng quá lớn'
-          })
-          return
-        }
+    document.getElementById('chang_name').addEventListener('click',() => {
 
-        if(data.message == "Bạn phải tải lên ảnh đại diện") {
-          Swal.fire({
-            title: 'Thay đổi ảnh thất bại',
-            icon: 'error',
-            text: 'Bạn phải chọn ảnh đại diện'
-          })
-          return
-        }
+    })
 
-        Swal.fire({
-          title: 'Thành công',
-          icon: 'success',
-          text: 'Thay đổi ảnh đại diện thành công!'
-        })
-      })
+    document.getElementById('send_code').addEventListener('click',() => {
+
+    })
+
+    document.getElementById('change_email').addEventListener('click',() => {
+
+    })
+
+    document.getElementById('change_phonenumber').addEventListener('click',() => {
+
+    })
+
+    document.getElementById('change_pass').addEventListener('click',() => {
+
     })
 
     document.getElementById('logout').addEventListener('click', () => {

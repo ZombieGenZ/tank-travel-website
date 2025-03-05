@@ -677,3 +677,26 @@ input[type="file"]::file-selector-button {
   .dropdown-item:last-child {
     border-bottom: none;
   }
+
+  .input_chiahai {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .input_chiahai div {
+    width: 70%;
+  }
+
+  .btn1{
+    width: 30%;
+    outline: none;
+    color: white;
+    border: none;
+    padding: .75rem .5rem;
+    background-color: var(--primary-color);
+    cursor: pointer;
+  }
+
+  .btn1:hover {
+    background-color: var(--primary-dark-color);
+  }

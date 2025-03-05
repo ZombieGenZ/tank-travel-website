@@ -3,6 +3,34 @@ window.onload = function() {
   loading.style.display = 'none'
 }
 
+const close_pass = document.querySelectorAll('.close_pass')
+  const open_pass = document.querySelectorAll('.open_pass')
+  const new_password = document.getElementById('new_password')
+  close_pass[0].addEventListener('click', () => {
+    close_pass[0].classList.add('off')
+    open_pass[0].classList.add('on')
+    new_password.type = 'text'
+  })
+
+  open_pass[0].addEventListener('click', () => {
+    close_pass[0].classList.remove('off')
+    open_pass[0].classList.remove('on')
+    new_password.type = 'password'
+  })
+
+  const confirm_pass = document.getElementById('confirm_new_password')
+  close_pass[1].addEventListener('click', () => {
+    close_pass[1].classList.add('off')
+    open_pass[1].classList.add('on')
+    confirm_pass.type = 'text'
+  })
+
+  open_pass[1].addEventListener('click', () => {
+    close_pass[1].classList.remove('off')
+    open_pass[1].classList.remove('on')
+    confirm_pass.type = 'password'
+  })
+
 function isStrongPassword(password) {
   const minLength = 8
   if (password.length < minLength) {
@@ -61,34 +89,6 @@ function changePassword() {
     })
     return
   }
-
-  const close_pass = document.querySelectorAll('.close_pass')
-  const open_pass = document.querySelectorAll('.open_pass')
-  const new_password = document.getElementById('new_password')
-  close_pass[0].addEventListener('click', () => {
-    close_pass[0].classList.add('off')
-    open_pass[0].classList.add('on')
-    new_password.type = 'text'
-  })
-
-  open_pass[0].addEventListener('click', () => {
-    close_pass[0].classList.remove('off')
-    open_pass[0].classList.remove('on')
-    new_password.type = 'password'
-  })
-
-  const confirm_pass = document.getElementById('confirm_new_password')
-  close_pass[1].addEventListener('click', () => {
-    close_pass[1].classList.add('off')
-    open_pass[1].classList.add('on')
-    confirm_pass.type = 'text'
-  })
-
-  open_pass[1].addEventListener('click', () => {
-    close_pass[1].classList.remove('off')
-    open_pass[1].classList.remove('on')
-    confirm_pass.type = 'password'
-  })
   const urlParams = new URLSearchParams(window.location.search)
   const token = urlParams.get('token')
   const body = {
