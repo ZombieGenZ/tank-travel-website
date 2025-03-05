@@ -149,7 +149,52 @@ window.addEventListener('load', () => {
     })
 
     document.getElementById('chang_name').addEventListener('click',() => {
+      const new_display_name = document.getElementById('displayname').value
+      const refresh_token = localStorage.getItem('refresh_token')
 
+      const body = { refresh_token: refresh_token }
+
+      fetch('/api/users/change-display-name', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      }).then((response) => {
+          return response.json()
+      }).then((data) => {
+          if (data === null || data === undefined) {
+            Swal.fire({
+              title: 'Oops...',
+              text: 'Lỗi kết nối đến máy chủ',
+              footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
+            })
+            return
+          }
+    
+          if (data.message == 'Đăng xuất thành công!') {
+            localStorage.removeItem('access_token')
+            localStorage.removeItem('refresh_token')
+            Swal.fire({
+              title: 'Thành công',
+              icon: 'success',
+              text: data.message
+            }).then((result) => {
+              if (result.dismiss === Swal.DismissReason.backdrop) {
+                window.location.href = '/'
+              } else {
+                window.location.href = '/'
+              }
+            })
+            return
+          } else {
+            Swal.fire({
+              title: 'Oops...',
+              icon: 'error',
+              text: 'Error connecting to server',
+              footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
+            })
+            return
+          }
+        })
     })
 
     document.getElementById('send_code').addEventListener('click',() => {
