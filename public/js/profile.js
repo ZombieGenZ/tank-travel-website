@@ -251,4 +251,15 @@ window.addEventListener('load', () => {
   })
 })
 
+socket.on('update-balance', (res) => {
+  if (res.type == '+') {
+    money += res.value
+  } else {
+    money -= res.value
+  }
+  document.getElementById('So_Du').innerText = `Số dư: ${money.toLocaleString('vi-VN')} VNĐ`
+})
+
+socket.emit('connect-user-realtime', refresh_token)
+
 
