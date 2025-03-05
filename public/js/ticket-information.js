@@ -298,12 +298,12 @@ window.addEventListener('load', () => {
                                 <p>${formatDate(route.departure_time)}</p>
                             </div>
                             <div class="detail_ticket price">
-                                <h4>Phương tiện:</h4>
-                                <p>${route.vehicle.vehicle_type == '0' ? 'Xe khách' : 'Tàu hỏa'}</p>
-                            </div>
-                            <div class="detail_ticket price">
                                 <h4>Giá tiền:</h4>
                                 <p>${route.price.toLocaleString('vi-VN')} VNĐ</p>
+                            </div>
+                            <div class="detail_ticket">
+                                <h4>Số vé hiện có:</h4>
+                                <p>${route.quantity} vé</p>
                             </div>
                         </div>
                         <div class="morinfor_bookbutton">
@@ -326,9 +326,13 @@ window.addEventListener('load', () => {
                 const index = moreinfor.dataset.index
                 Swal.fire({
                   title: 'Thông tin chi tiết vé xe',
-                  html: `<div class="input__group">
-                              <img src="${busRoute[index].vehicle.preview[0].url}" class="preview_img">
+                  html: `<div class="input__group slideshow-container">
+                          <div class="slides">
+                            <div class="slide"><img src="${busRoute[index].vehicle.preview[0].url}" alt="Slide 1"></div>
                           </div>
+                          <button class="prev">❮</button>
+                          <button class="next">❯</button>
+                        </div>
                           <div class="input__group">
                               <input type="input" class="form__field" placeholder="Name" value="${busRoute[index].start_point}" readOnly>
                               <label for="name" class="form__label">Nơi đi:</label>
@@ -666,13 +670,13 @@ window.addEventListener('load', () => {
                               <p>${formatDate(route.departure_time)}</p>
                           </div>
                           <div class="detail_ticket price">
-                              <h4>Phương tiện:</h4>
-                              <p>${route.vehicle.vehicle_type == '0' ? 'Xe khách' : 'Tàu hỏa'}</p>
-                          </div>
-                          <div class="detail_ticket price">
                               <h4>Giá tiền:</h4>
                               <p>${route.price.toLocaleString('vi-VN')} VNĐ</p>
                           </div>
+                          <div class="detail_ticket">
+                                <h4>Số vé hiện có:</h4>
+                                <p>${route.quantity} vé</p>
+                            </div>
                       </div>
                       <div class="morinfor_bookbutton">
                           <button class="btn moreinfor_ticket" data-index="${i}">Thông tin chi tiết</button>
@@ -695,7 +699,7 @@ window.addEventListener('load', () => {
               Swal.fire({
                 title: 'Thông tin chi tiết vé xe',
                 html: `
-                        <div class="slideshow-container">
+                        <div class="input__group slideshow-container">
                           <div class="slides">
                             <div class="slide"><img src="${busRoute[index].vehicle.preview[0].url}" alt="Slide 1"></div>
                           </div>
