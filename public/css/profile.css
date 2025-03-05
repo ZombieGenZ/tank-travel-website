@@ -662,6 +662,7 @@ input[type="file"]::file-selector-button {
     border-radius: 8px;
     padding: 10px;
     opacity: 0;
+    z-index: 2;
     visibility: hidden;
     transition: opacity 0.3s ease, transform 0.3s ease;
     transform: translateY(-10px);

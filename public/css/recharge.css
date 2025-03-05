@@ -677,12 +677,13 @@ body {
   position: absolute;
   top: 60px;
   left: -200px;
-    width: auto;
+  width: auto;
   background: var(--extra-light);
   box-shadow: 0 4px 6px var(--dropdown-shadow);
   border-radius: 8px;
   padding: 10px;
   opacity: 0;
+  z-index: 2;
   visibility: hidden;
   transition: opacity 0.3s ease, transform 0.3s ease;
   transform: translateY(-10px);
