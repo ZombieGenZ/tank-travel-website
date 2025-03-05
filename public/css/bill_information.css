@@ -472,8 +472,8 @@ body {
   .dropdown {
     position: absolute;
     top: 60px;
-    left: 0;
-    width: 250px;
+    left: -200px;
+    width: auto;
     background: var(--extra-light);
     box-shadow: 0 4px 6px var(--dropdown-shadow);
     border-radius: 8px;

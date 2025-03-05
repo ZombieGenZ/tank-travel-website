@@ -1,3 +1,5 @@
+const server_url = 'https://tank-travel.io.vn'
+
 const loading = document.querySelector('.loader')
 window.onload = function() {
   loading.style.display = 'none'
@@ -32,7 +34,7 @@ function getUserInfo() {
       .then((response) => {
         return response.json()
       })
-      .then((data) => {
+      .then(async (data) => {
         if (data !== null && data !== undefined) {
           if (data.user !== null && data.user !== undefined) {
             user = data.user
@@ -48,15 +50,45 @@ function getUserInfo() {
             const personal_infor = document.getElementById('personal_infor')
             const So_du = document.createElement('div')
             const notification = document.createElement('div')
+
+            const body1 = {
+              refresh_token: refresh_token,
+              session_time: new Date().toISOString(),
+              current: 0
+            }
+
+            let msg = ``
+
+            await fetch('/api/notification-private/get-notification', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(body1)
+            })
+              .then((response) => {
+                return response.json()
+              })
+              .then((data2) => {
+                if (data2 === null || data2 === undefined) {
+                  Swal.fire({
+                    title: 'Oops...',
+                    icon: 'error',
+                    text: 'Lỗi kết nối đến máy chủ',
+                    footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
+                  })
+                  return
+                }
+
+                for (const item of data2.result.notification) {
+                  msg += `<div class="dropdown-item">${item.message}</div>`
+                }
+            })
             notification.classList.add('notification')
             notification.innerHTML = `<button class="button btn">
                                         <i class="ri-notification-2-fill bell"></i>
                                         <div class="arrow">›</div>
                                       </button>
                                       <div class="dropdown">
-                                        <div class="dropdown-item">🔔 Bạn có một thông báo mới</div>
-                                        <div class="dropdown-item">📩 Tin nhắn chưa đọc</div>
-                                        <div class="dropdown-item">⚠️ Cập nhật bảo mật</div>
+                                        ${msg}
                                       </div>`
             So_du.classList.add('So_du')
             recharge.classList.add('link')
@@ -189,4 +221,30 @@ getUserInfo().then(() => {
     document.getElementById('signup_business').addEventListener('click', () => {
       window.location.href = '/business_signup'
     })
+})
+
+let socket
+
+socket = io(server_url, {
+  withCredentials: true,
+  transports: ['websocket']
+})
+
+socket.on('update-balance', (res) => {
+  if (res.type == '+') {
+    money += res.value
+  } else {
+    money -= res.value
+  }
+  document.getElementById('So_Du').innerText = `Số dư: ${money.toLocaleString('vi-VN')} VNĐ`
+})
+
+socket.emit('connect-user-realtime', refresh_token)
+
+socket.on('new-private-notificaton', (res) => {
+  const dropdown = document.getElementById('dropdown')
+
+  dropdown.innerHTML = `<div class="dropdown-item">${res.message}</div>` + dropdown.innerHTML
+
+  console.log(res)
 })
