@@ -98,10 +98,10 @@ Tank Travel là một nền tảng đặt vé xe khách/tàu hỏa trực tuyế
 
 ## Người thực hiện
 
-| Tên                        | Vai trò            |
-|----------------------------|--------------------|
-| Nguyễn Đặng Thành Thái     | Project Manager    |
-| Ngô Gia Bảo                | DevOps Engineer    |
-| Nguyễn Đình Nam            | Frontend Developer |
-| Nguyễn Đức Anh             | Frontend Developer |
-| Bùi Đăng Khoa              | Frontend Developer |
+| Tên                        | Vai Trò                  |
+|----------------------------|------------------------- |
+| Nguyễn Đặng Thành Thái     | 👨‍💼 Quản Lý Dự Án         |
+| Ngô Gia Bảo                | 🧪 Chuyên viên Testing   |
+| Nguyễn Đình Nam            | 💻 Lập Trình Frontend    |
+| Nguyễn Đức Anh             | 💻 Lập Trình Frontend    |
+| Bùi Đăng Khoa              | 💻 Lập Trình Frontend    |
