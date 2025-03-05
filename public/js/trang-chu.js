@@ -363,6 +363,13 @@ const typed = new Typed('#text', {
   loop: true
 })
 
+let socket
+
+socket = io(server_url, {
+  withCredentials: true,
+  transports: ['websocket']
+})
+
 socket.on('update-balance', (res) => {
   if (res.type == '+') {
     money += res.value
@@ -371,5 +378,12 @@ socket.on('update-balance', (res) => {
   }
   document.getElementById('So_Du').innerText = `Số dư: ${money.toLocaleString('vi-VN')} VNĐ`
 })
-
 socket.emit('connect-user-realtime', refresh_token)
+
+socket.on('new-private-notificaton', (res) => {
+  const dropdown = document.getElementById('dropdown')
+
+  dropdown.innerHTML = `<div class="dropdown-item">${res.message}</div>` + dropdown.innerHTML
+
+  console.log(res)
+})
