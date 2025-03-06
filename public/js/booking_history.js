@@ -1,34 +1,34 @@
 const server_url = 'https://tank-travel.io.vn'
 
-const loading = document.querySelector('.loader');
-window.onload = function() {
-  loading.style.display = 'none';
-};
-
-function formatDate(dateString) {
-  const date = new Date(dateString);
-  const hours = date.getHours().toString().padStart(2, '0');
-  const minutes = date.getMinutes().toString().padStart(2, '0');
-  const day = date.getDate().toString().padStart(2, '0');
-  const month = (date.getMonth() + 1).toString().padStart(2, '0');
-  const year = date.getFullYear();
-  return `${hours}:${minutes} ${day}/${month}/${year}`;
+const loading = document.querySelector('.loader')
+window.onload = () => {
+  loading.style.display = 'none'
 }
 
-let user = null;
-let access_token = localStorage.getItem('access_token');
-let refresh_token = localStorage.getItem('refresh_token');
+function formatDate(dateString) {
+  const date = new Date(dateString)
+  const hours = date.getHours().toString().padStart(2, '0')
+  const minutes = date.getMinutes().toString().padStart(2, '0')
+  const day = date.getDate().toString().padStart(2, '0')
+  const month = (date.getMonth() + 1).toString().padStart(2, '0')
+  const year = date.getFullYear()
+  return `${hours}:${minutes} ${day}/${month}/${year}`
+}
+
+let user = null
+let access_token = localStorage.getItem('access_token')
+let refresh_token = localStorage.getItem('refresh_token')
 
 function getUserInfo() {
   return new Promise((resolve) => {
     if (!refresh_token) {
-      resolve(null);
-      return;
+      resolve(null)
+      return
     }
 
     const body = {
       refresh_token: refresh_token
-    };
+    }
 
     fetch('/api/users/get-user-infomation', {
       method: 'POST',
@@ -42,18 +42,18 @@ function getUserInfo() {
       .then(async (data) => {
         if (data !== null && data !== undefined) {
           if (data.user !== null && data.user !== undefined) {
-            user = data.user;
-            localStorage.setItem('access_token', data.authenticate.access_token);
-            localStorage.setItem('refresh_token', data.authenticate.refresh_token);
+            user = data.user
+            localStorage.setItem('access_token', data.authenticate.access_token)
+            localStorage.setItem('refresh_token', data.authenticate.refresh_token)
           }
           if (user != null) {
-            const buttonlogin = document.getElementById('btn_login');
-            const ul = document.getElementById('ul_links');
-            const personal = document.createElement('div');
-            const booking_history = document.createElement('li');
-            const recharge = document.createElement('li');
-            const personal_infor = document.getElementById('personal_infor');
-            const So_du = document.createElement('div');
+            const buttonlogin = document.getElementById('btn_login')
+            const ul = document.getElementById('ul_links')
+            const personal = document.createElement('div')
+            const booking_history = document.createElement('li')
+            const recharge = document.createElement('li')
+            const personal_infor = document.getElementById('personal_infor')
+            const So_du = document.createElement('div')
             const notification = document.createElement('div')
 
             const body1 = {
@@ -95,14 +95,14 @@ function getUserInfo() {
                                       <div class="dropdown">
                                         ${msg}
                                       </div>`
-            So_du.classList.add('So_du');
-            recharge.classList.add('link');
-            recharge.innerHTML = '<a href="#"><i class="ri-money-dollar-circle-line"></i> Nạp tiền</a>';
-            recharge.id = 'recharge_money';
-            booking_history.classList.add('link');
-            booking_history.innerHTML = '<a href="#"><i class="ri-history-line"></i> Lịch sử đặt vé</a>';
-            booking_history.id = 'booking_history';
-            personal.classList.add('menu');
+            So_du.classList.add('So_du')
+            recharge.classList.add('link')
+            recharge.innerHTML = '<a href="#"><i class="ri-money-dollar-circle-line"></i> Nạp tiền</a>'
+            recharge.id = 'recharge_money'
+            booking_history.classList.add('link')
+            booking_history.innerHTML = '<a href="#"><i class="ri-history-line"></i> Lịch sử đặt vé</a>'
+            booking_history.id = 'booking_history'
+            personal.classList.add('menu')
             personal.innerHTML = `<div class="item">
                                     <a href="#" class="link">
                                       <span><i class="ri-user-2-fill"></i> ${user.display_name}</span>
@@ -123,35 +123,35 @@ function getUserInfo() {
                                         <a href="#" id="logout" class="submenu-link"> Đăng xuất </a>
                                       </div>
                                     </div>
-                                  </div>`;
-            So_du.innerText = `Số dư: ${user.balance.toLocaleString('vi-VN')} VNĐ`;
-            buttonlogin.style.display = 'none';
-            buttonlogin.disabled = true;
-            personal_infor.appendChild(So_du);
+                                  </div>`
+            So_du.innerText = `Số dư: ${user.balance.toLocaleString('vi-VN')} VNĐ`
+            buttonlogin.style.display = 'none'
+            buttonlogin.disabled = true
+            personal_infor.appendChild(So_du)
             personal_infor.appendChild(notification)
-            personal_infor.appendChild(personal);
-            ul.appendChild(recharge);
-            ul.appendChild(booking_history);
+            personal_infor.appendChild(personal)
+            ul.appendChild(recharge)
+            ul.appendChild(booking_history)
 
             So_du.addEventListener('click', () => {
-              window.location.href = '/recharge';
-            });
+              window.location.href = '/recharge'
+            })
 
             recharge.addEventListener('click', () => {
-              window.location.href = '/recharge';
-            });
+              window.location.href = '/recharge'
+            })
 
             booking_history.addEventListener('click', () => {
-              window.location.href = '/booking_history';
-            });
+              window.location.href = '/booking_history'
+            })
 
             document.getElementById('profile').addEventListener('click', () => {
-              window.location.href = '/profile';
-            });
+              window.location.href = '/profile'
+            })
 
             document.getElementById('logout').addEventListener('click', () => {
-              const refresh_token = localStorage.getItem('refresh_token');
-              const body = { refresh_token: refresh_token };
+              const refresh_token = localStorage.getItem('refresh_token')
+              const body = { refresh_token: refresh_token }
               fetch('/api/users/logout', {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
@@ -165,70 +165,70 @@ function getUserInfo() {
                       icon: 'error',
                       text: 'Lỗi kết nối đến máy chủ',
                       footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
-                    });
-                    return;
+                    })
+                    return
                   }
                   if (data.message == 'Đăng xuất thành công!') {
-                    localStorage.removeItem('access_token');
-                    localStorage.removeItem('refresh_token');
+                    localStorage.removeItem('access_token')
+                    localStorage.removeItem('refresh_token')
                     Swal.fire({
                       title: 'Thành công',
                       icon: 'success',
                       text: data.message
                     }).then((result) => {
-                      window.location.href = '/';
-                    });
-                    return;
+                      window.location.href = '/'
+                    })
+                    return
                   } else {
                     Swal.fire({
                       title: 'Oops...',
                       icon: 'error',
                       text: 'Error connecting to server',
                       footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
-                    });
-                    return;
+                    })
+                    return
                   }
-                });
-            });
+                })
+            })
           }
-          resolve();
+          resolve()
         }
-      });
-  });
+      })
+  })
 }
 
 getUserInfo().then(() => {
-  const each_ticket = document.querySelectorAll('.each_ticket');
-  const viewhistory_container = document.querySelector('.viewhistory_container');
-  viewhistory_container.style.animation = 'fade-in 1s ease-in-out';
-  each_ticket.forEach(each_ticket => {
-    each_ticket.style.animation = 'fade-in 1.5s ease-in-out';
-  });
+  const each_ticket = document.querySelectorAll('.each_ticket')
+  const viewhistory_container = document.querySelector('.viewhistory_container')
+  viewhistory_container.style.animation = 'fade-in 1s ease-in-out'
+  each_ticket.forEach((each_ticket) => {
+    each_ticket.style.animation = 'fade-in 1.5s ease-in-out'
+  })
 
   document.getElementById('nav_logo').addEventListener('click', () => {
-    window.location.href = '/';
-  });
+    window.location.href = '/'
+  })
   document.getElementById('img_trangchu').addEventListener('click', () => {
-    window.location.href = '/';
-  });
+    window.location.href = '/'
+  })
   document.getElementById('btn_login').addEventListener('click', () => {
-    window.location.href = '/login';
-  });
+    window.location.href = '/login'
+  })
   document.getElementById('ticket-information').addEventListener('click', () => {
-    window.location.href = '/ticket-info';
-  });
+    window.location.href = '/ticket-info'
+  })
   document.getElementById('signup_business').addEventListener('click', () => {
-    window.location.href = '/business_signup';
-  });
+    window.location.href = '/business_signup'
+  })
 
-  let number = 0;
-  const date = new Date();
+  let number = 0
+  const date = new Date()
   const body1 = {
     refresh_token: refresh_token,
     session_time: date,
     current: number
-  };
-  let iduser = [];
+  }
+  let iduser = []
 
   fetch('/api/order/get-order-list', {
     method: 'POST',
@@ -240,15 +240,15 @@ getUserInfo().then(() => {
   })
     .then((response) => {
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
-      return response.json();
+      return response.json()
     })
     .then((data) => {
-      console.log(data);
-      const container_hienthi = document.getElementById('accordionExample');
+      console.log(data)
+      const container_hienthi = document.getElementById('accordionExample')
       if (data != null) {
-        const dodai = data.result.bill.length;
+        const dodai = data.result.bill.length
         const number = {
           Num: [
             "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
@@ -270,12 +270,12 @@ getUserInfo().then(() => {
             "Ninety-One", "Ninety-Two", "Ninety-Three", "Ninety-Four", "Ninety-Five",
             "Ninety-Six", "Ninety-Seven", "Ninety-Nine", "One Hundred"
           ]
-        };
+        }
 
         for (let i = 0; i < dodai; i++) {
-          const index = data.result.bill[i];
-          const number1 = number.Num[i];
-          iduser.push(index._id);
+          const index = data.result.bill[i]
+          const number1 = number.Num[i]
+          iduser.push(index._id)
           container_hienthi.innerHTML += `<div class="accordion-item">
                                         <h4 class="accordion-header">
                                           <div class="each_ticket">
@@ -314,23 +314,23 @@ getUserInfo().then(() => {
                                         <div id="collapse${number1}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                                           <div class="accordion-body">Nhấn để xem chi tiết</div>
                                         </div>
-                                      </div>`;
+                                      </div>`
         }
-
+        console.log(iduser)
         // Thêm sự kiện cho accordion-button
         document.querySelectorAll('.accordion-button').forEach((button, index) => {
           button.addEventListener('click', () => {
-            const accordionBody = button.closest('.accordion-item').querySelector('.accordion-body');
-            const orderId = iduser[index];
-            const isCollapsed = !button.classList.contains('collapsed');
-
+            const accordionBody = button.closest('.accordion-item').querySelector('.accordion-body')
+            const orderId = iduser[index]
+            console.log(orderId)
+            const isCollapsed = !button.classList.contains('collapsed')
             // Chỉ load chi tiết khi accordion được mở và chưa load trước đó
             if (isCollapsed && accordionBody.innerHTML === 'Nhấn để xem chi tiết') {
               const body2 = {
                 refresh_token: refresh_token,
                 order_id: orderId,
                 current: 0
-              };
+              }
 
               fetch('/api/order/get-order-detail-list', {
                 method: 'POST',
@@ -342,13 +342,14 @@ getUserInfo().then(() => {
               })
                 .then((response) => {
                   if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    throw new Error(`HTTP error! status: ${response.status}`)
                   }
-                  return response.json();
+                  return response.json()
                 })
                 .then((data) => {
+                  console.log(data)
                   if (data && data.result && data.result.bill) {
-                    const orderDetails = data.result.bill;
+                    const orderDetails = data.result.bill
                     let table = `<table>
                                   <thead>
                                     <tr>
@@ -358,38 +359,38 @@ getUserInfo().then(() => {
                                       <th scope="col">Huỷ vé</th>
                                     </tr>
                                   </thead>
-                                  <tbody>`;
+                                  <tbody>`
                     orderDetails.forEach((ticket, idx) => {
                       table += `<tr>
                                   <th scope="row">${idx + 1}</th>
                                   ${ticket.status == 0 ? '<td><span class="status_ticket">Thành công</span></td>' : '<td><span class="status_ticket back-red">Thất bại</span></td>'}
                                   <td>${ticket.price.toLocaleString('vi-VN')} VNĐ</td>
                                   <td><button class="btn btn_cancel_ticket" onclick="cancel_ticket('${ticket._id}')" data-index="${idx}"><i class="ri-close-circle-fill"></i> Huỷ vé</button></td>
-                                </tr>`;
-                    });
-                    table += `</tbody></table>`;
-                    accordionBody.innerHTML = table;
+                                </tr>`
+                    })
+                    table += `</tbody></table>`
+                    accordionBody.innerHTML = table
                   } else {
-                    accordionBody.innerHTML = 'Không có chi tiết đơn hàng.';
+                    accordionBody.innerHTML = 'Không có chi tiết đơn hàng.'
                   }
                 })
                 .catch((error) => {
-                  console.error('Lỗi khi lấy chi tiết đơn hàng:', error);
-                  accordionBody.innerHTML = 'Có lỗi xảy ra khi tải chi tiết.';
-                });
+                  console.error('Lỗi khi lấy chi tiết đơn hàng:', error)
+                  accordionBody.innerHTML = 'Có lỗi xảy ra khi tải chi tiết.'
+                })
             }
-          });
-        });
+          })
+        })
       }
     })
     .catch((error) => {
-      console.error('Lỗi khi lấy danh sách đơn hàng:', error);
-    });
-});
+      console.error('Lỗi khi lấy danh sách đơn hàng:', error)
+    })
+})
 
 document.getElementById('Contact_us').addEventListener('click', () => {
   Swal.fire({
-    title: "Liên hệ chúng tôi",
+    title: 'Liên hệ chúng tôi',
     icon: 'info',
     html: `<div>
             <ul class="ul_contact">
@@ -397,8 +398,8 @@ document.getElementById('Contact_us').addEventListener('click', () => {
               <li>Email: namndtb00921@fpt.edu.vn</li>
             </ul>
           </div>`
-  });
-});
+  })
+})
 
 function cancel_ticket(id) {
   console.log(id)
@@ -413,25 +414,18 @@ function cancel_ticket(id) {
       Authorization: `Bearer ${access_token}`
     },
     body: JSON.stringify(boday)
-  }).then((response) => {
-    return response.json()
-  }).then((data) => {
-    if(data.success) {
-      Swal.fire({
-        title: 'Huỷ vé thành công',
-        icon: 'success',
-        footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
-      })
+    }).then((response) => {
+      return response.json()
+    }).then(async (data) => {
+      if (data) {
+        await Swal.fire({
+          title: 'Huỷ vé thành công',
+          icon: 'success',
+          footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
+        })
+      }
       location.reload()
-    } else {
-      Swal.fire({
-        title: 'Oops...',
-        icon: 'error',
-        text: 'Huỷ vé không thành công',
-        footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
-      })
-    }
-  })
+    })
 }
 
 let socket

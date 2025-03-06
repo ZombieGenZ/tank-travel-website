@@ -1,7 +1,7 @@
 const server_url = 'https://tank-travel.io.vn'
 
 const loading = document.querySelector('.loader')
-window.onload = function() {
+window.onload = () => {
   loading.style.display = 'none'
 }
 
@@ -81,7 +81,7 @@ function getUserInfo() {
                 for (const item of data2.result.notification) {
                   msg += `<div class="dropdown-item">${item.message}</div>`
                 }
-            })
+              })
             notification.classList.add('notification')
             notification.innerHTML = `<button class="button btn">
                                         <i class="ri-notification-2-fill bell"></i>
@@ -127,7 +127,6 @@ function getUserInfo() {
             personal_infor.appendChild(personal)
             ul.appendChild(recharge)
             ul.appendChild(booking_history)
-            
             So_du.addEventListener('click', () => {
               window.location.href = '/recharge'
             })
@@ -146,9 +145,7 @@ function getUserInfo() {
 
             document.getElementById('logout').addEventListener('click', () => {
               const refresh_token = localStorage.getItem('refresh_token')
-            
               const body = { refresh_token: refresh_token }
-            
               fetch('/api/users/logout', {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
@@ -167,7 +164,6 @@ function getUserInfo() {
                     })
                     return
                   }
-            
                   if (data.message == 'Đăng xuất thành công!') {
                     localStorage.removeItem('access_token')
                     localStorage.removeItem('refresh_token')
@@ -202,25 +198,21 @@ function getUserInfo() {
 }
 
 getUserInfo().then(() => {
-    document.getElementById('nav_logo').addEventListener('click', () => {
-      window.location.href = '/'
-    })
-    
-    document.getElementById('img_trangchu').addEventListener('click', () => {
-      window.location.href = '/'
-    })
-    
-    document.getElementById('btn_login').addEventListener('click', () => {
-      window.location.href = '/login'
-    })
-    
-    document.getElementById('ticket-information').addEventListener('click', () => {
-      window.location.href = '/ticket-info'
-    })
-    
-    document.getElementById('signup_business').addEventListener('click', () => {
-      window.location.href = '/business_signup'
-    })
+  document.getElementById('nav_logo').addEventListener('click', () => {
+    window.location.href = '/'
+  })
+  document.getElementById('img_trangchu').addEventListener('click', () => {
+    window.location.href = '/'
+  })
+  document.getElementById('btn_login').addEventListener('click', () => {
+    window.location.href = '/login'
+  })
+  document.getElementById('ticket-information').addEventListener('click', () => {
+    window.location.href = '/ticket-info'
+  })
+  document.getElementById('signup_business').addEventListener('click', () => {
+    window.location.href = '/business_signup'
+  })
 })
 
 let socket
