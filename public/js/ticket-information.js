@@ -314,6 +314,8 @@ window.addEventListener('load', () => {
 
           if (data.result.message == 'Không tìm thấy kết quả phù hợp') {
             document.getElementById('see_more').innerHTML = ''
+            const list = document.getElementById('section_container')
+            list.innerHTML += `<h1>Không tìm thấy vé phù hợp</h1>`
             return
           }
 
