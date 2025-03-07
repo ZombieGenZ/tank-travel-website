@@ -601,7 +601,7 @@ window.addEventListener('load', () => {
                     },
                     footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
                   })
-                  const ticket_booking = document.querySelector('.ticket_booking');
+                  const ticket_booking = document.querySelector('.ticket_booking')
                   const total_price = document.querySelector('.total_price')
                   total_price.value = (ticket_booking.value * busRoute[index].price).toLocaleString('vi-VN')
                   ticket_booking.addEventListener('change', () => {
@@ -785,32 +785,28 @@ window.addEventListener('load', () => {
                 cancelButtonText: 'Thoát',
                 footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>',
                 didOpen: () => {
-                  let index = 0;
-                  const slides = document.querySelector(".slides");
-                  const totalSlides = document.querySelectorAll(".slide").length;
-                  const prevButton = document.querySelector(".prev");
-                  const nextButton = document.querySelector(".next");
-              
+                  let index = 0
+                  const slides = document.querySelector('.slides')
+                  const totalSlides = document.querySelectorAll('.slide').length
+                  const prevButton = document.querySelector('.prev')
+                  const nextButton = document.querySelector('.next')
                   function showSlide(n) {
-                    if (n >= totalSlides) index = 0;
-                    if (n < 0) index = totalSlides - 1;
-                    slides.style.transform = `translateX(-${index * 100}%)`;
+                    if (n >= totalSlides) index = 0
+                    if (n < 0) index = totalSlides - 1
+                    slides.style.transform = `translateX(-${index * 100}%)`
                   }
-              
                   nextButton.addEventListener("click", () => {
-                    index++;
-                    showSlide(index);
-                  });
-              
+                    index++
+                    showSlide(index)
+                  })
                   prevButton.addEventListener("click", () => {
-                    index--;
-                    showSlide(index);
-                  });
-              
+                    index--
+                    showSlide(index)
+                  })
                   setInterval(() => {
-                    index++;
-                    showSlide(index);
-                  }, 3000);
+                    index++
+                    showSlide(index)
+                  }, 3000)
                 }
               })
             })
@@ -1008,7 +1004,7 @@ window.addEventListener('load', () => {
                   },
                   footer: '<a href="https://discord.gg/7SkzMkFWYN">Cần hổ trợ? Liên hệ chúng tôi</a>'
                 })
-                const ticket_booking = document.querySelector('.ticket_booking');
+                const ticket_booking = document.querySelector('.ticket_booking')
                 const total_price = document.querySelector('.total_price')
                 total_price.value = (ticket_booking.value * busRoute[index].price).toLocaleString('vi-VN')
                 ticket_booking.addEventListener('change', () => {
