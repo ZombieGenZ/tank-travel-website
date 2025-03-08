@@ -347,9 +347,10 @@ getUserInfo().then(() => {
                   return response.json()
                 })
                 .then((data) => {
-                  console.log(data)
-                  if (data && data.result && data.result.bill) {
-                    const orderDetails = data.result.bill
+                  console.log(data.result)
+                  const orderDetails = data.result.bill.filter((ticket) => ticket.bill == orderId)
+                  console.log(orderDetails)
+                  if (data && orderDetails) {
                     let table = `<table>
                                   <thead>
                                     <tr>
